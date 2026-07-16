@@ -1,0 +1,14 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "neon-tokens",
+  "title": "Neon Theme Tokens",
+  "description": "Neon palette and design tokens for Tailwind v4.",
+  "files": [
+    {
+      "path": "src/styles/tokens.css",
+      "content": "/*\n * Neon UI theme tokens (Tailwind v4).\n * Palette is Neon-inspired per https://neon.com/brand: the green and the\n * near-black are brand colors; everything else is neutral scaffolding.\n * The logo itself is never recolored or derived from these tokens.\n */\n@theme {\n  /* Brand */\n  --color-neon: #00e599;\n  --color-neon-dim: #00b37a;\n  --color-neon-ink: #0c0d0d;\n\n  /* Surfaces */\n  --color-surface: #0c0d0d;\n  --color-surface-raised: #131414;\n  --color-surface-overlay: #1a1b1b;\n  --color-border: #262727;\n\n  /* Text */\n  --color-text: #f3f4f6;\n  --color-text-muted: #9ca3af;\n  --color-text-faint: #6b7280;\n\n  /* Status */\n  --color-active: #00e599;\n  --color-sleeping: #6b7280;\n  --color-scaling: #f59e0b;\n  --color-error: #ef4444;\n\n  /* Motion */\n  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);\n  --duration-fast: 120ms;\n  --duration-base: 200ms;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  :root {\n    --duration-fast: 0ms;\n    --duration-base: 0ms;\n  }\n}\n",
+      "type": "registry:style"
+    }
+  ],
+  "type": "registry:style"
+}

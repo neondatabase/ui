@@ -1,0 +1,339 @@
+---
+import data from "blume:data";
+import PageLayout from "blume/components/layout/PageLayout.astro";
+
+const { config, navigation } = data;
+const year = new Date().getFullYear();
+
+const categories = [
+  {
+    items: ["NeonAurora", "SQLConfetti"],
+    name: "Brand",
+  },
+  {
+    items: [
+      "BranchTree",
+      "BranchPicker",
+      "BranchDiff",
+      "SchemaExplorer",
+      "SQLRunner",
+      "QueryHistory",
+    ],
+    name: "Database",
+  },
+  {
+    items: ["FileDropzone", "FileBrowser"],
+    name: "Storage",
+  },
+  {
+    items: [
+      "ComputeStatus",
+      "AutoscaleChart",
+      "ConnectionCard",
+      "UsageCard",
+      "HealthCard",
+      "LogsViewer",
+    ],
+    name: "Infrastructure",
+  },
+  {
+    items: ["ModelPicker", "PromptPlayground", "CostMeter", "TokenGraph"],
+    name: "AI",
+  },
+  {
+    items: ["SessionList", "ApiKeyList", "OrganizationSwitcher"],
+    name: "Authentication",
+  },
+  {
+    items: ["ActivityFeed", "MetricCard", "CommandPalette"],
+    name: "Dashboard",
+  },
+];
+
+const componentCount = categories.reduce(
+  (total, category) => total + category.items.length,
+  0
+);
+---
+
+<PageLayout
+  site={{ title: config.title }}
+  logo={config.logo}
+  navigation={navigation}
+  themeMode={config.theme.mode}
+  fontCssVars={data.fontCssVars}
+  favicon={config.favicon}
+  searchEnabled={config.search.enabled}
+  page={{
+    title: "Neon UI — Components for building on Neon",
+    description:
+      "The official Neon UI Registry. Production-ready components and blocks for building modern applications on Neon.",
+    route: "/",
+  }}
+>
+  <div class="aurora"></div>
+  <div class="wrap">
+    <header class="hero">
+      <div class="eyebrow">Official Neon UI Registry</div>
+      <h1>The UI layer for<br /><span class="accent">building on Neon</span></h1>
+      <p class="lede">
+        Production-ready components and blocks, wired to Neon's API, Data API,
+        Auth, Storage, and AI Gateway. Install one, own the source.
+      </p>
+      <div class="cta">
+        <a class="btn btn-primary" href="/docs">Browse components</a>
+        <a class="btn btn-ghost" href="/docs/installation">Get started</a>
+      </div>
+      <div class="install">
+        <span class="prompt">$</span>
+        <span>npx shadcn@latest add https://ui.neon.com/r/branch-picker.json</span>
+      </div>
+      <div class="stats">
+        <div><strong>{componentCount}</strong>components</div>
+        <div><strong>7</strong>categories</div>
+        <div><strong>MIT</strong>licensed</div>
+      </div>
+    </header>
+
+    <section class="catalog">
+      <div class="catalog-grid">
+        {
+          categories.map((category) => (
+            <div class="cat-card">
+              <h3>{category.name}</h3>
+              <ul>
+                {category.items.map((item) => (
+                  <li>{item}</li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+  </div>
+
+  <footer slot="footer" class="site-footer">
+    <div class="wrap footer-inner">
+      <div>Neon UI — the official component registry for Neon. © {year}</div>
+      <div class="footer-links">
+        <a href="/docs">Docs</a>
+        <a href="/changelog">Changelog</a>
+        <a href="https://github.com/jal-co/neon-ui">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</PageLayout>
+
+<style>
+  .aurora {
+    position: absolute;
+    inset: 0;
+    top: 0;
+    height: 640px;
+    z-index: 0;
+    background:
+      radial-gradient(
+        60% 60% at 20% 0%,
+        color-mix(in srgb, var(--blume-accent) 14%, transparent),
+        transparent 70%
+      ),
+      radial-gradient(
+        50% 50% at 90% 5%,
+        color-mix(in srgb, var(--blume-accent) 9%, transparent),
+        transparent 70%
+      );
+    pointer-events: none;
+  }
+
+  .wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  .hero {
+    padding: 88px 0 64px;
+    text-align: center;
+  }
+
+  .eyebrow {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--blume-accent);
+    border: 1px solid color-mix(in srgb, var(--blume-accent) 30%, transparent);
+    border-radius: 0;
+    padding: 5px 12px;
+    margin-bottom: 28px;
+  }
+
+  h1 {
+    font-family: var(--blume-font-display);
+    font-size: clamp(40px, 7vw, 66px);
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    font-weight: 600;
+    margin-bottom: 20px;
+  }
+
+  h1 .accent {
+    color: var(--blume-accent);
+  }
+
+  .lede {
+    font-size: 18px;
+    color: var(--blume-muted-foreground);
+    max-width: 560px;
+    margin: 0 auto 36px;
+  }
+
+  .cta {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    font-size: 14px;
+    font-weight: 500;
+    padding: 11px 20px;
+    border-radius: 0;
+    transition:
+      background 150ms ease,
+      border-color 150ms ease;
+  }
+
+  .btn-primary {
+    background: var(--blume-accent);
+    color: var(--blume-accent-foreground);
+  }
+
+  .btn-primary:hover {
+    background: color-mix(in srgb, var(--blume-accent) 88%, black);
+  }
+
+  .btn-ghost {
+    border: 1px solid var(--blume-border);
+    color: var(--blume-foreground);
+  }
+
+  .btn-ghost:hover {
+    border-color: var(--blume-muted-foreground);
+  }
+
+  .install {
+    max-width: 620px;
+    margin: 36px auto 0;
+    background: var(--blume-muted);
+    border: 1px solid var(--blume-border);
+    border-radius: 0;
+    padding: 16px 18px;
+    font-family: var(--blume-font-mono);
+    font-size: 13.5px;
+    text-align: left;
+    color: var(--blume-foreground);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .install .prompt {
+    color: var(--blume-accent);
+  }
+
+  .stats {
+    display: flex;
+    gap: 48px;
+    justify-content: center;
+    margin-top: 56px;
+    color: var(--blume-muted-foreground);
+    font-size: 14px;
+  }
+
+  .stats strong {
+    display: block;
+    color: var(--blume-foreground);
+    font-size: 28px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  .catalog {
+    padding: 40px 0 100px;
+  }
+
+  .catalog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px;
+  }
+
+  .cat-card {
+    background: var(--blume-muted);
+    border: 1px solid var(--blume-border);
+    border-radius: 0;
+    padding: 20px;
+    transition: border-color 150ms ease;
+  }
+
+  .cat-card:hover {
+    border-color: color-mix(in srgb, var(--blume-accent) 40%, transparent);
+  }
+
+  .cat-card h3 {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--blume-accent);
+    margin-bottom: 12px;
+    font-weight: 600;
+  }
+
+  .cat-card ul {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 0;
+    margin: 0;
+  }
+
+  .cat-card li {
+    font-size: 12.5px;
+    color: var(--blume-muted-foreground);
+    background: var(--blume-background);
+    border: 1px solid var(--blume-border);
+    border-radius: 0;
+    padding: 3px 8px;
+  }
+
+  .site-footer {
+    border-top: 1px solid var(--blume-border);
+    padding: 28px 0;
+    font-size: 13px;
+    color: var(--blume-muted-foreground);
+  }
+
+  .footer-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 20px;
+  }
+
+  .footer-links a:hover {
+    color: var(--blume-foreground);
+  }
+</style>

@@ -1,0 +1,34 @@
+{
+  "name": "@neon-ui/registry",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./components/*": "./src/components/*",
+    "./lib/*": "./src/lib/*",
+    "./styles/*": "./src/styles/*"
+  },
+  "scripts": {
+    "build": "shadcn build",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "@neondatabase/api-client": "^2.7.3",
+    "@neondatabase/serverless": "^1.1.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "shadcn": "^4.13.0",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^5.9.0",
+    "vitest": "^4.1.10"
+  },
+  "peerDependencies": {
+    "react": ">=19",
+    "react-dom": ">=19"
+  }
+}

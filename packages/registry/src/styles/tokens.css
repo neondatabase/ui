@@ -1,0 +1,41 @@
+/*
+ * Neon UI theme tokens (Tailwind v4).
+ * Palette is Neon-inspired per https://neon.com/brand: the green and the
+ * near-black are brand colors; everything else is neutral scaffolding.
+ * The logo itself is never recolored or derived from these tokens.
+ */
+@theme {
+  /* Brand */
+  --color-neon: #00e599;
+  --color-neon-dim: #00b37a;
+  --color-neon-ink: #0c0d0d;
+
+  /* Surfaces */
+  --color-surface: #0c0d0d;
+  --color-surface-raised: #131414;
+  --color-surface-overlay: #1a1b1b;
+  --color-border: #262727;
+
+  /* Text */
+  --color-text: #f3f4f6;
+  --color-text-muted: #9ca3af;
+  --color-text-faint: #6b7280;
+
+  /* Status */
+  --color-active: #00e599;
+  --color-sleeping: #6b7280;
+  --color-scaling: #f59e0b;
+  --color-error: #ef4444;
+
+  /* Motion */
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --duration-fast: 120ms;
+  --duration-base: 200ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 0ms;
+    --duration-base: 0ms;
+  }
+}

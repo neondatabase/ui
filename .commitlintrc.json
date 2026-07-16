@@ -1,0 +1,22 @@
+{
+  "extends": ["@commitlint/config-conventional"],
+  "rules": {
+    "scope-enum": [
+      2,
+      "always",
+      [
+        "registry",
+        "components",
+        "blocks",
+        "hooks",
+        "lib",
+        "styles",
+        "docs",
+        "brand",
+        "deps",
+        "ci",
+        "release"
+      ]
+    ]
+  }
+}

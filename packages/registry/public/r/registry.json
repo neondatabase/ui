@@ -1,0 +1,32 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "neon-ui",
+  "homepage": "https://ui.neon.com",
+  "items": [
+    {
+      "name": "neon-tokens",
+      "type": "registry:style",
+      "title": "Neon Theme Tokens",
+      "description": "Neon palette and design tokens for Tailwind v4.",
+      "files": [
+        {
+          "path": "src/styles/tokens.css",
+          "type": "registry:style"
+        }
+      ]
+    },
+    {
+      "name": "neon-client",
+      "type": "registry:lib",
+      "title": "Neon Client",
+      "description": "Shared Neon API client factory used by neon-ui data hooks.",
+      "dependencies": ["@neondatabase/api-client"],
+      "files": [
+        {
+          "path": "src/lib/neon-client.ts",
+          "type": "registry:lib"
+        }
+      ]
+    }
+  ]
+}

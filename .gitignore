@@ -34,3 +34,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+internal/
+
+# build output
+node_modules/
+apps/docs/dist/
+apps/docs/.blume/

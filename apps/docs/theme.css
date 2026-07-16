@@ -1,0 +1,20 @@
+/*
+ * Neon-inspired dark theme for the docs.
+ * Palette follows https://neon.com/brand: brand green + near-black.
+ * The logo asset is used as-published and never recolored.
+ */
+:root[data-theme="dark"] {
+  --blume-background: #0c0d0d;
+  --blume-foreground: #f3f4f6;
+  --blume-muted: #131414;
+  --blume-muted-foreground: #9ca3af;
+  --blume-border: #262727;
+  --blume-accent: #00e599;
+  --blume-accent-foreground: #0c0d0d;
+  --blume-code-background: #131414;
+  --blume-radius: 0;
+}
+
+:root {
+  --blume-radius: 0;
+}

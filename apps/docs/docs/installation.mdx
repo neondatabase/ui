@@ -1,0 +1,29 @@
+---
+title: Installation
+description: Add Neon UI components to your project with the shadcn CLI.
+---
+
+Neon UI is a [shadcn registry](https://ui.shadcn.com/docs/registry). You don't install a package; you pull component source directly into your project.
+
+## Add a component
+
+```bash
+npx shadcn@latest add https://ui.neon.com/r/branch-picker.json
+```
+
+The component, its dependencies, and a typed example land in your components directory. From there it's your code: restyle it, rip parts out, wire it to your own state.
+
+## Prerequisites
+
+- React 19 and Tailwind v4
+- A shadcn-initialized project (`npx shadcn@latest init`)
+- For components that talk to Neon, the relevant SDK (`@neondatabase/api-client` or `@neondatabase/serverless`), installed automatically as a dependency
+
+## How components are built
+
+Every component splits into two layers:
+
+- A **presentational** component that takes data as props. No fetching, no environment variables.
+- An optional **data hook** (`useBranches`, `useComputeState`) that wraps the real Neon surface.
+
+That split means a component works with fixtures, React Query, server components, or whatever your app already uses. Docs previews render the presentational layer with fixture data, so what you see here is exactly what ships.
