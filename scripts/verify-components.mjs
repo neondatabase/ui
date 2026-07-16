@@ -13,9 +13,13 @@ const manifest = JSON.parse(
 );
 const manifestNames = new Set(manifest.items.map((item) => item.name));
 
+// `ui/` holds shared shadcn-style primitives (button, card, ...), not
+// registry components, so it is exempt from the four-artifact standard.
+const EXEMPT_DIRS = new Set(["ui"]);
+
 const components = existsSync(componentsDir)
   ? readdirSync(componentsDir, { withFileTypes: true })
-      .filter((entry) => entry.isDirectory())
+      .filter((entry) => entry.isDirectory() && !EXEMPT_DIRS.has(entry.name))
       .map((entry) => entry.name)
   : [];
 

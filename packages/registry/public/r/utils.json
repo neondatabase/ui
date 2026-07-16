@@ -1,0 +1,18 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "utils",
+  "title": "cn utility",
+  "description": "Tailwind class-name merge helper used across neon-ui components.",
+  "dependencies": [
+    "clsx",
+    "tailwind-merge"
+  ],
+  "files": [
+    {
+      "path": "src/lib/utils.ts",
+      "content": "import { clsx } from \"clsx\";\nimport type { ClassValue } from \"clsx\";\nimport { twMerge } from \"tailwind-merge\";\n\n/**\n * Merge Tailwind class names with correct conflict resolution.\n * Later classes win (`cn(\"p-2\", \"p-4\")` => `\"p-4\"`).\n */\nexport const cn = (...inputs: ClassValue[]) => twMerge(clsx(inputs));\n",
+      "type": "registry:lib"
+    }
+  ],
+  "type": "registry:lib"
+}

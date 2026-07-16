@@ -16,6 +16,46 @@
       ]
     },
     {
+      "name": "utils",
+      "type": "registry:lib",
+      "title": "cn utility",
+      "description": "Tailwind class-name merge helper used across neon-ui components.",
+      "dependencies": ["clsx", "tailwind-merge"],
+      "files": [
+        {
+          "path": "src/lib/utils.ts",
+          "type": "registry:lib"
+        }
+      ]
+    },
+    {
+      "name": "button",
+      "type": "registry:ui",
+      "title": "Button",
+      "description": "Neon-themed button primitive with variants and asChild support.",
+      "dependencies": ["@radix-ui/react-slot", "class-variance-authority"],
+      "registryDependencies": ["utils", "neon-tokens"],
+      "files": [
+        {
+          "path": "src/components/ui/button.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "card",
+      "type": "registry:ui",
+      "title": "Card",
+      "description": "Neon-themed card container primitive and its sub-parts.",
+      "registryDependencies": ["utils", "neon-tokens"],
+      "files": [
+        {
+          "path": "src/components/ui/card.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "neon-client",
       "type": "registry:lib",
       "title": "Neon Client",

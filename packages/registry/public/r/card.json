@@ -1,0 +1,18 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "card",
+  "title": "Card",
+  "description": "Neon-themed card container primitive and its sub-parts.",
+  "registryDependencies": [
+    "utils",
+    "neon-tokens"
+  ],
+  "files": [
+    {
+      "path": "src/components/ui/card.tsx",
+      "content": "import type { ComponentProps } from \"react\";\n\nimport { cn } from \"@/lib/utils\";\n\nconst Card = ({ className, ...props }: ComponentProps<\"div\">) => (\n  <div\n    className={cn(\n      \"flex flex-col gap-6 rounded-xl border border-border bg-surface-raised py-6 text-text shadow-sm\",\n      className\n    )}\n    data-slot=\"card\"\n    {...props}\n  />\n);\n\nconst CardHeader = ({ className, ...props }: ComponentProps<\"div\">) => (\n  <div\n    className={cn(\"flex flex-col gap-1.5 px-6\", className)}\n    data-slot=\"card-header\"\n    {...props}\n  />\n);\n\nconst CardTitle = ({ className, ...props }: ComponentProps<\"div\">) => (\n  <div\n    className={cn(\"font-semibold leading-none\", className)}\n    data-slot=\"card-title\"\n    {...props}\n  />\n);\n\nconst CardDescription = ({ className, ...props }: ComponentProps<\"div\">) => (\n  <div\n    className={cn(\"text-sm text-text-muted\", className)}\n    data-slot=\"card-description\"\n    {...props}\n  />\n);\n\nconst CardContent = ({ className, ...props }: ComponentProps<\"div\">) => (\n  <div className={cn(\"px-6\", className)} data-slot=\"card-content\" {...props} />\n);\n\nconst CardFooter = ({ className, ...props }: ComponentProps<\"div\">) => (\n  <div\n    className={cn(\"flex items-center px-6\", className)}\n    data-slot=\"card-footer\"\n    {...props}\n  />\n);\n\nexport {\n  Card,\n  CardHeader,\n  CardTitle,\n  CardDescription,\n  CardContent,\n  CardFooter,\n};\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}
