@@ -1,0 +1,65 @@
+---
+title: StatusBadge
+description: The shared status vocabulary for apps and branches, plus a billing plan companion.
+---
+
+`StatusBadge` is the status vocabulary every dashboard surface reuses: a colored dot and a quiet mono word. Color lives only in the dot — ready is green, error is red, stopped is muted, and provisioning breathes on a slow glow cycle while work is in flight. `PlanBadge` is the billing companion with the same footprint; paid plans get primary ink.
+
+<StatusBadgePreview />
+
+## Install
+
+```bash
+npx shadcn@latest add https://ui.neon.com/r/status-badge.json
+```
+
+## Usage
+
+```tsx
+import { PlanBadge, StatusBadge } from "@/components/neon-ui/status-badge";
+
+<StatusBadge status="provisioning" />;
+<PlanBadge plan="paid" />;
+```
+
+## Props
+
+### StatusBadge
+
+<TypeTable
+  type={{
+    status: {
+      type: '"ready" | "provisioning" | "error" | "stopped"',
+      description: "Lifecycle state of the app or branch.",
+      required: true,
+    },
+    label: {
+      type: "string",
+      description: "Override the default status text.",
+    },
+  }}
+/>
+
+### PlanBadge
+
+<TypeTable
+  type={{
+    plan: {
+      type: '"free" | "paid"',
+      description: "Billing plan of the tenant.",
+      required: true,
+    },
+    label: {
+      type: "string",
+      description: "Override the default plan text.",
+    },
+  }}
+/>
+
+## Wiring to Neon
+
+Map a Neon compute endpoint (`GET /projects/{id}/endpoints`) onto the vocabulary: a `pending_state` or `init` state is provisioning, `active` is ready, `idle` is stopped. The typed example ships the full mapping.
+
+## Accessibility
+
+The dot is decorative (`aria-hidden`); the status is always conveyed by the visible text. The provisioning breathe stops (dot holds fully lit) under `prefers-reduced-motion`.

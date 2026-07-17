@@ -261,3 +261,31 @@
     background-color: currentColor;
   }
 }
+
+/*
+ * Status breathe: a slow inhale/exhale for in-flight status dots. The dot
+ * dims and swells a soft glow on a 2.6s ease-in-out cycle — alive, not
+ * blinking. Static and fully lit under reduced motion.
+ */
+@keyframes neon-status-breathe {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+    opacity: 0.45;
+  }
+  50% {
+    box-shadow: 0 0 6px 1px color-mix(in oklch, currentColor 45%, transparent);
+    opacity: 1;
+  }
+}
+
+.neon-status-breathe {
+  animation: neon-status-breathe 2.6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .neon-status-breathe {
+    animation: none;
+    opacity: 1;
+  }
+}

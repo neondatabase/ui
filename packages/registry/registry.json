@@ -315,6 +315,19 @@
           "type": "registry:lib"
         }
       ]
+    },
+    {
+      "name": "status-badge",
+      "type": "registry:component",
+      "title": "StatusBadge",
+      "description": "Dot-and-label status vocabulary for apps and branches, with a billing PlanBadge companion.",
+      "registryDependencies": ["utils", "neon-tokens"],
+      "files": [
+        {
+          "path": "src/components/status-badge/status-badge.tsx",
+          "type": "registry:component"
+        }
+      ]
     }
   ]
 }

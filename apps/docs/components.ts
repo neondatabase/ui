@@ -12,6 +12,7 @@ export default defineComponents({
     MetricCardSystemVariants: "./demos/metric-card-system-variants.tsx",
     ModelSelectPreview: "./demos/model-select-preview.tsx",
     NeonLoaderPreview: "./demos/neon-loader-preview.tsx",
+    StatusBadgePreview: "./demos/status-badge-preview.tsx",
     ThemePaster: "./demos/theme-paster.tsx",
     ThinkingModelSelectPreview: "./demos/thinking-model-select-preview.tsx",
     ThinkingSelectPreview: "./demos/thinking-select-preview.tsx",
