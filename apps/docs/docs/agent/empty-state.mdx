@@ -1,0 +1,69 @@
+---
+title: EmptyState
+description: An intentional placeholder for spaces waiting to be filled.
+---
+
+`EmptyState` marks a space as _waiting to be filled_, not missing: a dashed hairline, a title naming what's absent, a supporting line explaining how it fills, and the shortest-path action. The dashboard grid, checkpoint timeline, and usage panel all reuse it, and [AgentChat](/docs/agent/agent-chat) composes the `bare` variant for its idle timeline.
+
+<EmptyStatePreview />
+
+## Install
+
+```bash
+npx shadcn@latest add https://ui.neon.com/r/empty-state.json
+```
+
+## Usage
+
+```tsx
+import { EmptyState } from "@/components/neon-ui/empty-state";
+
+<EmptyState
+  title="No apps yet"
+  description="Describe what you want to build and the agent scaffolds it."
+  action={<Button>Create your first app</Button>}
+/>;
+```
+
+## Props
+
+<TypeTable
+  type={{
+    title: {
+      type: "ReactNode",
+      description: "One line naming what's missing.",
+      required: true,
+    },
+    description: {
+      type: "ReactNode",
+      description: "Supporting line explaining how the space fills.",
+    },
+    icon: {
+      type: "ReactNode",
+      description: "Replace the faded Neon mark, e.g. with an icon.",
+    },
+    action: {
+      type: "ReactNode",
+      description: "Call to action, e.g. a Button.",
+    },
+    variant: {
+      type: '"panel" | "bare"',
+      description:
+        "panel draws the dashed frame and stripes; bare drops both for embedding inside bordered surfaces.",
+      default: '"panel"',
+    },
+    size: {
+      type: '"sm" | "md" | "lg"',
+      description: "Vertical breathing room.",
+      default: '"md"',
+    },
+  }}
+/>
+
+## Wiring to Neon
+
+The typed example guards a project grid over `GET /projects`: children render when the tenant has projects, the empty state (with a create action) when the list is empty.
+
+## Accessibility
+
+The mark and stripes are decorative (`aria-hidden`); the state is conveyed entirely by the visible text. The action slot takes any focusable element and sits last in the reading order.

@@ -1,7 +1,7 @@
 "use client";
 
 import type { ChatStatus, UIMessage } from "ai";
-import { Loader2Icon, SendIcon, SparklesIcon } from "lucide-react";
+import { Loader2Icon, SendIcon } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
 import type {
   ComponentProps,
@@ -12,6 +12,7 @@ import type {
 import { useCallback, useRef, useState } from "react";
 import { Streamdown } from "streamdown";
 
+import { EmptyState } from "@/components/empty-state/empty-state";
 import { NeonMarkShimmer } from "@/components/neon-loader/neon-loader";
 import { ToolCallChip } from "@/components/tool-call-chip/tool-call-chip";
 import type { ToolCallState } from "@/components/tool-call-chip/tool-call-chip";
@@ -377,13 +378,11 @@ export const ChatInput = ({
 };
 
 const DefaultEmptyState = () => (
-  <div className="flex h-full flex-col items-center justify-center gap-2 py-10 text-center">
-    <SparklesIcon aria-hidden="true" className="size-5 text-primary" />
-    <p className="font-medium text-sm">Start building</p>
-    <p className="max-w-56 text-muted-foreground text-xs leading-relaxed">
-      Describe a feature and the agent edits the live app, database included.
-    </p>
-  </div>
+  <EmptyState
+    className="h-full py-10"
+    description="Describe a feature and the agent edits the live app, database included."
+    title="Start building"
+  />
 );
 
 export type ChatWorkingIndicatorProps = ComponentProps<"div"> & {

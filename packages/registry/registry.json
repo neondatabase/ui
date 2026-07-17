@@ -268,7 +268,8 @@
         "marker",
         "button",
         "tool-call-chip",
-        "neon-tokens"
+        "neon-tokens",
+        "empty-state"
       ],
       "files": [
         {
@@ -325,6 +326,19 @@
       "files": [
         {
           "path": "src/components/status-badge/status-badge.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "empty-state",
+      "type": "registry:component",
+      "title": "EmptyState",
+      "description": "Intentional dashed-border placeholder with title, description, icon, and action slots.",
+      "registryDependencies": ["utils", "neon-tokens"],
+      "files": [
+        {
+          "path": "src/components/empty-state/empty-state.tsx",
           "type": "registry:component"
         }
       ]

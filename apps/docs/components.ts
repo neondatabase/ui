@@ -6,6 +6,7 @@ export default defineComponents({
     ChatInputPreview: "./demos/chat-input-preview.tsx",
     ChatMessagePreview: "./demos/chat-message-preview.tsx",
     ChatWorkingPreview: "./demos/chat-working-preview.tsx",
+    EmptyStatePreview: "./demos/empty-state-preview.tsx",
     MetricCardDeltaVariants: "./demos/metric-card-delta-variants.tsx",
     MetricCardFormatVariants: "./demos/metric-card-format-variants.tsx",
     MetricCardPreview: "./demos/metric-card-preview.tsx",
