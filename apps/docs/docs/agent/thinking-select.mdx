@@ -1,0 +1,76 @@
+---
+title: ThinkingSelect
+description: Reasoning-effort selector for agent chat input bars.
+---
+
+`ThinkingSelect` sets how hard the model thinks: Off, Low, Med, High, or X-High. An elastic slider with rubber-band drag and spring snap; pixel sparkles glint inside the fill, paced per level — none at Off, then progressively denser and quicker from Low through X-High. Sized to sit beside [ModelSelect](/docs/agent/model-select) in a chat input bar; the selection maps onto the OpenAI-compatible `reasoning_effort` parameter.
+
+<ThinkingSelectPreview />
+
+## Install
+
+```bash
+npx shadcn@latest add https://ui.neon.com/r/thinking-select.json
+```
+
+## Usage
+
+```tsx
+import { ThinkingSelect } from "@/components/neon-ui/thinking-select";
+
+<ThinkingSelect value={effort} onValueChange={setEffort} />;
+```
+
+## Props
+
+<TypeTable
+  type={{
+    value: {
+      type: '"off" | "low" | "medium" | "high" | "xhigh"',
+      description: "Controlled effort level.",
+    },
+    defaultValue: {
+      type: '"off" | "low" | "medium" | "high" | "xhigh"',
+      description: "Uncontrolled initial effort level.",
+      default: '"off"',
+    },
+    onValueChange: {
+      type: "(value: ThinkingEffort) => void",
+      description: "Called with the newly selected effort.",
+    },
+    disabled: {
+      type: "boolean",
+      description: "Disable the whole control.",
+      default: "false",
+    },
+    size: {
+      type: '"sm" | "md" | "lg"',
+      description: "Track size: compact, default, or roomy.",
+      default: '"md"',
+    },
+  }}
+/>
+
+## Wiring to Neon
+
+Forward the selection to a Neon AI Gateway chat call; omit the parameter when thinking is off:
+
+```tsx
+await fetch(`${gatewayUrl}/v1/chat/completions`, {
+  method: "POST",
+  headers: { Authorization: `Bearer ${token}` },
+  body: JSON.stringify({
+    model: "neon/claude-sonnet-4-6",
+    messages,
+    ...(effort === "off" ? {} : { reasoning_effort: effort }),
+  }),
+});
+```
+
+## Accessibility
+
+The slider is a native range input semantically: arrow keys step between levels, Home/End jump to the ends. The intensity bars are decorative (`aria-hidden`), and all elastic/pulse motion is disabled under `prefers-reduced-motion`.
+
+## Credits
+
+The elastic track is built on [Chánh Đại's Elastic Slider](https://chanhdai.com/components/elastic-slider) (MIT), lightly patched for spring-snap on release and Neon styling.

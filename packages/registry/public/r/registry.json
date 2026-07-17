@@ -110,6 +110,174 @@
       ]
     },
     {
+      "name": "select",
+      "type": "registry:ui",
+      "title": "Select",
+      "description": "Accessible select primitive (Base UI).",
+      "dependencies": ["@base-ui/react"],
+      "registryDependencies": ["utils", "neon-tokens"],
+      "files": [
+        {
+          "path": "src/components/ui/select.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "elastic-slider",
+      "type": "registry:ui",
+      "title": "ElasticSlider",
+      "description": "Slider with elastic rubber-band drag and magnetic snap (by @iamncdai, MIT).",
+      "dependencies": ["motion"],
+      "registryDependencies": ["utils", "neon-tokens"],
+      "files": [
+        {
+          "path": "src/components/ui/elastic-slider.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/hooks/use-controllable-state.tsx",
+          "type": "registry:hook"
+        }
+      ]
+    },
+    {
+      "name": "model-select",
+      "type": "registry:component",
+      "title": "ModelSelect",
+      "description": "Model picker for agent chat input bars, grouped by provider.",
+      "registryDependencies": ["utils", "select", "neon-tokens"],
+      "files": [
+        {
+          "path": "src/components/model-select/model-select.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "dependencies": ["motion"]
+    },
+    {
+      "name": "thinking-select",
+      "type": "registry:component",
+      "title": "ThinkingSelect",
+      "description": "Reasoning-effort selector: Off, Low, Medium, High.",
+      "registryDependencies": ["utils", "elastic-slider", "neon-tokens"],
+      "files": [
+        {
+          "path": "src/components/thinking-select/thinking-select.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "dependencies": ["motion"]
+    },
+    {
+      "name": "thinking-model-select",
+      "type": "registry:component",
+      "title": "ThinkingModelSelect",
+      "description": "Model picker with an embedded reasoning-effort slider in the popup footer.",
+      "registryDependencies": [
+        "utils",
+        "model-select",
+        "thinking-select",
+        "neon-tokens"
+      ],
+      "files": [
+        {
+          "path": "src/components/thinking-model-select/thinking-model-select.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "message",
+      "type": "registry:ui",
+      "title": "Message",
+      "description": "Conversation message layout primitive with avatar, content, and footer.",
+      "registryDependencies": ["utils", "neon-tokens"],
+      "files": [
+        {
+          "path": "src/components/ui/message.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "bubble",
+      "type": "registry:ui",
+      "title": "Bubble",
+      "description": "Chat bubble primitive with grouping and reactions.",
+      "registryDependencies": ["utils", "neon-tokens"],
+      "files": [
+        {
+          "path": "src/components/ui/bubble.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "marker",
+      "type": "registry:ui",
+      "title": "Marker",
+      "description": "Inline conversation status marker.",
+      "registryDependencies": ["utils", "neon-tokens"],
+      "files": [
+        {
+          "path": "src/components/ui/marker.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "message-scroller",
+      "type": "registry:ui",
+      "title": "MessageScroller",
+      "description": "Chat scroll container with turn anchoring, auto-follow, and jump-to-latest.",
+      "registryDependencies": ["utils", "neon-tokens", "button"],
+      "files": [
+        {
+          "path": "src/components/ui/message-scroller.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "dependencies": ["@shadcn/react"]
+    },
+    {
+      "name": "tool-call-chip",
+      "type": "registry:component",
+      "title": "ToolCallChip",
+      "description": "Compact running/complete/error indicator for one agent tool invocation.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["utils", "neon-tokens"],
+      "files": [
+        {
+          "path": "src/components/tool-call-chip/tool-call-chip.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "agent-chat",
+      "type": "registry:component",
+      "title": "AgentChat",
+      "description": "Full agent chat pane: streamed markdown turns, tool chips, reasoning, and a composer with a model-controls slot.",
+      "dependencies": ["ai", "@ai-sdk/react", "streamdown", "lucide-react"],
+      "registryDependencies": [
+        "utils",
+        "message",
+        "message-scroller",
+        "bubble",
+        "marker",
+        "button",
+        "tool-call-chip",
+        "neon-tokens"
+      ],
+      "files": [
+        {
+          "path": "src/components/agent-chat/agent-chat.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
       "name": "metric-card",
       "type": "registry:component",
       "title": "MetricCard",

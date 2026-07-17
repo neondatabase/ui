@@ -1,3 +1,5 @@
+@import "shadcn/tailwind.css";
+
 @source "../../../../../packages/registry/src/**/*.{ts,tsx}";
 
 @keyframes neon-skeleton-pulse {
@@ -172,4 +174,143 @@ details[class*="group/tt"] code.text-accent {
 
 .prose pre.astro-code > button {
   border-radius: 0;
+}
+
+/* Scroll-aware edge fade + thin scrollbar for scrolling panels.
+   Vendored from shadcn's scroll-fade utility (ui.shadcn.com/docs/utils/scroll-fade)
+   as plain CSS: crisp edges at rest ends, faded edges mid-scroll. */
+@property --neon-scroll-fade-t {
+  syntax: "<length-percentage>";
+  inherits: false;
+  initial-value: 0px;
+}
+
+@property --neon-scroll-fade-b {
+  syntax: "<length-percentage>";
+  inherits: false;
+  initial-value: 0px;
+}
+
+@keyframes neon-scroll-fade-reveal-t {
+  from {
+    --neon-scroll-fade-t: 0px;
+  }
+
+  to {
+    --neon-scroll-fade-t: 32px;
+  }
+}
+
+@keyframes neon-scroll-fade-reveal-b {
+  from {
+    --neon-scroll-fade-b: 32px;
+  }
+
+  to {
+    --neon-scroll-fade-b: 0px;
+  }
+}
+
+.neon-scroll-fade {
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    #000 var(--neon-scroll-fade-t, 0px),
+    #000 calc(100% - var(--neon-scroll-fade-b, 0px)),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    #000 var(--neon-scroll-fade-t, 0px),
+    #000 calc(100% - var(--neon-scroll-fade-b, 0px)),
+    transparent 100%
+  );
+  scrollbar-color: var(--border) transparent;
+  scrollbar-width: thin;
+}
+
+.neon-scroll-fade::-webkit-scrollbar {
+  width: 6px;
+}
+
+.neon-scroll-fade::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.neon-scroll-fade::-webkit-scrollbar-thumb {
+  background: var(--border);
+}
+
+.neon-scroll-fade::-webkit-scrollbar-thumb:hover {
+  background: var(--muted-foreground);
+}
+
+@supports (animation-timeline: scroll()) {
+  .neon-scroll-fade {
+    animation:
+      neon-scroll-fade-reveal-t 1ms ease-in-out,
+      neon-scroll-fade-reveal-b 1ms ease-in-out;
+    animation-fill-mode: both;
+    animation-range:
+      0 96px,
+      calc(100% - 96px) 100%;
+    animation-timeline: scroll(self y), scroll(self y);
+  }
+}
+
+@supports not (animation-timeline: scroll()) {
+  .neon-scroll-fade {
+    --neon-scroll-fade-t: 0px;
+    --neon-scroll-fade-b: 0px;
+  }
+}
+
+/*
+ * Neon mark shimmer: the brand mark masked over the shadcn shimmer gradient.
+ * Mirrors the `shimmer` utility (same gradient, same linear timeline via
+ * --shimmer-* variables) but clips to the mark instead of text, so an icon
+ * and a `shimmer` label mounted together sweep in perfect sync.
+ */
+@keyframes neon-shimmer {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: 0 0;
+  }
+}
+
+.neon-mark-shimmer {
+  --_spread: var(--shimmer-spread, calc(3ch + 40px));
+  --_base: currentColor;
+  --_highlight: var(
+    --shimmer-color,
+    oklch(from currentColor max(0.8, calc(l + 0.4)) c h / calc(alpha + 0.4))
+  );
+  animation: neon-shimmer var(--shimmer-duration, 2s) linear infinite;
+  background-image: linear-gradient(
+    calc(90deg + var(--shimmer-angle, 20deg)),
+    var(--_base) calc(50% - var(--_spread)),
+    color-mix(in oklch, var(--_highlight), var(--_base) 50%)
+      calc(50% - var(--_spread) * 0.5),
+    var(--_highlight) 50%,
+    color-mix(in oklch, var(--_highlight), var(--_base) 50%)
+      calc(50% + var(--_spread) * 0.5),
+    var(--_base) calc(50% + var(--_spread))
+  );
+  background-position: 0 0;
+  background-repeat: no-repeat;
+  background-size: calc(200% + var(--_spread) * 2) 100%;
+  display: inline-block;
+  mask: var(--neon-mark-uri) center / contain no-repeat;
+  -webkit-mask: var(--neon-mark-uri) center / contain no-repeat;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .neon-mark-shimmer {
+    animation: none;
+    background-image: none;
+    background-color: currentColor;
+  }
 }

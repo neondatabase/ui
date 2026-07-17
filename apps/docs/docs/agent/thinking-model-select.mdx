@@ -1,0 +1,72 @@
+---
+title: ThinkingModelSelect
+description: Model picker with an embedded reasoning-effort slider.
+---
+
+`ThinkingModelSelect` composes [ModelSelect](/docs/agent/model-select) and [ThinkingSelect](/docs/agent/thinking-select) into one control: the model popup gains a pinned thinking footer, the trigger echoes the current effort, and Tab cycles effort levels while the popup is open. The footer disappears automatically for models that cannot reason. Three sizes cover dense toolbars through roomy composer bars.
+
+<ThinkingModelSelectPreview />
+
+## Install
+
+```bash
+npx shadcn@latest add https://ui.neon.com/r/thinking-model-select.json
+```
+
+## Usage
+
+```tsx
+import { ThinkingModelSelect } from "@/components/neon-ui/thinking-model-select";
+
+<ThinkingModelSelect
+  models={models}
+  value={model}
+  onValueChange={setModel}
+  effort={effort}
+  onEffortChange={setEffort}
+/>;
+```
+
+## Props
+
+Accepts every [ModelSelect](/docs/agent/model-select) prop except the composition slots (including `excludeModels`), plus:
+
+<TypeTable
+  type={{
+    effort: {
+      type: '"off" | "low" | "medium" | "high" | "xhigh"',
+      description: "Controlled reasoning effort.",
+      required: true,
+    },
+    onEffortChange: {
+      type: "(effort: ThinkingEffort) => void",
+      description: "Called with the newly selected reasoning effort.",
+      required: true,
+    },
+    size: {
+      type: '"sm" | "md" | "lg"',
+      description: "Scales the trigger and the footer slider together.",
+      default: '"md"',
+    },
+  }}
+/>
+
+## Keyboard
+
+While the popup is open, Tab cycles the thinking effort (off → low → med → high → xhigh); typing filters models; arrows walk the list.
+
+## Wiring to Neon
+
+Send both selections in one Neon AI Gateway chat call:
+
+```tsx
+await fetch(`${gatewayUrl}/v1/chat/completions`, {
+  method: "POST",
+  headers: { Authorization: `Bearer ${token}` },
+  body: JSON.stringify({
+    model,
+    messages,
+    ...(effort === "off" ? {} : { reasoning_effort: effort }),
+  }),
+});
+```

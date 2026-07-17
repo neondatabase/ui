@@ -1,11 +1,20 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import type { ComponentProps } from "react";
+import type { ComponentProps, CSSProperties } from "react";
 
 import { cn } from "@/lib/utils";
 
 export type NeonLoaderSize = "sm" | "md" | "lg";
+
+export interface LoaderMark {
+  /** SVG path data for the mark, in the mark's own coordinate space. */
+  path: string;
+  /** ViewBox width of the path. */
+  width: number;
+  /** ViewBox height of the path. */
+  height: number;
+}
 
 export type NeonLoaderProps = Omit<ComponentProps<"div">, "children"> & {
   /** Accessible status text and, by default, the visible label. */
@@ -18,6 +27,8 @@ export type NeonLoaderProps = Omit<ComponentProps<"div">, "children"> & {
   decorative?: boolean;
   /** Duration of one noise-resolve loop in milliseconds. */
   duration?: number;
+  /** Swap the Neon mark for your own logo path. */
+  mark?: LoaderMark;
 };
 
 /* ─────────────────────────────────────────────────────────
@@ -54,6 +65,19 @@ const NEON_MARK_PATH =
 
 const MARK_WIDTH = 31.3;
 const MARK_HEIGHT = 31.6;
+
+/** Default mark: the official Neon logo. */
+const NEON_MARK: LoaderMark = {
+  height: MARK_HEIGHT,
+  path: NEON_MARK_PATH,
+  width: MARK_WIDTH,
+};
+
+/** Encode any mark as an SVG data URI for use as a CSS mask. */
+const markUri = (mark: LoaderMark) =>
+  `data:image/svg+xml,${encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${mark.width} ${mark.height}"><path d="${mark.path}"/></svg>`
+  )}`;
 /** Mask cells per row: fine enough to read as grain over the crisp mark. */
 const GRID = 40;
 
@@ -88,6 +112,7 @@ export const NeonLoader = ({
   decorative = false,
   duration = LOADER_TIMING.durationMs,
   label = "Loading",
+  mark = NEON_MARK,
   showLabel = false,
   size = "md",
   ...props
@@ -114,8 +139,8 @@ export const NeonLoader = ({
     canvas.height = pixelSize;
 
     const cellSize = pixelSize / GRID;
-    const scale = pixelSize / Math.max(MARK_WIDTH, MARK_HEIGHT);
-    const mark = new Path2D(NEON_MARK_PATH);
+    const scale = pixelSize / Math.max(mark.width, mark.height);
+    const markShape = new Path2D(mark.path);
 
     const styles = getComputedStyle(canvas);
     const primary = styles.color;
@@ -130,7 +155,7 @@ export const NeonLoader = ({
       context.fillStyle = primary;
       context.scale(scale, scale);
       // oxlint-disable-next-line unicorn/no-array-fill-with-reference-type -- canvas path fill, not Array#fill
-      context.fill(mark, "nonzero");
+      context.fill(markShape, "nonzero");
       context.restore();
     };
 
@@ -147,13 +172,13 @@ export const NeonLoader = ({
       context.scale(scale, scale);
       context.fillStyle = mono;
       // oxlint-disable-next-line unicorn/no-array-fill-with-reference-type -- canvas path fill, not Array#fill
-      context.fill(mark, "nonzero");
+      context.fill(markShape, "nonzero");
 
       if (progress > 0) {
         context.globalAlpha = progress ** 1.5;
         context.fillStyle = primary;
         // oxlint-disable-next-line unicorn/no-array-fill-with-reference-type -- canvas path fill, not Array#fill
-        context.fill(mark, "nonzero");
+        context.fill(markShape, "nonzero");
         context.globalAlpha = 1;
       }
 
@@ -190,7 +215,7 @@ export const NeonLoader = ({
     frame = requestAnimationFrame(draw);
 
     return () => cancelAnimationFrame(frame);
-  }, [duration, resolvedSize]);
+  }, [duration, resolvedSize, mark]);
 
   return (
     <div
@@ -218,3 +243,38 @@ export const NeonLoader = ({
     </div>
   );
 };
+
+export type NeonMarkShimmerProps = Omit<ComponentProps<"span">, "children"> & {
+  /** Pixel height of the mark; width follows the mark's aspect ratio. */
+  size?: number;
+  /** Swap the Neon mark for your own logo path. */
+  mark?: LoaderMark;
+};
+
+/**
+ * The Neon mark painted with the shadcn `shimmer` gradient. Mount it next to
+ * a `shimmer` text element and both sweep on the same clock; tune both at
+ * once with `shimmer-duration-*` / `shimmer-color-*` on a shared parent.
+ */
+export const NeonMarkShimmer = ({
+  className,
+  mark = NEON_MARK,
+  size = 16,
+  style,
+  ...props
+}: NeonMarkShimmerProps) => (
+  <span
+    aria-hidden="true"
+    className={cn("neon-mark-shimmer shrink-0", className)}
+    data-slot="neon-mark-shimmer"
+    style={
+      {
+        "--neon-mark-uri": `url("${markUri(mark)}")`,
+        height: size,
+        width: (size * mark.width) / mark.height,
+        ...style,
+      } as CSSProperties
+    }
+    {...props}
+  />
+);

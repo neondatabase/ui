@@ -1,0 +1,47 @@
+---
+title: ToolCallChip
+description: Compact indicator for one agent tool invocation.
+---
+
+`ToolCallChip` shows one tool invocation in an agent turn: a spinner with a softly breathing name while it runs, a springy swap to a green wrench on completion, an alert on error. The name renders in mono, with an optional `detail` (file path, command) that truncates first when space is tight. [AgentChat](/docs/agent/agent-chat) maps AI SDK tool parts onto these automatically.
+
+<ToolCallChipPreview />
+
+## Install
+
+```bash
+npx shadcn@latest add https://ui.neon.com/r/tool-call-chip.json
+```
+
+## Usage
+
+```tsx
+import { ToolCallChip } from "@/components/neon-ui/tool-call-chip";
+
+<ToolCallChip name="writeFile" state="running" />;
+```
+
+## Props
+
+<TypeTable
+  type={{
+    name: {
+      type: "string",
+      description: "Tool name, shown in mono.",
+      required: true,
+    },
+    state: {
+      type: '"running" | "done" | "error"',
+      description: "Lifecycle state of the invocation.",
+      default: '"done"',
+    },
+    detail: {
+      type: "string",
+      description: "What the tool touched, e.g. a file path or command.",
+    },
+  }}
+/>
+
+## Wiring to Neon
+
+Map AI SDK tool parts (from `message.parts`) onto chips: `output-available` → done, `output-error` → error, anything else → running. The typed example shows the full mapping for both static and dynamic tool parts.

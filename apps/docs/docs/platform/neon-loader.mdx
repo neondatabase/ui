@@ -45,6 +45,11 @@ import { NeonLoader } from "@/components/neon-ui/neon-loader";
       description: "Remove status semantics when the loader is decorative.",
       default: "false",
     },
+    mark: {
+      type: "LoaderMark",
+      description:
+        "Swap the Neon mark for your own logo: { path, width, height } in SVG viewBox units.",
+    },
     duration: {
       type: "number",
       description: "Duration of one noise-resolve loop in milliseconds.",

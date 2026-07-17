@@ -1,0 +1,124 @@
+---
+title: AgentChat
+description: Full agent chat pane with streamed turns, tool chips, and a composer.
+---
+
+`AgentChat` is the conversation pane for an agent platform: turns scroll in a message scroller that follows streams while you are pinned to the bottom (with a jump-to-latest button when you are not), user turns render as bubbles, agent turns as streamed markdown with [ToolCallChip](/docs/agent/tool-call-chip) invocations and quiet reasoning lines, and the composer has a controls slot for [ThinkingModelSelect](/docs/agent/thinking-model-select). Typed against the AI SDK's `UIMessage` — bring your own `useChat` transport.
+
+The preview streams a scripted vibe-coding session through the real `useChat` lifecycle (no model or network): press send to play the next turn.
+
+<AgentChatPreview />
+
+## Install
+
+```bash
+npx shadcn@latest add https://ui.neon.com/r/agent-chat.json
+```
+
+## Usage
+
+```tsx
+import { useChat } from "@ai-sdk/react";
+import { AgentChat } from "@/components/neon-ui/agent-chat";
+
+const { messages, sendMessage, status } = useChat({ transport });
+
+<AgentChat
+  messages={messages}
+  status={status}
+  onSend={(text) => sendMessage({ text })}
+/>;
+```
+
+## Props
+
+<TypeTable
+  type={{
+    messages: {
+      type: "UIMessage[]",
+      description: "Conversation from useChat.",
+      required: true,
+    },
+    status: {
+      type: "ChatStatus",
+      description:
+        'useChat status: "submitted" | "streaming" | "ready" | "error".',
+      required: true,
+    },
+    onSend: {
+      type: "(text: string) => void",
+      description: "Called with the trimmed composer text.",
+      required: true,
+    },
+    controls: {
+      type: "ReactNode",
+      description:
+        "Slot at the left of the composer's control row, e.g. ThinkingModelSelect.",
+    },
+    emptyState: {
+      type: "ReactNode",
+      description: "Rendered while the conversation is empty.",
+    },
+    disabled: {
+      type: "boolean",
+      description:
+        "Disable the composer, e.g. while an environment provisions.",
+      default: "false",
+    },
+    placeholder: {
+      type: "string",
+      description: "Composer placeholder text.",
+      default: '"Describe a change…"',
+    },
+  }}
+/>
+
+## Model switches
+
+Attach `AgentChatTurnMetadata` (`model`, `modelName`, `effort`) to user turns via `sendMessage` metadata. When a turn's model or effort differs from the previous turn, a quiet "switched to GPT-5.2 · high thinking" marker renders above it — part of the timeline, so it replays with the transcript. Try it in the preview: change the model or effort, then send.
+
+```tsx
+sendMessage({ text }, { metadata: { model, modelName, effort } });
+```
+
+## Sub-components
+
+Both are exported for custom layouts.
+
+### ChatMessage
+
+One turn from a `UIMessage`: user turns as bubbles, agent turns as markdown with reasoning and tool lines.
+
+<ChatMessagePreview />
+
+### ChatInput
+
+The composer on its own: auto-growing textarea, controls slot, Enter to send.
+
+<ChatInputPreview />
+
+### ChatWorkingIndicator
+
+The busy row: the Neon mark and the status line painted with the same shadcn `shimmer` gradient, sweeping in sync. Tune both at once with `shimmer-duration-*` or `shimmer-color-*` on the wrapper; the grain-resolve [NeonLoader](/docs/platform/neon-loader) remains available standalone. Rendered automatically while a message is submitted; the `label` is yours.
+
+<ChatWorkingPreview />
+
+## Wiring to Neon
+
+Stream a Neon-hosted agent (e.g. a Mastra agent on a Neon Function) directly from the browser with a short-lived JWT, so your app server never sits in the path of the long stream:
+
+```tsx
+const { messages, sendMessage, status } = useChat({
+  transport: new DefaultChatTransport({
+    api: `${agentUrl}/chat`,
+    prepareSendMessagesRequest: async ({ messages }) => ({
+      headers: { Authorization: `Bearer ${await getToken()}` },
+      body: { messages, model, reasoning_effort: effort },
+    }),
+  }),
+});
+```
+
+## Accessibility
+
+The busy marker uses `role="status"`; the composer is a labeled textarea (Enter sends, Shift+Enter breaks); the scroller preserves reading position during streams and reduced motion is respected throughout.

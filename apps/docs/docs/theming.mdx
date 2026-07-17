@@ -1,0 +1,28 @@
+---
+title: Theming
+description: Neon UI is theme-first. Paste your own Tailwind variables and watch every component reskin live.
+---
+
+Neon UI ships the Neon brand as a **default theme, not baked-in styling**. Every color in every component — sparklines, sliders, loaders, shimmer sweeps — resolves through the canonical shadcn CSS variables (`--primary`, `--background`, `--card`, `--border`, …). Override them in your globals and the whole registry follows.
+
+## Try it
+
+Paste a variable block from your own project (or tap a preset) and the components on the right retheme instantly:
+
+<ThemePaster />
+
+## How it works
+
+- Class-based colors are shadcn tokens (`text-primary`, `bg-card`, `border-border/60`) — no hex values in component markup.
+- Canvas animations (NeonLoader grain, ThinkingSelect sparkle) read `--primary` and `--muted-foreground` from computed styles at runtime.
+- The shimmer utilities build on `currentColor`, so highlights derive from whatever the theme says.
+- Even the signature mark animations take your logo: `NeonLoader` and `NeonMarkShimmer` accept a `mark` prop (`{ path, width, height }`) to swap the Neon mark for your own.
+
+```css title="globals.css"
+:root {
+  --primary: oklch(0.68 0.17 290); /* your brand */
+  --background: oklch(0.16 0.02 290);
+  --card: oklch(0.2 0.025 290);
+  --border: oklch(0.33 0.03 290);
+}
+```
