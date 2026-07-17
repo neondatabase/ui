@@ -1,41 +1,154 @@
 /*
- * Neon UI theme tokens (Tailwind v4).
- * Palette is Neon-inspired per https://neon.com/brand: the green and the
- * near-black are brand colors; everything else is neutral scaffolding.
- * The logo itself is never recolored or derived from these tokens.
- */
-@theme {
-  /* Brand */
-  --color-neon: #00e599;
-  --color-neon-dim: #00b37a;
-  --color-neon-ink: #0c0d0d;
+ * Neon UI theme tokens (Tailwind v4, shadcn convention).
+ *
+ * Canonical shadcn CSS variables (--background, --primary, --card, ...) set to
+ * the Neon palette per https://neon.com/brand: brand green on near-black. Any
+ * shadcn/ui component dropped into a consuming app inherits the Neon look with
+ * no extra work. The logo asset is never recolored or derived from these vars.
+*/
+@keyframes neon-skeleton-pulse {
+  0%,
+  100% {
+    opacity: 0.72;
+  }
 
-  /* Surfaces */
-  --color-surface: #0c0d0d;
-  --color-surface-raised: #131414;
-  --color-surface-overlay: #1a1b1b;
-  --color-border: #262727;
-
-  /* Text */
-  --color-text: #f3f4f6;
-  --color-text-muted: #9ca3af;
-  --color-text-faint: #6b7280;
-
-  /* Status */
-  --color-active: #00e599;
-  --color-sleeping: #6b7280;
-  --color-scaling: #f59e0b;
-  --color-error: #ef4444;
-
-  /* Motion */
-  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
-  --duration-fast: 120ms;
-  --duration-base: 200ms;
+  50% {
+    opacity: 1;
+  }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  :root {
-    --duration-fast: 0ms;
-    --duration-base: 0ms;
-  }
+:root {
+  --radius: 0.625rem;
+
+  --background: #ffffff;
+  --foreground: #0c0d0d;
+  --card: #ffffff;
+  --card-foreground: #0c0d0d;
+  --popover: #ffffff;
+  --popover-foreground: #0c0d0d;
+  --primary: #00a36f;
+  --primary-foreground: #ffffff;
+  --secondary: #f3f4f6;
+  --secondary-foreground: #0c0d0d;
+  --muted: #f3f4f6;
+  --muted-foreground: #5b6472;
+  --accent: #f3f4f6;
+  --accent-foreground: #0c0d0d;
+  --destructive: #e5484d;
+  --destructive-foreground: #ffffff;
+  --border: #e5e7eb;
+  --input: #e5e7eb;
+  --ring: #00a36f;
+
+  /* Neon compute lifecycle + status accents */
+  --neon: #00b37a;
+  --status-active: #00b37a;
+  --status-sleeping: #6b7280;
+  --status-scaling: #d97706;
+
+  --chart-1: #00b37a;
+  --chart-2: #0ea5e9;
+  --chart-3: #a855f7;
+  --chart-4: #f59e0b;
+  --chart-5: #ec4899;
+
+  --sidebar: #ffffff;
+  --sidebar-foreground: #0c0d0d;
+  --sidebar-primary: #00a36f;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f3f4f6;
+  --sidebar-accent-foreground: #0c0d0d;
+  --sidebar-border: #e5e7eb;
+  --sidebar-ring: #00a36f;
+}
+
+.dark {
+  --background: #0c0d0d;
+  --foreground: #f3f4f6;
+  --card: #131414;
+  --card-foreground: #f3f4f6;
+  --popover: #1a1b1b;
+  --popover-foreground: #f3f4f6;
+  --primary: #00e599;
+  --primary-foreground: #0c0d0d;
+  --secondary: #1a1b1b;
+  --secondary-foreground: #f3f4f6;
+  --muted: #1a1b1b;
+  --muted-foreground: #9ca3af;
+  --accent: #1a1b1b;
+  --accent-foreground: #f3f4f6;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: #262727;
+  --input: #262727;
+  --ring: #00e599;
+
+  --neon: #00e599;
+  --status-active: #00e599;
+  --status-sleeping: #6b7280;
+  --status-scaling: #f59e0b;
+
+  --chart-1: #00e599;
+  --chart-2: #38bdf8;
+  --chart-3: #c084fc;
+  --chart-4: #fbbf24;
+  --chart-5: #f472b6;
+
+  --sidebar: #131414;
+  --sidebar-foreground: #f3f4f6;
+  --sidebar-primary: #00e599;
+  --sidebar-primary-foreground: #0c0d0d;
+  --sidebar-accent: #1a1b1b;
+  --sidebar-accent-foreground: #f3f4f6;
+  --sidebar-border: #262727;
+  --sidebar-ring: #00e599;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-neon: var(--neon);
+  --color-status-active: var(--status-active);
+  --color-status-sleeping: var(--status-sleeping);
+  --color-status-scaling: var(--status-scaling);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
 }

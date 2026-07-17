@@ -32,8 +32,8 @@
       "name": "button",
       "type": "registry:ui",
       "title": "Button",
-      "description": "Neon-themed button primitive with variants and asChild support.",
-      "dependencies": ["@radix-ui/react-slot", "class-variance-authority"],
+      "description": "Neon-themed button primitive with variants (Base UI).",
+      "dependencies": ["@base-ui/react", "class-variance-authority"],
       "registryDependencies": ["utils", "neon-tokens"],
       "files": [
         {
@@ -52,6 +52,86 @@
         {
           "path": "src/components/ui/card.tsx",
           "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "badge",
+      "type": "registry:ui",
+      "title": "Badge",
+      "description": "Status badge primitive (Base UI render pattern).",
+      "dependencies": ["@base-ui/react", "class-variance-authority"],
+      "registryDependencies": ["utils", "neon-tokens"],
+      "files": [
+        {
+          "path": "src/components/ui/badge.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "skeleton",
+      "type": "registry:ui",
+      "title": "Skeleton",
+      "description": "Loading placeholder primitive.",
+      "registryDependencies": ["utils", "neon-tokens"],
+      "files": [
+        {
+          "path": "src/components/ui/skeleton.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "tabs",
+      "type": "registry:ui",
+      "title": "Tabs",
+      "description": "Accessible tab navigation primitive (Base UI).",
+      "dependencies": ["@base-ui/react", "class-variance-authority"],
+      "registryDependencies": ["utils", "neon-tokens"],
+      "files": [
+        {
+          "path": "src/components/ui/tabs.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "neon-loader",
+      "type": "registry:component",
+      "title": "NeonLoader",
+      "description": "Noise-resolve loading indicator animated from the official Neon mark.",
+      "registryDependencies": ["utils", "neon-tokens"],
+      "files": [
+        {
+          "path": "src/components/neon-loader/neon-loader.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "metric-card",
+      "type": "registry:component",
+      "title": "MetricCard",
+      "description": "Analytics card with a formatted value, signed delta, and interactive Visx sparkline.",
+      "dependencies": [
+        "@visx/curve",
+        "@visx/scale",
+        "@visx/shape",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "utils",
+        "card",
+        "badge",
+        "skeleton",
+        "neon-loader",
+        "neon-tokens"
+      ],
+      "files": [
+        {
+          "path": "src/components/metric-card/metric-card.tsx",
+          "type": "registry:component"
         }
       ]
     },

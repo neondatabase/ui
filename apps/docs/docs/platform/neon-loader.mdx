@@ -1,0 +1,58 @@
+---
+title: NeonLoader
+description: Noise-resolve loading indicator animated from the official Neon mark.
+---
+
+`NeonLoader` turns the official Neon mark into a compact status indicator. Grain resolves into the crisp mark, holds, and dissolves back into grain on a steady loop.
+
+<NeonLoaderPreview />
+
+## Install
+
+```bash
+npx shadcn@latest add https://ui.neon.com/r/neon-loader.json
+```
+
+## Usage
+
+```tsx
+import { NeonLoader } from "@/components/neon-ui/neon-loader";
+
+<NeonLoader label="Provisioning database" size="md" />;
+```
+
+## Props
+
+<TypeTable
+  type={{
+    label: {
+      type: "string",
+      description: "Accessible status text and visible label.",
+      default: '"Loading"',
+    },
+    size: {
+      type: '"sm" | "md" | "lg" | number',
+      description: "Preset or exact pixel size of the Neon mark.",
+      default: '"md"',
+    },
+    showLabel: {
+      type: "boolean",
+      description: "Show the visible label beside the mark.",
+      default: "false",
+    },
+    decorative: {
+      type: "boolean",
+      description: "Remove status semantics when the loader is decorative.",
+      default: "false",
+    },
+    duration: {
+      type: "number",
+      description: "Duration of one noise-resolve loop in milliseconds.",
+      default: "4000",
+    },
+  }}
+/>
+
+## Accessibility
+
+The loader uses `role="status"` and an accessible label by default. Set `decorative` only when another element already communicates loading. Reduced-motion users see the completed Neon mark without animation.

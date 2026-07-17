@@ -1,5 +1,12 @@
-@source "../../../../../packages/registry/src/**/*.{ts,tsx}";
-
+/*
+ * Neon tokens for the Blume preview frame.
+ *
+ * Frame-specific mirror of packages/registry/src/styles/tokens.css. The frame
+ * injects this file as plain CSS after Blume's defaults, so only variable
+ * overrides work here (no @theme). Blume toggles dark mode with
+ * [data-theme="dark"], consumer apps use .dark - cover both. The frame also
+ * inherits the site radius (0), so radius vars are restored explicitly.
+ */
 @keyframes neon-skeleton-pulse {
   0%,
   100% {
@@ -11,36 +18,6 @@
   }
 }
 
-/*
- * Neon-inspired dark theme for the docs.
- * Palette follows https://neon.com/brand: brand green + near-black.
- * The logo asset is used as-published and never recolored.
- */
-:root[data-theme="dark"] {
-  --blume-background: #0c0d0d;
-  --blume-foreground: #f3f4f6;
-  --blume-muted: #131414;
-  --blume-muted-foreground: #9ca3af;
-  --blume-border: #262727;
-  --blume-accent: #00e599;
-  --blume-accent-foreground: #0c0d0d;
-  --blume-code-background: #131414;
-  --blume-radius: 0;
-}
-
-:root {
-  --blume-radius: 0;
-}
-
-/*
- * Neon tokens for the Blume preview frame.
- *
- * Frame-specific mirror of packages/registry/src/styles/tokens.css. The frame
- * injects this file as plain CSS after Blume's defaults, so only variable
- * overrides work here (no @theme). Blume toggles dark mode with
- * [data-theme="dark"], consumer apps use .dark - cover both. The frame also
- * inherits the site radius (0), so radius vars are restored explicitly.
- */
 :root {
   --radius: 0.625rem;
   --radius-sm: calc(var(--radius) - 4px);
@@ -144,32 +121,4 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
-}
-
-/* Keep TypeTable prop names on-brand and readable in both themes. */
-details[class*="group/tt"] code.text-accent {
-  color: var(--primary);
-}
-
-/* Align fenced code blocks with the Preview/Code component shell. */
-.prose pre.astro-code {
-  border-color: color-mix(in srgb, var(--border) 60%, transparent);
-  border-radius: 0;
-  background:
-    linear-gradient(
-      to bottom,
-      transparent 43px,
-      color-mix(in srgb, var(--border) 60%, transparent) 43px,
-      color-mix(in srgb, var(--border) 60%, transparent) 44px,
-      transparent 44px
-    ),
-    linear-gradient(
-      to bottom,
-      color-mix(in srgb, var(--muted) 15%, transparent) 0 44px,
-      color-mix(in srgb, var(--muted) 30%, transparent) 44px 100%
-    ) !important;
-}
-
-.prose pre.astro-code > button {
-  border-radius: 0;
 }

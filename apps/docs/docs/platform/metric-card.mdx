@@ -1,0 +1,130 @@
+---
+title: MetricCard
+description: Analytics card with a formatted value, signed delta, and interactive Visx sparkline.
+---
+
+`MetricCard` is the reusable analytics card the rest of the registry builds on: `UsageCard`, `CostMeter`, and `HealthCard` all compose from it. It takes a value, an optional signed delta, and an optional labeled trend series that renders as an interactive sparkline. Loading and error states are props, so it drops into any data layer.
+
+<MetricCardPreview />
+
+## Variants
+
+### Data formats
+
+Number, byte, percentage, duration, and currency formatting use the same card anatomy.
+
+<MetricCardFormatVariants />
+
+### Delta states
+
+Comparison context makes positive, negative, and unchanged deltas meaningful.
+
+<MetricCardDeltaVariants />
+
+### System states
+
+Loading, error, and no-trend states preserve the card's layout without inventing chart data.
+
+<MetricCardSystemVariants />
+
+## Install
+
+```bash
+npx shadcn@latest add https://ui.neon.com/r/metric-card.json
+```
+
+## Usage
+
+```tsx
+import { MetricCard } from "@/components/neon-ui/metric-card";
+
+<MetricCard
+  format="number"
+  label="Active connections"
+  value={42}
+  delta={12}
+  trend={[18, 22, 27, 31, 34, 38, 42]}
+/>;
+```
+
+## Props
+
+<TypeTable
+  type={{
+    label: {
+      type: "string",
+      description: "Metric name shown above the value.",
+      required: true,
+    },
+    value: {
+      type: "number | string",
+      description:
+        "The metric value. Strings render verbatim; numbers are formatted.",
+      required: true,
+    },
+    delta: {
+      type: "number",
+      description:
+        "Signed change vs the previous period. Positive is green, negative is red.",
+    },
+    comparisonLabel: {
+      type: "string",
+      description: 'Context shown with the delta, such as "vs yesterday".',
+    },
+    trend: {
+      type: "(number | MetricTrendPoint)[]",
+      description:
+        "Series driving the sparkline. Labeled points produce useful tooltips; an empty array renders the no-trend state.",
+    },
+    format: {
+      type: '"number" | "bytes" | "percent" | "currency" | "duration"',
+      description: "How a numeric value is formatted.",
+      default: '"number"',
+    },
+    unit: {
+      type: "ReactNode",
+      description: 'Suffix rendered after the value, e.g. "hrs".',
+    },
+    isLoading: {
+      type: "boolean",
+      description: "Render a skeleton placeholder.",
+      default: "false",
+    },
+    error: {
+      type: "Error | string | null",
+      description: "Render an error state with the message.",
+      default: "null",
+    },
+  }}
+/>
+
+## Formatting
+
+`format` controls how a numeric `value` is displayed:
+
+- `number` — grouped integer (`1,204`)
+- `bytes` — human-readable size (`3.6 GB`)
+- `percent` — value with a `%` suffix (`99.2%`)
+- `currency` — USD (`$284.50`)
+- `duration` — value in seconds as `h/m/s` (`2h 8m`)
+
+## Wiring to Neon
+
+The presentational component takes data as props. A server component fetches real consumption from the [Neon API](https://neon.com/docs/reference/api) and passes it down:
+
+```tsx
+import { ConsumptionHistoryGranularity } from "@neondatabase/api-client";
+import { createNeonClient } from "@/lib/neon-client";
+
+const client = createNeonClient(process.env.NEON_API_KEY);
+const { data } = await client.getConsumptionHistoryPerProject({
+  from: from.toISOString(),
+  to: now.toISOString(),
+  granularity: ConsumptionHistoryGranularity.Daily,
+  project_ids: [projectId],
+});
+```
+
+## Accessibility
+
+The sparkline is keyboard accessible. Focus it and use Left/Right, Home, or End to inspect points. The active label and formatted value are announced through a polite live region, and the signed delta uses both an icon and text so meaning never relies on color alone.

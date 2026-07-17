@@ -14,9 +14,12 @@
     "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
+    "@base-ui/react": "^1.6.0",
     "@neondatabase/api-client": "^2.7.3",
     "@neondatabase/serverless": "^1.1.0",
-    "@radix-ui/react-slot": "^1.2.4",
+    "@visx/curve": "^4.0.0",
+    "@visx/scale": "^4.0.0",
+    "@visx/shape": "^4.0.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.550.0",

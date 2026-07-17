@@ -4,6 +4,11 @@ import react from "ultracite/oxlint/react";
 
 export default defineConfig({
   extends: [core, react],
-  // The shadcn registry output is a generated artifact, not authored source.
-  ignorePatterns: [...core.ignorePatterns, "**/public/r/**"],
+  ignorePatterns: [
+    ...core.ignorePatterns,
+    // Generated shadcn registry output, not authored source.
+    "**/public/r/**",
+    // Vendored shadcn/ui primitives, kept canonical.
+    "**/components/ui/**",
+  ],
 });

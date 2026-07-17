@@ -3,6 +3,12 @@ import ultracite from "ultracite/oxfmt";
 
 export default defineConfig({
   ...ultracite,
-  // The shadcn registry output is a generated artifact, not authored source.
-  ignorePatterns: [...ultracite.ignorePatterns, "**/public/r/**"],
+  ignorePatterns: [
+    ...ultracite.ignorePatterns,
+    // Generated shadcn registry output, not authored source.
+    "**/public/r/**",
+    // Vendored shadcn/ui primitives; kept canonical so `shadcn add` re-runs
+    // cleanly without reformatting drift.
+    "**/components/ui/**",
+  ],
 });

@@ -16,6 +16,13 @@ export default defineConfig({
   },
   description:
     "The official Neon UI Registry. Production-ready components and blocks for building modern applications on Neon.",
+  // Component previews read straight from the registry demos, so the Preview
+  // tab renders the exact source the Code tab shows. theme.css injects the Neon
+  // design tokens into the isolated preview frame.
+  examples: {
+    css: "examples/theme.css",
+    source: "../../packages/registry/src/components/**/demo.tsx",
+  },
   logo: {
     // Full "NEON UI" lockup. Filenames are keyed by ink color, so they map
     // inverted to Blume's theme keys: light-ink art shows in dark mode,
