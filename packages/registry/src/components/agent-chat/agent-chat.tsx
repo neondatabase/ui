@@ -365,7 +365,7 @@ export const ChatInput = ({
         <div className="flex min-w-0 items-center gap-2">{controls}</div>
         <Button
           aria-label={busy ? "Waiting for the agent" : "Send message"}
-          className="shrink-0 rounded-none"
+          className="shrink-0"
           disabled={disabled || busy || text.trim().length === 0}
           onClick={submit}
           size="icon-sm"
@@ -546,7 +546,7 @@ export const AgentChat = ({
               )}
             </MessageScrollerContent>
           </MessageScrollerViewport>
-          <MessageScrollerButton className="-translate-x-1/2 absolute bottom-3 left-1/2 rounded-none" />
+          <MessageScrollerButton className="-translate-x-1/2 absolute bottom-3 left-1/2" />
         </MessageScroller>
       </MessageScrollerProvider>
 

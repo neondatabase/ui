@@ -109,7 +109,7 @@ const DeltaBadge = ({ delta }: { delta: number }) => {
   return (
     <Badge
       className={cn(
-        "h-5 rounded-none border-0 px-1.5 py-0 text-[11px] tabular-nums shadow-none",
+        "h-5 border-0 px-1.5 py-0 text-[11px] tabular-nums shadow-none",
         direction === "up" && "bg-primary/10 text-primary",
         direction === "down" && "bg-destructive/10 text-destructive",
         direction === "flat" && "bg-muted text-muted-foreground"
@@ -257,7 +257,7 @@ const TrendChart = ({
       {typeof document !== "undefined" && tooltipPosition
         ? createPortal(
             <div
-              className="pointer-events-none fixed z-50 inline-flex w-max items-center gap-1.5 rounded-none border border-border/70 bg-popover px-3 py-1.5 text-xs text-popover-foreground tabular-nums"
+              className="pointer-events-none fixed z-50 inline-flex w-max items-center gap-1.5 rounded-md border border-border/70 bg-popover px-3 py-1.5 text-xs text-popover-foreground tabular-nums"
               role="tooltip"
               style={{
                 left: tooltipPosition.left,
@@ -281,7 +281,7 @@ const TrendChart = ({
 
       <button
         aria-label={`${label} trend from ${firstLabel} to ${lastLabel}. Use left and right arrow keys to inspect data points.`}
-        className="block w-full touch-none rounded-none text-left outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+        className="block w-full touch-none text-left outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
         onBlur={clearActivePoint}
         onFocus={() => selectPoint(data.length - 1)}
         onKeyDown={handleKeyDown}
@@ -433,7 +433,7 @@ export type MetricCardProps = Omit<ComponentProps<typeof Card>, "children"> & {
 };
 
 const metricCardClassName =
-  "min-h-[168px] gap-0 overflow-hidden rounded-none border border-border/60 bg-card py-0 shadow-none ring-0 transition-colors hover:border-border";
+  "min-h-[168px] gap-0 overflow-hidden rounded-lg border border-border/60 bg-card py-0 shadow-none ring-0 transition-colors hover:border-border";
 
 export const MetricCard = ({
   label,

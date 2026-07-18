@@ -19,9 +19,9 @@
 }
 
 :root {
-  --radius: 0.625rem;
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
+  --radius: 0rem;
+  --radius-sm: max(0px, calc(var(--radius) - 4px));
+  --radius-md: max(0px, calc(var(--radius) - 2px));
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
 
@@ -117,8 +117,8 @@
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: max(0px, calc(var(--radius) - 4px));
+  --radius-md: max(0px, calc(var(--radius) - 2px));
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
 }
@@ -287,5 +287,67 @@
   .neon-status-breathe {
     animation: none;
     opacity: 1;
+  }
+}
+
+/*
+ * Card wash: a grainy gradient rising from the bottom edge, colored by
+ * currentColor so the status hue drives it. The base layer is a smooth
+ * color fade; ::after dithers it with the same fractal noise MetricCard
+ * draws over its trend (baseFrequency 0.7, octaves 2, seed 7). Gradient
+ * first, grain as texture — never a static field.
+ */
+.neon-card-wash {
+  background: linear-gradient(
+    to top,
+    color-mix(in oklch, currentColor 70%, transparent),
+    transparent 85%
+  );
+}
+
+.neon-card-wash::after {
+  background-color: currentColor;
+  content: "";
+  inset: 0;
+  mask-composite: intersect;
+  mask-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='0.7' numOctaves='2' seed='7' stitchTiles='stitch' type='fractalNoise'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='48' height='48' filter='url(%23n)'/%3E%3C/svg%3E"),
+    linear-gradient(to top, black, transparent);
+  mask-repeat: repeat, no-repeat;
+  mask-size:
+    48px 48px,
+    100% 100%;
+  opacity: 0.6;
+  position: absolute;
+  transition: mask-position 900ms ease-out;
+  -webkit-mask-composite: source-in;
+  -webkit-mask-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='0.7' numOctaves='2' seed='7' stitchTiles='stitch' type='fractalNoise'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='48' height='48' filter='url(%23n)'/%3E%3C/svg%3E"),
+    linear-gradient(to top, black, transparent);
+  -webkit-mask-repeat: repeat, no-repeat;
+  -webkit-mask-size:
+    48px 48px,
+    100% 100%;
+}
+
+[data-slot="app-card"]:hover .neon-card-wash::after {
+  mask-position:
+    0 -10px,
+    0 0;
+  -webkit-mask-position:
+    0 -10px,
+    0 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .neon-card-wash::after,
+  [data-slot="app-card"]:hover .neon-card-wash::after {
+    mask-position:
+      0 0,
+      0 0;
+    transition: none;
+    -webkit-mask-position:
+      0 0,
+      0 0;
   }
 }

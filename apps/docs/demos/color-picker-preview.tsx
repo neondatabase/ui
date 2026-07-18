@@ -1,16 +1,16 @@
 import { Tabs } from "@base-ui/react/tabs";
-import { ThinkingModelSelectDemo } from "@neon-ui/registry/components/thinking-model-select/demo";
+import { ColorPickerDemo } from "@neon-ui/registry/components/color-picker/demo";
 import { Button } from "@neon-ui/registry/components/ui/button";
 import { CheckIcon, CopyIcon } from "lucide-react";
 import { useState } from "react";
 
 // oxlint-disable-next-line import/no-duplicates -- ?raw imports the source text, not the module
-import source from "../../../packages/registry/src/components/thinking-model-select/demo.tsx?raw";
+import source from "../../../packages/registry/src/components/color-picker/demo.tsx?raw";
 
 const triggerClass =
   "relative h-11 px-4 text-sm font-medium text-muted-foreground outline-none transition-colors hover:text-foreground data-[active]:text-foreground data-[active]:after:absolute data-[active]:after:inset-x-3 data-[active]:after:bottom-0 data-[active]:after:h-0.5 data-[active]:after:bg-primary";
 
-export default function ThinkingModelSelectPreview() {
+export default function ColorPickerPreview() {
   const [copied, setCopied] = useState(false);
 
   const copySource = async () => {
@@ -35,11 +35,11 @@ export default function ThinkingModelSelectPreview() {
 
       <div className="relative isolate border-t border-border/60">
         <Tabs.Panel
-          className="not-prose flex min-h-[320px] items-center justify-center bg-muted/10 p-8 preview-ghost outline-none"
+          className="not-prose flex min-h-[360px] items-center justify-center bg-muted/10 p-8 preview-ghost outline-none"
           keepMounted
           value="preview"
         >
-          <ThinkingModelSelectDemo />
+          <ColorPickerDemo />
         </Tabs.Panel>
         <Tabs.Panel
           className="not-prose absolute inset-0 overflow-hidden code-overlay outline-none"

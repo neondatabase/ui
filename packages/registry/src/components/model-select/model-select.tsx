@@ -311,7 +311,7 @@ export const ModelSelect = ({
       <SelectTrigger
         aria-label="Model"
         className={cn(
-          "rounded-none border-border/60 shadow-none transition-colors hover:border-border",
+          "border-border/60 shadow-none transition-colors hover:border-border",
           TRIGGER_SIZE[size],
           className
         )}
@@ -339,7 +339,7 @@ export const ModelSelect = ({
           sideOffset={4}
         >
           <SelectPrimitive.Popup
-            className="relative isolate z-50 flex max-h-(--available-height) w-max min-w-80 max-w-[min(24rem,90vw)] origin-(--transform-origin) flex-col overflow-hidden rounded-none bg-popover text-popover-foreground shadow-none outline-none ring-1 ring-border/60 duration-100 data-closed:animate-out data-closed:fade-out-0 data-open:animate-in data-open:fade-in-0"
+            className="relative isolate z-50 flex max-h-(--available-height) w-max min-w-80 max-w-[min(24rem,90vw)] origin-(--transform-origin) flex-col overflow-hidden rounded-md bg-popover text-popover-foreground shadow-none outline-none ring-1 ring-border/60 duration-100 data-closed:animate-out data-closed:fade-out-0 data-open:animate-in data-open:fade-in-0"
             data-slot="select-content"
             onKeyDown={(event) => {
               onPopupKeyDown?.(event);
@@ -390,7 +390,7 @@ export const ModelSelect = ({
                       </SelectLabel>
                       {group.map((model) => (
                         <SelectItem
-                          className="rounded-none focus:bg-transparent"
+                          className="focus:bg-transparent"
                           disabled={model.disabled}
                           key={model.id}
                           value={model.id}

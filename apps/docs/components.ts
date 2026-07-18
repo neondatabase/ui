@@ -3,9 +3,14 @@ import { defineComponents } from "blume";
 export default defineComponents({
   islands: {
     AgentChatPreview: "./demos/agent-chat-preview.tsx",
+    AnimatedWashPlayground: "./demos/animated-wash-playground.tsx",
+    AnimatedWashPreview: "./demos/animated-wash-preview.tsx",
+    AppCardPreview: "./demos/app-card-preview.tsx",
+    AppCardShaderPreview: "./demos/app-card-shader-preview.tsx",
     ChatInputPreview: "./demos/chat-input-preview.tsx",
     ChatMessagePreview: "./demos/chat-message-preview.tsx",
     ChatWorkingPreview: "./demos/chat-working-preview.tsx",
+    ColorPickerPreview: "./demos/color-picker-preview.tsx",
     EmptyStatePreview: "./demos/empty-state-preview.tsx",
     MetricCardDeltaVariants: "./demos/metric-card-delta-variants.tsx",
     MetricCardFormatVariants: "./demos/metric-card-format-variants.tsx",

@@ -33,34 +33,35 @@ export default function EmptyStatePreview() {
         </Tabs.Tab>
       </Tabs.List>
 
-      <Tabs.Panel
-        className="h-[320px] border-t border-border/60 outline-none"
-        value="preview"
-      >
-        <div className="flex h-full items-center justify-center bg-muted/10 p-8">
-          <EmptyStateDemo />
-        </div>
-      </Tabs.Panel>
-
-      <Tabs.Panel
-        className="not-prose relative h-[320px] border-t border-border/60 outline-none"
-        value="code"
-      >
-        <Button
-          aria-label="Copy source"
-          className="absolute top-3 right-3"
-          onClick={copySource}
-          size="icon-sm"
-          variant="ghost"
+      <div className="relative isolate border-t border-border/60">
+        <Tabs.Panel
+          className="not-prose flex min-h-[320px] items-center justify-center bg-muted/10 p-8 preview-ghost outline-none"
+          keepMounted
+          value="preview"
         >
-          {copied ? <CheckIcon /> : <CopyIcon />}
-        </Button>
-        <div className="h-full overflow-auto bg-muted/30 p-5 text-xs leading-5">
-          <code className="block whitespace-pre font-mono">
-            {source.trim()}
-          </code>
-        </div>
-      </Tabs.Panel>
+          <EmptyStateDemo />
+        </Tabs.Panel>
+        <Tabs.Panel
+          className="not-prose absolute inset-0 overflow-hidden code-overlay outline-none"
+          keepMounted
+          value="code"
+        >
+          <Button
+            aria-label="Copy source"
+            className="absolute top-3 right-3"
+            onClick={copySource}
+            size="icon-sm"
+            variant="ghost"
+          >
+            {copied ? <CheckIcon /> : <CopyIcon />}
+          </Button>
+          <div className="h-full overflow-auto bg-muted/30 p-5 text-xs leading-5">
+            <code className="block whitespace-pre font-mono">
+              {source.trim()}
+            </code>
+          </div>
+        </Tabs.Panel>
+      </div>
     </Tabs.Root>
   );
 }

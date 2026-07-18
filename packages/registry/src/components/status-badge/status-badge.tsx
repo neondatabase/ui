@@ -24,7 +24,7 @@ export type PlanBadgeProps = Omit<ComponentProps<"span">, "children"> & {
 
 /* ─────────────────────────────────────────────────────────
  * The shared status vocabulary: a square dot and a quiet
- * mono word, both flush with the rounded-none system.
+ * mono word, both flush with the token-radius system (sharp by default).
  * Color lives only in the dot — ready is primary, error is
  * destructive, stopped is muted. Provisioning breathes: a
  * slow 2.6s inhale/exhale with a soft glow, never a blink;
@@ -53,7 +53,7 @@ export const StatusBadge = ({
 }: StatusBadgeProps) => (
   <span
     className={cn(
-      "inline-flex items-center gap-1.5 border border-border/60 bg-card px-2 py-0.5 font-mono text-muted-foreground text-xs",
+      "inline-flex items-center gap-1.5 rounded-sm border border-border/60 bg-card px-2 py-0.5 font-mono text-muted-foreground text-xs",
       className
     )}
     data-slot="status-badge"
@@ -77,7 +77,7 @@ export const PlanBadge = ({
 }: PlanBadgeProps) => (
   <span
     className={cn(
-      "inline-flex items-center border border-border/60 px-2 py-0.5 font-mono text-xs",
+      "inline-flex items-center rounded-sm border border-border/60 px-2 py-0.5 font-mono text-xs",
       plan === "paid"
         ? "border-primary/40 text-primary"
         : "bg-card text-muted-foreground",

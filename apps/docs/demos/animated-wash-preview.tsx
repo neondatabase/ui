@@ -1,16 +1,16 @@
 import { Tabs } from "@base-ui/react/tabs";
-import { ThinkingModelSelectDemo } from "@neon-ui/registry/components/thinking-model-select/demo";
+import { AnimatedWashDemo } from "@neon-ui/registry/components/animated-wash/demo";
 import { Button } from "@neon-ui/registry/components/ui/button";
 import { CheckIcon, CopyIcon } from "lucide-react";
 import { useState } from "react";
 
 // oxlint-disable-next-line import/no-duplicates -- ?raw imports the source text, not the module
-import source from "../../../packages/registry/src/components/thinking-model-select/demo.tsx?raw";
+import source from "../../../packages/registry/src/components/animated-wash/demo.tsx?raw";
 
 const triggerClass =
   "relative h-11 px-4 text-sm font-medium text-muted-foreground outline-none transition-colors hover:text-foreground data-[active]:text-foreground data-[active]:after:absolute data-[active]:after:inset-x-3 data-[active]:after:bottom-0 data-[active]:after:h-0.5 data-[active]:after:bg-primary";
 
-export default function ThinkingModelSelectPreview() {
+export default function AnimatedWashPreview() {
   const [copied, setCopied] = useState(false);
 
   const copySource = async () => {
@@ -39,7 +39,7 @@ export default function ThinkingModelSelectPreview() {
           keepMounted
           value="preview"
         >
-          <ThinkingModelSelectDemo />
+          <AnimatedWashDemo />
         </Tabs.Panel>
         <Tabs.Panel
           className="not-prose absolute inset-0 overflow-hidden code-overlay outline-none"

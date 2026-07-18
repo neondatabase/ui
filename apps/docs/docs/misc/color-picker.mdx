@@ -1,0 +1,63 @@
+---
+title: ColorPicker
+description: Swatch-and-hex trigger opening an HSV field, hue rail, hex input, and swatches.
+---
+
+`ColorPicker` keeps the value visible at all times: the trigger is a swatch square beside the mono hex — the value is the label. The popup is an HSV plane lit by the current hue with a square thumb that tracks the pointer 1:1, a thin hue rail, a hex input that commits on Enter or blur (and quietly reverts invalid input), and optional preset swatches. Hue lives in state, so the rail never snaps to red when saturation or brightness hit an extreme.
+
+<ColorPickerPreview />
+
+## Install
+
+```bash
+npx shadcn@latest add https://ui.neon.com/r/color-picker.json
+```
+
+## Usage
+
+```tsx
+import { ColorPicker } from "@/components/neon-ui/color-picker";
+
+<ColorPicker
+  value={color}
+  onValueChange={setColor}
+  swatches={["#00e599", "#ff4c8b"]}
+/>;
+```
+
+## Props
+
+<TypeTable
+  type={{
+    value: {
+      type: "string",
+      description: 'Controlled hex value, e.g. "#00e599".',
+    },
+    defaultValue: {
+      type: "string",
+      description: "Uncontrolled initial hex value.",
+      default: '"#00e599"',
+    },
+    onValueChange: {
+      type: "(hex: string) => void",
+      description: "Called with the new hex on every change.",
+    },
+    swatches: {
+      type: "string[]",
+      description: "Preset swatches rendered under the field.",
+    },
+    disabled: {
+      type: "boolean",
+      default: "false",
+    },
+    label: {
+      type: "string",
+      description: "Accessible label for the trigger.",
+      default: '"Color"',
+    },
+  }}
+/>
+
+## Accessibility
+
+The field and hue rail are real sliders: arrow keys nudge (2% / 4°), shift-arrows jump (10% / 30°), and the field announces its hex via `aria-valuetext`. The trigger's accessible name includes the current value. Thumbs move transform-only — no layout shift anywhere.

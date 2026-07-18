@@ -342,6 +342,51 @@
           "type": "registry:component"
         }
       ]
+    },
+    {
+      "name": "app-card",
+      "type": "registry:component",
+      "title": "AppCard",
+      "description": "Tenant dashboard grid card composing the status vocabulary: name, badges, timestamp, one-link hover.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["utils", "neon-tokens", "status-badge"],
+      "files": [
+        {
+          "path": "src/components/app-card/app-card.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "animated-wash",
+      "type": "registry:component",
+      "title": "AnimatedWash",
+      "description": "WebGL grain-gradient shader wash rising from the bottom edge, colored by currentColor with a hover lift. Adapted from paper-design/shaders (Apache-2.0).",
+      "registryDependencies": ["utils"],
+      "files": [
+        {
+          "path": "src/components/animated-wash/animated-wash.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/animated-wash/animated-wash-shader.ts",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "color-picker",
+      "type": "registry:component",
+      "title": "ColorPicker",
+      "description": "Swatch-and-hex trigger opening an HSV field, hue rail, hex input, and preset swatches.",
+      "dependencies": ["@base-ui/react"],
+      "registryDependencies": ["utils", "neon-tokens"],
+      "files": [
+        {
+          "path": "src/components/color-picker/color-picker.tsx",
+          "type": "registry:component"
+        }
+      ]
     }
   ]
 }

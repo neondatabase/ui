@@ -1,0 +1,72 @@
+---
+title: AnimatedWash
+description: WebGL grain-gradient shader wash, colored by currentColor with a hover lift.
+---
+
+`AnimatedWash` is the registry's shader component: a color gradient rising from the bottom edge, dithered with animated grain that breathes cell by cell. Adapted from [paper-design/shaders](https://github.com/paper-design/shaders) (Apache-2.0), rebuilt as a single-purpose fork — the GLSL lives in `animated-wash-shader.ts`, the React mount in `animated-wash.tsx`.
+
+It reads `currentColor` at mount (the same contract as [NeonLoader](/docs/platform/neon-loader)), so a `text-primary` or `text-destructive` on any ancestor colors it, and it rethemes with the token contract. Hovering the nearest interactive ancestor — or any element marked `data-wash-hover` — lifts and warms the field.
+
+<AnimatedWashPreview />
+
+## Install
+
+```bash
+npx shadcn@latest add https://ui.neon.com/r/animated-wash.json
+```
+
+## Usage
+
+```tsx
+import { AnimatedWash } from "@/components/neon-ui/animated-wash";
+
+<div className="relative isolate overflow-hidden text-primary" data-wash-hover>
+  <AnimatedWash className="absolute inset-0 -z-10" />
+  {content}
+</div>;
+```
+
+## Props
+
+<TypeTable
+  type={{
+    speed: {
+      type: "number",
+      description: "Grain refresh speed multiplier; 0 freezes the field.",
+      default: "1",
+    },
+    intensity: {
+      type: "number",
+      description: "0-1 strength of the smooth gradient under the grain.",
+      default: "0.2",
+    },
+    noise: {
+      type: "number",
+      description: "0-1 grain strength over the gradient.",
+      default: "0.35",
+    },
+    grainSize: {
+      type: "number",
+      description: "Grain cell size in device pixels; bigger reads chunkier.",
+      default: "3",
+    },
+  }}
+/>
+
+## Playground
+
+Drag the props live — `speed` at 0 freezes the field, `intensity` fills in the smooth gradient, `noise` and `grain` shape the speckle, and the tint (preset or any hex) proves the `currentColor` contract:
+
+<AnimatedWashPlayground />
+
+## Composition
+
+[AppCard](/docs/agent/app-card) accepts it through the `wash` slot, where the status vocabulary supplies the tint automatically.
+
+## Wiring to Neon
+
+The typed example tints a panel from a compute endpoint's state (`active` → primary, `idle` → muted) — since the wash reads `currentColor`, the class on the wrapper is the entire integration.
+
+## Accessibility
+
+The canvas is decorative (`aria-hidden`) and renders a single static frame under `prefers-reduced-motion` — no lift, no grain movement.

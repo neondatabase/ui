@@ -69,7 +69,7 @@ export const EmptyState = ({
   <div
     className={cn(
       "relative isolate flex flex-col items-center justify-center text-center",
-      variant === "panel" && "border border-border/60 border-dashed",
+      variant === "panel" && "rounded-lg border border-border/60 border-dashed",
       SIZE_PADDING[size],
       className
     )}

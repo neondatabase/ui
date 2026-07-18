@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/components/ui/skeleton.tsx",
-      "content": "import { cn } from \"@/lib/utils\"\n\nfunction Skeleton({ className, ...props }: React.ComponentProps<\"div\">) {\n  return (\n    <div\n      data-slot=\"skeleton\"\n      className={cn(\n        \"animate-[neon-skeleton-pulse_2.8s_cubic-bezier(0.4,0,0.2,1)_infinite] rounded-none bg-muted will-change-[opacity] motion-reduce:animate-none motion-reduce:opacity-80\",\n        className\n      )}\n      {...props}\n    />\n  )\n}\n\nexport { Skeleton }\n",
+      "content": "import { cn } from \"@/lib/utils\"\n\nfunction Skeleton({ className, ...props }: React.ComponentProps<\"div\">) {\n  return (\n    <div\n      data-slot=\"skeleton\"\n      className={cn(\n        \"animate-[neon-skeleton-pulse_2.8s_cubic-bezier(0.4,0,0.2,1)_infinite] rounded-md bg-muted will-change-[opacity] motion-reduce:animate-none motion-reduce:opacity-80\",\n        className\n      )}\n      {...props}\n    />\n  )\n}\n\nexport { Skeleton }\n",
       "type": "registry:ui"
     }
   ],

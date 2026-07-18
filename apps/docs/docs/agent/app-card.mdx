@@ -1,0 +1,79 @@
+---
+title: AppCard
+description: Tenant dashboard grid card composing the status vocabulary.
+---
+
+`AppCard` is the dashboard grid card on MetricCard's shell: hairline border warming on hover, color-only feedback, no motion. The mono name sits up top with a quiet corner arrow that inks in on hover, [StatusBadge](/docs/agent/status-badge) and PlanBadge anchor the foot with the timestamp opposite, and the whole card is one link.
+
+<AppCardPreview />
+
+## Install
+
+```bash
+npx shadcn@latest add https://ui.neon.com/r/app-card.json
+```
+
+## Usage
+
+```tsx
+import { AppCard } from "@/components/neon-ui/app-card";
+
+<AppCard
+  href="/apps/book-tracker"
+  name="book-tracker"
+  status="ready"
+  plan="paid"
+  updatedAt="2h ago"
+/>;
+```
+
+## Props
+
+Extends `ComponentProps<"a">` — pass `href` and any anchor props.
+
+<TypeTable
+  type={{
+    name: {
+      type: "string",
+      description: "App name, shown in mono.",
+      required: true,
+    },
+    status: {
+      type: '"ready" | "provisioning" | "error" | "stopped"',
+      description: "Lifecycle state, rendered as a StatusBadge.",
+      required: true,
+    },
+    plan: {
+      type: '"free" | "paid"',
+      description: "Billing plan, rendered as a PlanBadge.",
+    },
+    description: {
+      type: "string",
+      description: "One-line summary, clamped to two lines.",
+    },
+    updatedAt: {
+      type: "string",
+      description: 'Last activity, already formatted, e.g. "2h ago".',
+    },
+    wash: {
+      type: "boolean | ReactNode",
+      description:
+        "Status-colored grain rising from the bottom edge; brightens and drifts up on hover. Pass a ReactNode to replace the built-in grain.",
+      default: "true",
+    },
+  }}
+/>
+
+## Animated wash
+
+The default wash is pure CSS — the same fractal grain MetricCard draws, faded from the foot, brightening and drifting up on hover. For a live animated wash, pass any ReactNode to `wash`; it renders inside the same positioned, status-tinted slot. `AnimatedWash` is the registry's own WebGL grain gradient (adapted from [paper-design/shaders](https://github.com/paper-design/shaders), Apache-2.0): it reads `currentColor` from the slot, so the status vocabulary colors it automatically, and it freezes under reduced motion:
+
+<AppCardShaderPreview />
+
+## Wiring to Neon
+
+The typed example maps `GET /projects` onto a grid: project name, a status derived from the default endpoint state, and a relative timestamp from `updated_at`.
+
+## Accessibility
+
+The card is a single anchor: one tab stop, the name as its accessible text along with the badge labels. The corner arrow is decorative; focus renders a primary border with no layout shift.
