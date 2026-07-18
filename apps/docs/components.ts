@@ -18,6 +18,7 @@ export default defineComponents({
     MetricCardPreview: "./demos/metric-card-preview.tsx",
     MetricCardSystemVariants: "./demos/metric-card-system-variants.tsx",
     ModelSelectPreview: "./demos/model-select-preview.tsx",
+    NeonAuroraPlayground: "./demos/neon-aurora-playground.tsx",
     NeonLoaderPreview: "./demos/neon-loader-preview.tsx",
     StatusBadgePreview: "./demos/status-badge-preview.tsx",
     ThemePaster: "./demos/theme-paster.tsx",

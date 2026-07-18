@@ -1,0 +1,82 @@
+---
+title: NeonAurora
+description: The neon.com hero as a live WebGL surface — bar clusters twinkling in green, teal, and blue.
+---
+
+`NeonAurora` recreates the neon.com hero video as a shader: clusters of thin vertical bars in green, teal, and blue, twinkling on black like data streams. Bars breathe between brightness rolls, clusters drift alive and dead on a slower clock, and a soft glow underlayer gives the crisp bars depth. Use it behind heroes, empty workspaces, and marketing moments. Drag the dials — `density` fills the sky, `blur` pulls the near layer out of focus as it approaches, and the palettes re-tint the whole field:
+
+<NeonAuroraPlayground />
+
+## Install
+
+```bash
+npx shadcn@latest add https://ui.neon.com/r/neon-aurora.json
+```
+
+## Usage
+
+```tsx
+import { NeonAurora } from "@/components/neon-ui/neon-aurora";
+
+<section className="relative isolate overflow-hidden bg-black">
+  <NeonAurora className="absolute inset-0" />
+  <div className="relative">{content}</div>
+</section>;
+```
+
+## Props
+
+<TypeTable
+  type={{
+    speed: {
+      type: "number",
+      description: "Animation speed multiplier; 0 freezes the field.",
+      default: "0.7",
+    },
+    density: {
+      type: "number",
+      description: "0-1 share of bar clusters alive at once.",
+      default: "0.2",
+    },
+    intensity: {
+      type: "number",
+      description: "Overall brightness multiplier.",
+      default: "2",
+    },
+    blur: {
+      type: "number",
+      description:
+        "0-1 depth-of-field blur on the near layer as it approaches.",
+      default: "1",
+    },
+    glare: {
+      type: "number",
+      description: "0-1 ambient bloom fog hanging around the lit regions.",
+      default: "0.2",
+    },
+    flare: {
+      type: "number",
+      description: "0-1 how often the warm flare ignites; 0 disables it.",
+      default: "0.75",
+    },
+    thickness: {
+      type: "number",
+      description: "0-1 how much of its column each bar fills.",
+      default: "0",
+    },
+    whiteFlare: {
+      type: "number",
+      description: "0-1 how often the hot white flare ignites; 0 disables it.",
+      default: "0.6",
+    },
+    colors: {
+      type: "[string, string, string]",
+      description: "Bar palette, mixed per bar: [deep, primary, accent].",
+      default: '["#0e5f45", "#00e599", "#3b82f6"]',
+    },
+  }}
+/>
+
+## Accessibility
+
+The canvas is decorative (`aria-hidden`); keep real content in the DOM above it. Under `prefers-reduced-motion` (or `speed={0}`) a single frame renders with no animation.

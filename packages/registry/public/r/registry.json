@@ -406,6 +406,23 @@
           "type": "registry:component"
         }
       ]
+    },
+    {
+      "name": "neon-aurora",
+      "type": "registry:component",
+      "title": "NeonAurora",
+      "description": "The neon.com hero as a live WebGL surface: clusters of thin vertical bars twinkling in green, teal, and blue.",
+      "registryDependencies": ["utils"],
+      "files": [
+        {
+          "path": "src/components/neon-aurora/neon-aurora.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/neon-aurora/neon-aurora-shader.ts",
+          "type": "registry:component"
+        }
+      ]
     }
   ]
 }
