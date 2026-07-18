@@ -387,6 +387,25 @@
           "type": "registry:component"
         }
       ]
+    },
+    {
+      "name": "app-creator",
+      "type": "registry:component",
+      "title": "AppCreator",
+      "description": "The describe-an-app bar: auto-growing prompt, free/paid plan segment, and a create action with an in-flight state.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": [
+        "utils",
+        "neon-tokens",
+        "button",
+        "status-badge"
+      ],
+      "files": [
+        {
+          "path": "src/components/app-creator/app-creator.tsx",
+          "type": "registry:component"
+        }
+      ]
     }
   ]
 }

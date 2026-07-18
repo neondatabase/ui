@@ -1,0 +1,71 @@
+---
+title: AppCreator
+description: The describe-an-app bar with a plan segment and an in-flight create action.
+---
+
+`AppCreator` is the platform's front door: one bordered surface whose border warms to primary while you type. While empty it pitches example prompts through a typewriter placeholder; when the prompt is satisfied the create action ignites (neon fill, glow, one shimmer sweep); on submit the whole bar pulses a primary ring and the stripes march until the app exists. The prompt auto-grows, the foot holds a quiet free/paid segment and the create action, Enter creates (Shift+Enter breaks a line), and while creating everything locks with the prompt still visible so the wait has context.
+
+<AppCreatorPreview />
+
+## Install
+
+```bash
+npx shadcn@latest add https://ui.neon.com/r/app-creator.json
+```
+
+## Usage
+
+```tsx
+import { AppCreator } from "@/components/neon-ui/app-creator";
+
+<AppCreator
+  isCreating={isCreating}
+  onCreate={(prompt, plan) => createApp({ prompt, plan })}
+/>;
+```
+
+## Props
+
+<TypeTable
+  type={{
+    onCreate: {
+      type: "(prompt: string, plan: AppPlan) => void",
+      description: "Called with the trimmed prompt and selected plan.",
+      required: true,
+    },
+    isCreating: {
+      type: "boolean",
+      description: "Locks the controls and spins the action.",
+      default: "false",
+    },
+    placeholder: {
+      type: "string",
+      default: '"Describe the app you want to build…"',
+    },
+    placeholderPrompts: {
+      type: "string[]",
+      description:
+        "Example prompts cycled through the placeholder with a typewriter rhythm while the field is empty.",
+    },
+    defaultPlan: {
+      type: '"free" | "paid"',
+      default: '"free"',
+    },
+    actionLabel: {
+      type: "string",
+      default: '"Create app"',
+    },
+    disabled: {
+      type: "boolean",
+      default: "false",
+    },
+  }}
+/>
+
+## Wiring to Neon
+
+The typed example creates a Neon project per app (`POST /projects`) through your API layer, then routes to the new workspace. The plan value maps onto your billing tier.
+
+## Accessibility
+
+The plan segment is a radio group; the textarea carries an explicit label. The create button is disabled rather than hidden when the prompt is empty, and the in-flight state announces through the button's text change.

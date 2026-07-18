@@ -383,3 +383,49 @@
       0 0;
   }
 }
+
+/*
+ * Stripe march: the EmptyState hairline stripes on the move — a slow
+ * barber-pole for in-flight actions. Static under reduced motion.
+ */
+@keyframes neon-stripe-march {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 9.9px 0;
+  }
+}
+
+.neon-stripe-march {
+  animation: neon-stripe-march 700ms linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .neon-stripe-march {
+    animation: none;
+  }
+}
+
+/*
+ * Submit pulse: a primary ring blooms off the surface once at the moment
+ * of commitment, then dissolves. The reward beat for submitting.
+ */
+@keyframes neon-submit-pulse {
+  from {
+    box-shadow: 0 0 0 0 color-mix(in oklch, var(--primary) 45%, transparent);
+  }
+  to {
+    box-shadow: 0 0 0 14px transparent;
+  }
+}
+
+.neon-submit-pulse {
+  animation: neon-submit-pulse 700ms cubic-bezier(0.22, 1, 0.36, 1) 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .neon-submit-pulse {
+    animation: none;
+  }
+}
