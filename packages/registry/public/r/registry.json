@@ -462,6 +462,25 @@
           "type": "registry:component"
         }
       ]
+    },
+    {
+      "name": "provisioning-status",
+      "type": "registry:component",
+      "title": "ProvisioningStatus",
+      "description": "Provisioning, waking, and error panel states composing NeonLoader with a live status detail line.",
+      "registryDependencies": [
+        "utils",
+        "neon-tokens",
+        "button",
+        "neon-loader",
+        "animated-wash"
+      ],
+      "files": [
+        {
+          "path": "src/components/provisioning-status/provisioning-status.tsx",
+          "type": "registry:component"
+        }
+      ]
     }
   ]
 }

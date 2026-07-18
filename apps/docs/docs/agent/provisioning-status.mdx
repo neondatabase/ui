@@ -1,0 +1,82 @@
+---
+title: ProvisioningStatus
+description: Provisioning, waking, and error panel states with a live detail line.
+---
+
+`ProvisioningStatus` narrates the wait between "create app" and a running sandbox. One quiet stage, three acts: while provisioning or waking, the [NeonLoader](/docs/platform/neon-loader) resolves out of grain above a headline and a shimmering mono detail line — feed `detail` from your API and each step crossfades in place. On error, the loader yields to the house error treatment (mono tag, foreground sentence) with a retry action. The frame and rhythm never change between states.
+
+<ProvisioningStatusPreview />
+
+## Install
+
+```bash
+npx shadcn@latest add https://ui.neon.com/r/provisioning-status.json
+```
+
+## Usage
+
+```tsx
+import { ProvisioningStatus } from "@/components/neon-ui/provisioning-status";
+
+<ProvisioningStatus
+  state={app.state}
+  detail={app.provisioningStep}
+  onRetry={() => provision(app.id)}
+/>;
+```
+
+## States
+
+- **Provisioning** — loader + headline + shimmering detail. Swap `detail` as your API reports progress ("Creating Neon project…" → "Provisioning database…") and it crossfades in place.
+- **Waking** — identical staging with wake copy; the sandbox exists, it's just cold.
+- **Error** — mono `error` tag with a foreground sentence, muted detail, and a retry action where the shimmer was.
+
+## Props
+
+<TypeTable
+  type={{
+    state: {
+      type: '"provisioning" | "waking" | "error"',
+      description: "Lifecycle state the panel narrates.",
+      default: '"provisioning"',
+    },
+    title: {
+      type: "string",
+      description: "Override the state's default headline.",
+    },
+    detail: {
+      type: "string",
+      description: "Status detail line; swapping it crossfades in place.",
+    },
+    onRetry: {
+      type: "() => void",
+      description: "Renders the retry action in the error state.",
+    },
+    retryLabel: {
+      type: "string",
+      default: '"Try again"',
+      description: "Label for the retry action.",
+    },
+    variant: {
+      type: '"panel" | "bare"',
+      description:
+        "panel draws the house surface; bare embeds in an already-bordered pane.",
+      default: '"panel"',
+    },
+    size: {
+      type: '"sm" | "md" | "lg"',
+      description: "Vertical breathing room.",
+      default: '"md"',
+    },
+    footer: {
+      type: "ReactNode",
+      description: "Extra content under the detail line, e.g. a cancel link.",
+    },
+  }}
+/>
+
+## Accessibility
+
+- The detail line is `aria-live="polite"`, so step changes are announced without interrupting.
+- The error headline is `role="alert"`; the loader is decorative here (the visible text carries the status).
+- Shimmer and crossfades are static under `prefers-reduced-motion`.
