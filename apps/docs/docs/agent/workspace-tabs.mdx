@@ -1,0 +1,74 @@
+---
+title: WorkspaceTabs
+description: Workspace tab bar with a gliding underline and per-tab actions.
+---
+
+`WorkspaceTabs` is the builder workspace's pane switcher — Preview / Checkpoints / Usage in mono lowercase, a primary underline that glides between tabs (240ms ease-out, transform-only), and a right-aligned action slot that each tab owns: refresh belongs to the preview pane, "new checkpoint" to the timeline. Panes fade up 4px on entry; the bar itself never changes height. Built on the canonical shadcn tabs primitive, so keyboard navigation and ARIA come from Base UI.
+
+<WorkspaceTabsPreview />
+
+## Install
+
+```bash
+npx shadcn@latest add https://ui.neon.com/r/workspace-tabs.json
+```
+
+## Usage
+
+```tsx
+import { WorkspaceTabs } from "@/components/neon-ui/workspace-tabs";
+
+<WorkspaceTabs
+  tabs={[
+    {
+      id: "preview",
+      label: "preview",
+      actions: (
+        <Button size="sm" variant="ghost">
+          Refresh
+        </Button>
+      ),
+      content: <PreviewFrame src={sandboxUrl} title="Live preview" />,
+    },
+    {
+      id: "checkpoints",
+      label: "checkpoints",
+      count: checkpoints.length,
+      content: <CheckpointTimeline checkpoints={checkpoints} />,
+    },
+    { id: "usage", label: "usage", content: <UsagePanel /> },
+  ]}
+/>;
+```
+
+## Props
+
+<TypeTable
+  type={{
+    tabs: {
+      type: "WorkspaceTab[]",
+      description:
+        "id, label, content, plus optional icon, count, actions, and disabled per tab.",
+      required: true,
+    },
+    value: {
+      type: "string",
+      description: "Controlled active tab id.",
+    },
+    defaultValue: {
+      type: "string",
+      description: "Uncontrolled initial tab id.",
+      default: "first tab",
+    },
+    onValueChange: {
+      type: "(id: string) => void",
+      description: "Called with the tab id on switch.",
+    },
+  }}
+/>
+
+## Accessibility
+
+- Base UI tabs semantics: `tablist` / `tab` / `tabpanel` wiring, arrow-key navigation, and focus management come from the primitive.
+- The gliding underline and action crossfade are decorative (`aria-hidden`) and static under `prefers-reduced-motion`.
+- Counts render as plain text inside the tab, so they're announced with the label.

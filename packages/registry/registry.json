@@ -449,6 +449,19 @@
           "type": "registry:component"
         }
       ]
+    },
+    {
+      "name": "workspace-tabs",
+      "type": "registry:component",
+      "title": "WorkspaceTabs",
+      "description": "Workspace tab bar with gliding underline, per-tab action slot, and pane crossfade.",
+      "registryDependencies": ["utils", "neon-tokens", "tabs"],
+      "files": [
+        {
+          "path": "src/components/workspace-tabs/workspace-tabs.tsx",
+          "type": "registry:component"
+        }
+      ]
     }
   ]
 }
