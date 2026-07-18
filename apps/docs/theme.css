@@ -355,6 +355,20 @@ details[class*="group/tt"] code.text-accent {
 }
 
 /*
+ * Same leak for headings: Blume's `.prose :where(h1..h6)` sizing overrides
+ * component-declared type inside previews (AuthForm's text-lg title rendered
+ * at 1.875rem). revert-layer rolls past the unlayered prose rule back to the
+ * layered Tailwind utilities, so the component's own classes win again.
+ */
+.prose .not-prose :where(h1, h2, h3, h4, h5, h6) {
+  font-size: revert-layer;
+  font-weight: revert-layer;
+  letter-spacing: revert-layer;
+  line-height: revert-layer;
+  margin: revert-layer;
+}
+
+/*
  * Preview/Code tab shells: the Preview panel stays mounted as the height
  * authority (its content defines the container), the Code panel overlays it
  * absolutely. Base UI hides inactive panels with [hidden]; keep them in the
@@ -481,6 +495,28 @@ details[class*="group/tt"] code.text-accent {
 
 @media (prefers-reduced-motion: reduce) {
   .neon-submit-pulse {
+    animation: none;
+  }
+}
+
+/* AuthForm: the valid check draws itself in, stroke first to last. */
+@keyframes neon-check-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.neon-check-draw {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+  animation: neon-check-draw 300ms cubic-bezier(0.23, 1, 0.32, 1) 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .neon-check-draw {
     animation: none;
   }
 }

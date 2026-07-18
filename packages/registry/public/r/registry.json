@@ -408,6 +408,19 @@
       ]
     },
     {
+      "name": "auth-form",
+      "type": "registry:component",
+      "title": "AuthForm",
+      "description": "The email/password card: mode switching, providers, structured errors, and a working state \u2014 Better Auth-shaped.",
+      "registryDependencies": ["utils", "neon-tokens", "button"],
+      "files": [
+        {
+          "path": "src/components/auth-form/auth-form.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
       "name": "neon-aurora",
       "type": "registry:component",
       "title": "NeonAurora",

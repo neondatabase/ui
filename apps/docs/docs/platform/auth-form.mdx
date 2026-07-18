@@ -1,0 +1,184 @@
+---
+title: AuthForm
+description: The email/password card with providers, mode switching, and structured errors.
+---
+
+`AuthForm` is the platform's front gate: an email/password card in the Neon language — mono labels, neutral frames, a neon caret, and color reserved for the light. On focus a primary beam sweeps along the field's bottom edge; fields validate on first blur (never while you type) and the verdict lands **in place**: the message takes over the label slot, a check or cross draws itself into the field edge, and the beam relights — nothing in the form ever changes height, so a shader cover panel beside it never resizes. The action stays a ghost until every field has content, then ignites with the house glow. One `mode` prop flips sign in and sign up, API failures arrive through `error` (spoken through the description slot) or `fieldErrors` (pinned to a field), and on mount the form introduces itself in reading order — one quiet 8px cascade, static under reduced motion.
+
+<AuthFormPreview />
+
+## Install
+
+```bash
+npx shadcn@latest add https://ui.neon.com/r/auth-form.json
+```
+
+## Usage
+
+```tsx
+import { AuthForm } from "@/components/neon-ui/auth-form";
+
+<AuthForm
+  mode={mode}
+  onModeChange={setMode}
+  isBusy={isPending}
+  error={error}
+  onSubmit={(values) => authClient.signIn.email(values)}
+/>;
+```
+
+## With the aurora cover
+
+The reason [`NeonAurora`](/docs/shaders/neon-aurora) exists: use it as the cover panel of a split sign-in screen. The aurora fills the left half, the form sits on `bg-card` to the right, and the whole screen stays two theme tokens away from any brand.
+
+<AuthFormCoverPreview />
+
+## States
+
+- **Focus** — a primary beam sweeps under the field (250ms ease-out, transform-only) and the label warms.
+- **Invalid** — a filled field is judged when you leave it; empty fields wait for submit (tabbing past isn't a mistake yet). The message replaces the label in place, a cross draws in at the field edge, and the beam relights in destructive. Editing clears the verdict instantly.
+- **Valid** — a check draws itself into the field edge, stroke first to last.
+- **Charged** — once every visible field has content the action fills to neon with a soft glow; before that it stays a quiet ghost.
+- **Busy** — `isBusy` locks everything and the working label shimmers (`Sign in` → `Signing in…`).
+- **Error** — `error` takes over the description slot with `role="alert"`; `fieldErrors` pin to fields until you clear them.
+- **Sign up** — `mode="sign-up"` adds the name field, retitles the card, flips the footer link, and requires 8+ character passwords.
+
+No state changes the form's height — every verdict animates in place.
+
+## Validation
+
+Each mode ships sensible defaults: email shape on both, name required and 8+ character passwords on sign up. Override any field with `validators` — return the failure message, or `null` when the value passes:
+
+```tsx
+<AuthForm
+  mode="sign-up"
+  onSubmit={handleSubmit}
+  validators={{
+    password: (value) =>
+      /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{12,}$/u.test(value)
+        ? null
+        : "12+ characters with a number and both cases.",
+  }}
+/>
+```
+
+Keep messages short — they render in the label slot, one line.
+
+On sign up the password field also opens a floating requirements popover while focused — 8+ characters, mixed case, a number, a symbol — each rule flipping from a muted dot to a drawn check as the password satisfies it. It floats below the field, so nothing shifts.
+
+On sign up the password field carries a strength meter: the beam under the field grows with the password and warms from destructive through neutral to primary, and the reading (`weak` / `fair` / `strong`) rides the trailing slot. Scoring uses Better Auth's 8–128 character defaults as the floor, then rewards mixed case, digits, symbols, and length.
+
+## Better Auth
+
+Neon Auth is built on [Better Auth](https://better-auth.com), and the form maps onto its client 1:1 — `AuthFormValues` matches the email methods, provider ids are social slugs, and API failures route to `error` or `fieldErrors`:
+
+```tsx
+const handleSubmit = async (values: AuthFormValues) => {
+  setBusy(true);
+  const { error } =
+    mode === "sign-up"
+      ? await authClient.signUp.email({
+          email: values.email,
+          name: values.name ?? "",
+          password: values.password,
+        })
+      : await authClient.signIn.email(values);
+  setBusy(false);
+
+  if (error?.code === "INVALID_EMAIL_OR_PASSWORD") {
+    setFieldErrors({ password: "Incorrect email or password." });
+  } else if (error) {
+    setError(error.message ?? "Something went wrong.");
+  }
+};
+
+<AuthForm
+  mode={mode}
+  onModeChange={setMode}
+  onProvider={(id) => authClient.signIn.social({ provider: id })}
+  onSubmit={handleSubmit}
+  providers={[
+    { id: "github", label: "GitHub" },
+    { id: "google", label: "Google" },
+  ]}
+/>;
+```
+
+The default sign-up password rule (8–128 characters) mirrors Better Auth's server defaults, so client verdicts and server verdicts agree.
+
+## Props
+
+<TypeTable
+  type={{
+    onSubmit: {
+      type: "(values: AuthFormValues) => void",
+      description:
+        "Called with { email, password, name? } — name only in sign-up mode.",
+      required: true,
+    },
+    mode: {
+      type: '"sign-in" | "sign-up"',
+      default: '"sign-in"',
+    },
+    onModeChange: {
+      type: "(mode: AuthMode) => void",
+      description: "Renders the footer swap link and enables mode switching.",
+    },
+    isBusy: {
+      type: "boolean",
+      description: "Locks the form and puts the action in its working state.",
+      default: "false",
+    },
+    error: {
+      type: "string | null",
+      description:
+        "Form-level failure; takes over the description slot in place.",
+    },
+    fieldErrors: {
+      type: "Partial<Record<AuthFieldName, string>>",
+      description:
+        "Server-side verdicts pinned to fields (e.g. incorrect password).",
+    },
+    validators: {
+      type: "Partial<Record<AuthFieldName, AuthValidator>>",
+      description:
+        "Per-field validators merged over the mode defaults — return the failure message, or null when the value passes.",
+    },
+    variant: {
+      type: '"card" | "bare"',
+      description:
+        "card draws the house surface; bare renders naked for split layouts.",
+      default: '"card"',
+    },
+    providers: {
+      type: "AuthProvider[]",
+      description:
+        "OAuth-style providers ({ id, label, icon? }) rendered under the divider.",
+    },
+    onProvider: {
+      type: "(id: string) => void",
+      description: "Called with the provider id.",
+    },
+    onForgotPassword: {
+      type: "() => void",
+      description:
+        "Renders the forgot link on the password row (sign-in only).",
+    },
+    mark: {
+      type: "ReactNode",
+      description: "Brand mark slot above the title.",
+    },
+    title: {
+      type: "string",
+      description: "Overrides the per-mode title.",
+    },
+    description: {
+      type: "string",
+      description: "Overrides the per-mode description.",
+    },
+  }}
+/>
+
+## Accessibility
+
+Labels are real `<label>` elements wrapping their inputs; autocomplete hints follow the mode (`current-password` vs `new-password`); the error panel announces via `role="alert"`; every secondary action is a real `<button type="button">`; the entrance cascade respects `prefers-reduced-motion`.

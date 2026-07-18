@@ -8,6 +8,8 @@ export default defineComponents({
     AppCardPreview: "./demos/app-card-preview.tsx",
     AppCardShaderPreview: "./demos/app-card-shader-preview.tsx",
     AppCreatorPreview: "./demos/app-creator-preview.tsx",
+    AuthFormCoverPreview: "./demos/auth-form-cover-preview.tsx",
+    AuthFormPreview: "./demos/auth-form-preview.tsx",
     ChatInputPreview: "./demos/chat-input-preview.tsx",
     ChatMessagePreview: "./demos/chat-message-preview.tsx",
     ChatWorkingPreview: "./demos/chat-working-preview.tsx",

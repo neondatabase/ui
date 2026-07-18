@@ -429,3 +429,25 @@
     animation: none;
   }
 }
+
+/* AuthForm: the valid check draws itself in, stroke first to last. */
+@keyframes neon-check-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.neon-check-draw {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+  animation: neon-check-draw 300ms cubic-bezier(0.23, 1, 0.32, 1) 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .neon-check-draw {
+    animation: none;
+  }
+}
