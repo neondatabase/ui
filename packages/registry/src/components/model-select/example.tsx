@@ -6,31 +6,38 @@ import { ModelSelect } from "./model-select";
 import type { AiModel } from "./model-select";
 
 /**
- * Shape of neon.com/models.json — the machine-readable source of truth
- * for the Neon AI Gateway catalog (also published as the `neon` provider
- * on models.dev).
+ * Shape of the models.dev catalog: providers keyed by id, models keyed
+ * by model id. The Neon AI Gateway is published as the `neon` provider —
+ * swap the key to point the same code at any other gateway on models.dev.
  */
-interface NeonModelsResponse {
-  neon: {
+type ModelsDevResponse = Record<
+  string,
+  {
     models: Record<
       string,
-      { id: string; name: string; provider: string; reasoning: boolean }
+      { id: string; name: string; family: string; reasoning: boolean }
     >;
-  };
-}
+  }
+>;
 
-const PROVIDER_NAMES: Record<string, string> = {
-  alibaba: "Alibaba",
-  google: "Google",
-  meta: "Meta",
-  openai: "OpenAI",
-};
+/** Upstream lab, derived from the models.dev family id. */
+const FAMILY_PROVIDERS: [prefix: string, label: string][] = [
+  ["claude", "Anthropic"],
+  ["gemini", "Google"],
+  ["gemma", "Google"],
+  ["gpt", "OpenAI"],
+  ["llama", "Meta"],
+  ["qwen", "Alibaba"],
+];
+
+const providerOf = (family: string) =>
+  FAMILY_PROVIDERS.find(([prefix]) => family.startsWith(prefix))?.[1] ?? family;
 
 /**
- * Client component: list the live Neon AI Gateway catalog and let the
- * user pick a model. To list only the models enabled for a specific
- * project, use the gateway's OpenAI-compatible `GET /v1/models` with a
- * bearer token instead.
+ * Client component: list the Neon AI Gateway catalog from models.dev
+ * and let the user pick a model. To list only the models enabled for a
+ * specific project, use the gateway's OpenAI-compatible `GET /v1/models`
+ * with a bearer token instead.
  */
 export const ModelSelectExample = () => {
   const [models, setModels] = useState<AiModel[]>([]);
@@ -41,16 +48,16 @@ export const ModelSelectExample = () => {
 
     (async () => {
       try {
-        const response = await fetch("https://neon.com/models.json", {
+        const response = await fetch("https://models.dev/api.json", {
           signal: controller.signal,
         });
-        const payload = (await response.json()) as NeonModelsResponse;
+        const payload = (await response.json()) as ModelsDevResponse;
 
         setModels(
-          Object.values(payload.neon.models).map((entry) => ({
+          Object.values(payload.neon?.models ?? {}).map((entry) => ({
             id: entry.id,
             name: entry.name,
-            provider: PROVIDER_NAMES[entry.provider] ?? entry.provider,
+            provider: providerOf(entry.family),
             reasoning: entry.reasoning,
           }))
         );

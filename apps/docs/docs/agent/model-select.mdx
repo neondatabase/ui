@@ -3,7 +3,7 @@ title: ModelSelect
 description: Model picker for agent chat input bars, grouped by provider.
 ---
 
-`ModelSelect` is the model picker for an agent chat input bar. Models are grouped by provider with optional provider logos, capability tags, and the mono gateway id alongside each entry. For the combined model + reasoning control, see [ThinkingModelSelect](/docs/agent/thinking-model-select). Presentational: pass models as props. Fixtures snapshot the live Neon catalog, and the typed example fetches [`neon.com/models.json`](https://neon.com/models.json), the machine-readable source of truth. Models with `reasoning: false` hide the thinking footer automatically.
+`ModelSelect` is the model picker for an agent chat input bar. Models are grouped by provider with optional provider logos, capability tags, and the mono gateway id alongside each entry. For the combined model + reasoning control, see [ThinkingModelSelect](/docs/agent/thinking-model-select). Presentational: pass models as props. Fixtures snapshot the live Neon catalog, and the typed example fetches the [`neon` provider from models.dev](https://models.dev/providers/neon/) — the same code works with any models.dev gateway. Models with `reasoning: false` hide the thinking footer automatically.
 
 <ModelSelectPreview />
 
@@ -87,19 +87,21 @@ import { ModelSelect } from "@/components/neon-ui/model-select";
 
 ## Wiring to Neon
 
-The full gateway catalog is published at [`neon.com/models.json`](https://neon.com/models.json) — no auth required:
+The Neon AI Gateway catalog is published as the [`neon` provider on models.dev](https://models.dev/providers/neon/) — no auth required, and because it's the models.dev format, the same wiring works with any other gateway in the catalog by swapping the provider key:
 
 ```tsx
-const response = await fetch("https://neon.com/models.json");
+const response = await fetch("https://models.dev/api.json");
 const { neon } = await response.json();
 
 const models = Object.values(neon.models).map((model) => ({
   id: model.id,
   name: model.name,
-  provider: model.provider,
+  provider: providerOf(model.family),
   reasoning: model.reasoning,
 }));
 ```
+
+The catalog itself is maintained as per-model TOML in the [models.dev repo](https://github.com/anomalyco/models.dev/tree/dev/providers/neon/models), so new gateway models land in the API as they ship.
 
 To list only the models enabled for a specific project, use the gateway's OpenAI-compatible `GET /v1/models` with a bearer token instead.
 

@@ -28,6 +28,7 @@ const logo = (slug: string) => {
 
 const providerLogos: Record<string, ReactNode> = {
   Alibaba: logo("alibaba"),
+  Anthropic: logo("anthropic"),
   Google: logo("google"),
   Meta: logo("meta"),
   OpenAI: logo("openai"),

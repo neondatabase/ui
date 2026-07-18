@@ -6,7 +6,13 @@ import { useEffect, useRef } from "react";
 import { ElasticSlider } from "@/components/ui/elastic-slider";
 import { cn } from "@/lib/utils";
 
-export type ThinkingEffort = "off" | "low" | "medium" | "high" | "xhigh";
+export type ThinkingEffort =
+  | "off"
+  | "low"
+  | "medium"
+  | "high"
+  | "xhigh"
+  | "max";
 
 export type ThinkingSelectSize = "sm" | "md" | "lg";
 
@@ -37,11 +43,19 @@ export type ThinkingSelectProps = Omit<
  *  elastic fill: it reads the fill's live width every frame,
  *  so it stretches and springs with drag and snap-back.
  * ───────────────────────────────────────────────────────── */
-const EFFORTS: ThinkingEffort[] = ["off", "low", "medium", "high", "xhigh"];
+const EFFORTS: ThinkingEffort[] = [
+  "off",
+  "low",
+  "medium",
+  "high",
+  "xhigh",
+  "max",
+];
 
 const EFFORT_LABELS: Record<ThinkingEffort, string> = {
   high: "high",
   low: "low",
+  max: "max",
   medium: "med",
   off: "off",
   xhigh: "xhigh",
@@ -50,6 +64,7 @@ const EFFORT_LABELS: Record<ThinkingEffort, string> = {
 const SPARKLE: Record<ThinkingEffort, { density: number; speed: number }> = {
   high: { density: 0.1, speed: 24 },
   low: { density: 0.04, speed: 8 },
+  max: { density: 0.2, speed: 48 },
   medium: { density: 0.07, speed: 14 },
   off: { density: 0, speed: 0 },
   xhigh: { density: 0.14, speed: 34 },

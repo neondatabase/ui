@@ -1,41 +1,70 @@
 import type { AiModel } from "./model-select";
 
 /**
- * The full Neon AI Gateway catalog, snapshotted from neon.com/models.json
- * (the machine-readable source of truth). Ids are the short form the
- * gateway accepts in the `model` field; `open` tags mark open-weight
- * models available to every project.
+ * The full Neon AI Gateway catalog, snapshotted from the neon provider
+ * on models.dev (models.dev/providers/neon), the machine-readable
+ * source of truth. Ids are the short form the gateway accepts in the
+ * `model` field; `open` tags mark open-weight models available to
+ * every project.
  */
 export const gatewayModels: AiModel[] = [
   {
-    id: "gpt-oss-120b",
-    name: "GPT OSS 120B",
-    provider: "OpenAI",
+    id: "claude-haiku-4-5",
+    name: "Claude Haiku 4.5 (latest)",
+    provider: "Anthropic",
     reasoning: true,
-    tag: "open",
   },
   {
-    id: "gpt-oss-20b",
-    name: "GPT OSS 20B",
-    provider: "OpenAI",
+    id: "claude-opus-4-1",
+    name: "Claude Opus 4.1 (latest)",
+    provider: "Anthropic",
     reasoning: true,
-    tag: "open",
+  },
+  {
+    id: "claude-opus-4-5",
+    name: "Claude Opus 4.5 (latest)",
+    provider: "Anthropic",
+    reasoning: true,
+  },
+  {
+    id: "claude-opus-4-6",
+    name: "Claude Opus 4.6",
+    provider: "Anthropic",
+    reasoning: true,
+  },
+  {
+    id: "claude-opus-4-7",
+    name: "Claude Opus 4.7",
+    provider: "Anthropic",
+    reasoning: true,
+  },
+  {
+    id: "claude-opus-4-8",
+    name: "Claude Opus 4.8",
+    provider: "Anthropic",
+    reasoning: true,
+  },
+  {
+    id: "claude-sonnet-4",
+    name: "Claude Sonnet 4.5",
+    provider: "Anthropic",
+    reasoning: true,
+  },
+  {
+    id: "claude-sonnet-4-5",
+    name: "Claude Sonnet 4.5 (latest)",
+    provider: "Anthropic",
+    reasoning: true,
+  },
+  {
+    id: "claude-sonnet-4-6",
+    name: "Claude Sonnet 4.6",
+    provider: "Anthropic",
+    reasoning: true,
   },
   {
     id: "gpt-5",
     name: "GPT-5",
-    provider: "OpenAI",
-    reasoning: true,
-  },
-  {
-    id: "gpt-5-mini",
-    name: "GPT-5 Mini",
-    provider: "OpenAI",
-    reasoning: true,
-  },
-  {
-    id: "gpt-5-nano",
-    name: "GPT-5 Nano",
     provider: "OpenAI",
     reasoning: true,
   },
@@ -94,6 +123,32 @@ export const gatewayModels: AiModel[] = [
     reasoning: true,
   },
   {
+    id: "gpt-5-mini",
+    name: "GPT-5 Mini",
+    provider: "OpenAI",
+    reasoning: true,
+  },
+  {
+    id: "gpt-5-nano",
+    name: "GPT-5 Nano",
+    provider: "OpenAI",
+    reasoning: true,
+  },
+  {
+    id: "gpt-oss-120b",
+    name: "GPT OSS 120B",
+    provider: "OpenAI",
+    reasoning: true,
+    tag: "open",
+  },
+  {
+    id: "gpt-oss-20b",
+    name: "GPT OSS 20B",
+    provider: "OpenAI",
+    reasoning: true,
+    tag: "open",
+  },
+  {
     id: "gemini-2-5-flash",
     name: "Gemini 2.5 Flash",
     provider: "Google",
@@ -102,18 +157,6 @@ export const gatewayModels: AiModel[] = [
   {
     id: "gemini-2-5-pro",
     name: "Gemini 2.5 Pro",
-    provider: "Google",
-    reasoning: true,
-  },
-  {
-    id: "gemini-3-flash",
-    name: "Gemini 3 Flash Preview",
-    provider: "Google",
-    reasoning: true,
-  },
-  {
-    id: "gemini-3-pro",
-    name: "Gemini 3 Pro Preview",
     provider: "Google",
     reasoning: true,
   },
@@ -136,6 +179,18 @@ export const gatewayModels: AiModel[] = [
     reasoning: true,
   },
   {
+    id: "gemini-3-flash",
+    name: "Gemini 3 Flash Preview",
+    provider: "Google",
+    reasoning: true,
+  },
+  {
+    id: "gemini-3-pro",
+    name: "Gemini 3 Pro Preview",
+    provider: "Google",
+    reasoning: true,
+  },
+  {
     id: "gemma-3-12b",
     name: "Gemma 3 12B",
     provider: "Google",
@@ -143,15 +198,15 @@ export const gatewayModels: AiModel[] = [
     tag: "open",
   },
   {
-    id: "meta-llama-3-1-8b-instruct",
-    name: "Llama 3.1 8B Instruct",
+    id: "llama-4-maverick",
+    name: "Llama 4 Maverick 17B Instruct",
     provider: "Meta",
     reasoning: false,
     tag: "open",
   },
   {
-    id: "llama-4-maverick",
-    name: "Llama 4 Maverick 17B Instruct",
+    id: "meta-llama-3-1-8b-instruct",
+    name: "Llama 3.1 8B Instruct",
     provider: "Meta",
     reasoning: false,
     tag: "open",

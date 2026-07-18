@@ -36,17 +36,19 @@ const EFFORT_CYCLE: ThinkingEffort[] = [
   "medium",
   "high",
   "xhigh",
+  "max",
 ];
 
 const EFFORT_SHORT: Record<ThinkingEffort, string> = {
   high: "high",
   low: "low",
+  max: "max",
   medium: "med",
   off: "off",
   xhigh: "xhigh",
 };
 
-/** Tiny effort readout for the trigger: off, low, med, high, xhigh. */
+/** Tiny effort readout for the trigger: off, low, med, high, xhigh, max. */
 const EffortReadout = ({ effort }: { effort: ThinkingEffort }) => (
   <span
     aria-hidden="true"
