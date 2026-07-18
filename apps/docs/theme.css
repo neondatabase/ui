@@ -368,6 +368,12 @@ details[class*="group/tt"] code.text-accent {
   margin: revert-layer;
 }
 
+/* And paragraph margins: prose adds 16px verticals that break
+ * component-declared flex gaps inside previews. */
+.prose .not-prose :where(p, ul, ol) {
+  margin: revert-layer;
+}
+
 /*
  * Preview/Code tab shells: the Preview panel stays mounted as the height
  * authority (its content defines the container), the Code panel overlays it
@@ -518,5 +524,15 @@ details[class*="group/tt"] code.text-accent {
 @media (prefers-reduced-motion: reduce) {
   .neon-check-draw {
     animation: none;
+  }
+}
+
+/* PreviewFrame: the refresh glyph turns once to acknowledge the click. */
+@keyframes neon-spin-once {
+  from {
+    rotate: 0deg;
+  }
+  to {
+    rotate: 360deg;
   }
 }

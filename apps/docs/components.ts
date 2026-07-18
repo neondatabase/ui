@@ -22,6 +22,7 @@ export default defineComponents({
     ModelSelectPreview: "./demos/model-select-preview.tsx",
     NeonAuroraPlayground: "./demos/neon-aurora-playground.tsx",
     NeonLoaderPreview: "./demos/neon-loader-preview.tsx",
+    PreviewFramePreview: "./demos/preview-frame-preview.tsx",
     StatusBadgePreview: "./demos/status-badge-preview.tsx",
     ThemePaster: "./demos/theme-paster.tsx",
     ThinkingModelSelectPreview: "./demos/thinking-model-select-preview.tsx",

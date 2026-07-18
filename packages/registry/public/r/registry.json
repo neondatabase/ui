@@ -436,6 +436,19 @@
           "type": "registry:component"
         }
       ]
+    },
+    {
+      "name": "preview-frame",
+      "type": "registry:component",
+      "title": "PreviewFrame",
+      "description": "Sandbox iframe with wake, restart, and refresh lifecycle, reload-on-signal, and chrome header.",
+      "registryDependencies": ["utils", "neon-tokens", "button", "neon-loader"],
+      "files": [
+        {
+          "path": "src/components/preview-frame/preview-frame.tsx",
+          "type": "registry:component"
+        }
+      ]
     }
   ]
 }

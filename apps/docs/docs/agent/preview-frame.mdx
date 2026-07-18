@@ -1,0 +1,108 @@
+---
+title: PreviewFrame
+description: Sandbox iframe with wake, restart, and refresh lifecycle.
+---
+
+`PreviewFrame` is the workspace's window into the running app: a sandboxed iframe in quiet chrome — a status dot, a mono URL readout, and refresh / restart / open-in-new-tab actions. The chrome never moves; lifecycle states play out as overlays. While the sandbox wakes, the [NeonLoader](/docs/platform/neon-loader) resolves out of grain over a scrim; on error, a structured panel offers a restart. When the agent finishes an edit, bump `reloadSignal` and the frame remounts without any chrome motion.
+
+<PreviewFramePreview />
+
+## Install
+
+```bash
+npx shadcn@latest add https://ui.neon.com/r/preview-frame.json
+```
+
+## Usage
+
+```tsx
+import { PreviewFrame } from "@/components/neon-ui/preview-frame";
+
+<PreviewFrame
+  className="h-96"
+  src="https://sandbox-8f2k.internal.dev"
+  displaySrc="https://acme-crm.vibe.app"
+  title="Live app preview"
+  state={sandbox.state}
+  reloadSignal={editCount}
+  onRestart={() => restartSandbox()}
+/>;
+```
+
+## States
+
+- **Ready** — the app full bleed; the header dot holds primary.
+- **Refresh** — the built-in refresh remounts the iframe and the glyph turns once (500ms ease-out), so the click reads even when the reload is instant.
+- **Waking** — a scrim covers the app with the NeonLoader and one mono line; the dot breathes muted. Use it for cold starts and post-restart polling.
+- **Error** — the scrim holds with a mono `error` prefix, an optional detail line, and a restart action; the dot cools to destructive.
+- **Reload on signal** — increment `reloadSignal` from outside (e.g. after each agent edit) to remount the frame with zero chrome motion.
+
+Every overlay is absolute — the frame never changes height. The restart button's hover tells you what it's about to do: destructive while the sandbox is running, primary when it's down.
+
+## Props
+
+<TypeTable
+  type={{
+    src: {
+      type: "string",
+      description: "The sandbox URL the frame renders.",
+      required: true,
+    },
+    title: {
+      type: "string",
+      description: "Accessible name for the iframe.",
+      required: true,
+    },
+    displaySrc: {
+      type: "string",
+      description:
+        "What the header readout shows when the real src is an internal sandbox host.",
+      default: "src",
+    },
+    state: {
+      type: '"ready" | "waking" | "error"',
+      description: "Lifecycle state; waking and error render as overlays.",
+      default: '"ready"',
+    },
+    reloadSignal: {
+      type: "number",
+      description:
+        "Bump to force a reload from outside, e.g. after the agent applies an edit.",
+      default: "0",
+    },
+    onRestart: {
+      type: "() => void",
+      description:
+        "Renders the restart action in the header and the error panel.",
+    },
+    onRefresh: {
+      type: "() => void",
+      description: "Notified after the built-in refresh reloads the frame.",
+    },
+    errorDetail: {
+      type: "string",
+      description: "One line of detail under the error title.",
+    },
+    wakingLabel: {
+      type: "string",
+      description: "Copy under the loader while waking.",
+      default: '"Waking sandbox"',
+    },
+    actions: {
+      type: "ReactNode",
+      description: "Extra actions rendered before the built-in header buttons.",
+    },
+    sandbox: {
+      type: "string",
+      description: "The iframe sandbox policy.",
+      default: '"allow-scripts allow-same-origin allow-forms"',
+    },
+  }}
+/>
+
+## Accessibility
+
+- The iframe carries the required `title`; header actions are labelled icon buttons.
+- The error overlay is `role="alert"` so the failure is announced.
+- The waking loader exposes status text through NeonLoader's `role="status"`.
+- The refresh spin and overlay fades are static under `prefers-reduced-motion`.

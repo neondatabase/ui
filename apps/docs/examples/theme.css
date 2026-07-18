@@ -419,3 +419,13 @@
     animation: none;
   }
 }
+
+/* PreviewFrame: the refresh glyph turns once to acknowledge the click. */
+@keyframes neon-spin-once {
+  from {
+    rotate: 0deg;
+  }
+  to {
+    rotate: 360deg;
+  }
+}
