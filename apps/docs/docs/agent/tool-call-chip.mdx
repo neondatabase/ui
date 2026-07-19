@@ -1,6 +1,8 @@
 ---
 title: ToolCallChip
 description: Compact indicator for one agent tool invocation.
+seo:
+  image: /og-cards/docs/agent/tool-call-chip.png
 ---
 
 `ToolCallChip` shows one tool invocation in an agent turn: a spinner with a softly breathing name while it runs, a springy swap to a green wrench on completion, an alert on error. The name renders in mono, with an optional `detail` (file path, command) that truncates first when space is tight. [AgentChat](/docs/agent/agent-chat) maps AI SDK tool parts onto these automatically.

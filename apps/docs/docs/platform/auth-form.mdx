@@ -1,6 +1,8 @@
 ---
 title: AuthForm
 description: The email/password card with providers, mode switching, and structured errors.
+seo:
+  image: /og-cards/docs/platform/auth-form.png
 ---
 
 `AuthForm` is the platform's front gate: an email/password card in the Neon language — mono labels, neutral frames, a neon caret, and color reserved for the light. On focus a primary beam sweeps along the field's bottom edge; fields validate on first blur (never while you type) and the verdict lands **in place**: the message takes over the label slot, a check or cross draws itself into the field edge, and the beam relights — nothing in the form ever changes height, so a shader cover panel beside it never resizes. The action stays a ghost until every field has content, then ignites with the house glow. One `mode` prop flips sign in and sign up, API failures arrive through `error` (spoken through the description slot) or `fieldErrors` (pinned to a field), and on mount the form introduces itself in reading order — one quiet 8px cascade, static under reduced motion.

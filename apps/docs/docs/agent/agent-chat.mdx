@@ -1,6 +1,8 @@
 ---
 title: AgentChat
 description: Full agent chat pane with streamed turns, tool chips, and a composer.
+seo:
+  image: /og-cards/docs/agent/agent-chat.png
 ---
 
 `AgentChat` is the conversation pane for an agent platform: turns scroll in a message scroller that follows streams while you are pinned to the bottom (with a jump-to-latest button when you are not), user turns render as bubbles, agent turns as streamed markdown with [ToolCallChip](/docs/agent/tool-call-chip) invocations and quiet reasoning lines, and the composer has a controls slot for [ThinkingModelSelect](/docs/agent/thinking-model-select). Typed against the AI SDK's `UIMessage` — bring your own `useChat` transport.

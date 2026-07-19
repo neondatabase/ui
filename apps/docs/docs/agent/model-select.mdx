@@ -1,6 +1,8 @@
 ---
 title: ModelSelect
 description: Model picker for agent chat input bars, grouped by provider.
+seo:
+  image: /og-cards/docs/agent/model-select.png
 ---
 
 `ModelSelect` is the model picker for an agent chat input bar. Models are grouped by provider with optional provider logos, capability tags, and the mono gateway id alongside each entry. For the combined model + reasoning control, see [ThinkingModelSelect](/docs/agent/thinking-model-select). Presentational: pass models as props. Fixtures snapshot the live Neon catalog, and the typed example fetches the [`neon` provider from models.dev](https://models.dev/providers/neon/) — the same code works with any models.dev gateway. Models with `reasoning: false` hide the thinking footer automatically.
