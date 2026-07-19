@@ -4,11 +4,11 @@ export default defineConfig({
   content: {
     sources: [{ prefix: "docs", root: "docs", type: "filesystem" }],
   },
-  // NOTE (transfer day): ui.neon.com goes live with the repo move;
-  // canonicals, OG URLs, feeds, and the sitemap all key off this.
-  deployment: {
-    site: "https://ui.neon.com",
-  },
+  // deployment.site stays unset on purpose: Blume derives it from
+  // Vercel's env (VERCEL_PROJECT_PRODUCTION_URL) per deployment, so
+  // canonicals, OG URLs, and the sitemap always match the serving
+  // domain — and flip to ui.neon.com automatically when that becomes
+  // the production domain.
   description: "The UI Layer for building applications on Neon.",
   // Component previews read straight from the registry demos, so the Preview
   // tab renders the exact source the Code tab shows. theme.css injects the Neon
