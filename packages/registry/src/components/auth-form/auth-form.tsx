@@ -137,7 +137,7 @@ const EMAIL_SHAPE = /^\S+@\S+\.\S+$/u;
 const MIN_PASSWORD = 8;
 const MAX_PASSWORD = 128;
 
-const validateEmail = (value: string): string | null => {
+export const validateEmail = (value: string): string | null => {
   if (!value) {
     return "Add your email.";
   }
@@ -414,7 +414,7 @@ const FAIR_FLOOR = 2;
 const STRONG_FLOOR = 4;
 const LONG_PASSWORD = 12;
 
-const scorePassword = (value: string): number => {
+export const scorePassword = (value: string): number => {
   let score = 0;
 
   if (value.length >= MIN_PASSWORD) {

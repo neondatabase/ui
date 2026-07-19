@@ -11,7 +11,7 @@
   "scripts": {
     "build": "shadcn build",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run --passWithNoTests"
+    "test": "TZ=America/New_York vitest run"
   },
   "dependencies": {
     "@ai-sdk/react": "^4.0.34",

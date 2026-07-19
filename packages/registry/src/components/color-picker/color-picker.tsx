@@ -28,7 +28,7 @@ export interface ColorPickerProps {
  * kept in state (not re-derived) so the rail doesn't snap
  * to 0 when saturation or value hit their extremes.
  * ───────────────────────────────────────────────────────── */
-interface Hsv {
+export interface Hsv {
   h: number;
   s: number;
   v: number;
@@ -38,7 +38,7 @@ const HEX_RE = /^#?(?<hex>[0-9a-f]{6})$/iu;
 
 const clamp01 = (x: number) => Math.min(1, Math.max(0, x));
 
-const hexToHsv = (hex: string): Hsv | null => {
+export const hexToHsv = (hex: string): Hsv | null => {
   const match = HEX_RE.exec(hex.trim());
 
   if (!match?.groups?.hex) {
@@ -71,7 +71,7 @@ const hexToHsv = (hex: string): Hsv | null => {
   };
 };
 
-const hsvToHex = ({ h, s, v }: Hsv): string => {
+export const hsvToHex = ({ h, s, v }: Hsv): string => {
   const f = (n: number) => {
     const k = (n + h / 60) % 6;
     const channel = v - v * s * Math.max(0, Math.min(k, 4 - k, 1));

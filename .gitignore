@@ -45,3 +45,6 @@ apps/docs/.blume/
 .pi/
 skills-lock.json
 .vscode/
+
+# advisor plans (local, not part of the deliverable)
+plans/

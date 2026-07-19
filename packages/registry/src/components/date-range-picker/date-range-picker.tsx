@@ -51,8 +51,6 @@ export type DateRangePickerProps = Omit<
  * ───────────────────────────────────────────────────────── */
 const WEEKDAYS = ["mo", "tu", "we", "th", "fr", "sa", "su"] as const;
 
-const DAY_MS = 86_400_000;
-
 const MONTH_LABEL = new Intl.DateTimeFormat("en-US", {
   month: "long",
   year: "numeric",
@@ -81,13 +79,14 @@ const formatRange = (range: DateRange) =>
   `${RANGE_LABEL.format(range.from)} – ${RANGE_LABEL.format(range.to)}`;
 
 /** The 42 cells of a month view, Monday-first. */
-const monthCells = (month: Date): Date[] => {
-  const first = new Date(month.getFullYear(), month.getMonth(), 1);
+export const monthCells = (month: Date): Date[] => {
+  const year = month.getFullYear();
+  const monthIndex = month.getMonth();
+  const first = new Date(year, monthIndex, 1);
   const lead = (first.getDay() + 6) % 7;
-  const start = new Date(first.getTime() - lead * DAY_MS);
   return Array.from(
     { length: 42 },
-    (_, index) => new Date(start.getTime() + index * DAY_MS)
+    (_, index) => new Date(year, monthIndex, 1 - lead + index)
   );
 };
 
@@ -153,7 +152,12 @@ export const DateRangePicker = ({
   };
 
   const pickPreset = (preset: DateRangePreset) => {
-    landRange(new Date(today.getTime() - (preset.days - 1) * DAY_MS), today);
+    const from = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate() - (preset.days - 1)
+    );
+    landRange(from, today);
   };
 
   const handleOpenChange = (next: boolean) => {
