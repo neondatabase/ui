@@ -376,27 +376,12 @@ details[class*="group/tt"] code.text-accent {
 }
 
 /*
- * Preview/Code tab shells: the Preview panel stays mounted as the height
- * authority (its content defines the container), the Code panel overlays it
- * absolutely. Base UI hides inactive panels with [hidden]; keep them in the
- * layout but invisible.
+ * Preview/Code tab shells: only the active panel exists in layout —
+ * PreviewTabs locks the wrapper to the measured preview height before
+ * switching, and preflight's [hidden] display:none removes the inactive
+ * panel entirely (no double paint, and canvas loops pause via their
+ * checkVisibility guards).
  */
-/*
- * Tailwind's preflight hides [hidden] with !important inside @layer base.
- * Important declarations in EARLIER layers win, so these live in @layer
- * theme (declared first) to take precedence.
- */
-@layer theme {
-  .preview-ghost[hidden] {
-    display: flex !important;
-    visibility: hidden;
-  }
-
-  .code-overlay[hidden] {
-    display: block !important;
-    visibility: hidden;
-  }
-}
 
 /*
  * Card wash: a grainy gradient rising from the bottom edge, colored by
