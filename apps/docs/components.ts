@@ -32,6 +32,7 @@ export default defineComponents({
     ThinkingModelSelectPreview: "./demos/thinking-model-select-preview.tsx",
     ThinkingSelectPreview: "./demos/thinking-select-preview.tsx",
     ToolCallChipPreview: "./demos/tool-call-chip-preview.tsx",
+    UpgradeDialogPreview: "./demos/upgrade-dialog-preview.tsx",
     UsagePanelPreview: "./demos/usage-panel-preview.tsx",
     WorkspaceTabsPreview: "./demos/workspace-tabs-preview.tsx",
   },

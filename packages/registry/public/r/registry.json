@@ -559,6 +559,19 @@
           "type": "registry:component"
         }
       ]
+    },
+    {
+      "name": "upgrade-dialog",
+      "type": "registry:component",
+      "title": "UpgradeDialog",
+      "description": "Pricing dialog with drawn-check feature list and a processing upgrade action.",
+      "registryDependencies": ["utils", "neon-tokens", "button", "dialog"],
+      "files": [
+        {
+          "path": "src/components/upgrade-dialog/upgrade-dialog.tsx",
+          "type": "registry:component"
+        }
+      ]
     }
   ]
 }

@@ -1,0 +1,83 @@
+---
+title: UpgradeDialog
+description: Pricing dialog with a drawn-check feature list and processing state.
+---
+
+`UpgradeDialog` is the platform's paywall moment, played in the house voice: the price answers first (large tabular number, mono cadence), the feature checklist introduces itself one line at a time with drawn primary checks, and the CTA arrives already charged — neon fill and the house glow, because this is the one place the color was always going. Upgrading a tenant is a real flight (a cross-org Neon project transfer), so `isProcessing` locks the dialog under a shimmering label, and failures speak through the description slot in destructive — same row, zero shift.
+
+<UpgradeDialogPreview />
+
+## Install
+
+```bash
+npx shadcn@latest add https://ui.neon.com/r/upgrade-dialog.json
+```
+
+## Usage
+
+```tsx
+import { UpgradeDialog } from "@/components/neon-ui/upgrade-dialog";
+
+<UpgradeDialog
+  open={open}
+  onOpenChange={setOpen}
+  onUpgrade={() => upgradeApp(app.id)}
+  isProcessing={isUpgrading}
+  error={upgradeError}
+  plan={{
+    name: "Launch",
+    price: 19,
+    features: [
+      "Dedicated Neon project",
+      "Always-on compute",
+      "Branching and snapshots",
+    ],
+    note: "billing starts today · cancel anytime",
+  }}
+/>;
+```
+
+Keep `isProcessing` honest — the upgrade moves the tenant's Neon project between orgs, and the dialog refuses to dismiss mid-flight. Surface failures through `error` instead of closing.
+
+## Props
+
+<TypeTable
+  type={{
+    open: { type: "boolean", required: true },
+    onOpenChange: { type: "(open: boolean) => void", required: true },
+    onUpgrade: {
+      type: "() => void",
+      description: "Starts the upgrade; drive isProcessing while it flies.",
+      required: true,
+    },
+    plan: {
+      type: "UpgradePlan",
+      description: "{ name, price, features, note? }",
+      required: true,
+    },
+    isProcessing: {
+      type: "boolean",
+      description: "Locks the dialog and shimmers the action label.",
+      default: "false",
+    },
+    error: {
+      type: "string | null",
+      description: "Failure spoken through the description slot.",
+    },
+    title: {
+      type: "string",
+      default: '"Upgrade to {plan.name}"',
+    },
+    description: {
+      type: "ReactNode",
+      description: "Override the default pitch line.",
+    },
+  }}
+/>
+
+## Accessibility
+
+- Base UI dialog semantics: focus trap, labelled by the title, described by the description slot.
+- Errors take over the description with `role="alert"`.
+- While processing, every action is `disabled` and dismissal is refused — state can't desync mid-transfer.
+- Checklist stagger and the drawn checks are static under `prefers-reduced-motion`.
