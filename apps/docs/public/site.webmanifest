@@ -1,0 +1,21 @@
+{
+  "name": "Neon UI",
+  "short_name": "Neon UI",
+  "description": "The UI Layer for building applications on Neon.",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#0c0d0d",
+  "theme_color": "#0c0d0d",
+  "icons": [
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
