@@ -86,7 +86,10 @@ export const AppCard = ({
       </div>
     ) : null}
     <div className="flex items-center gap-1.5">
-      <p className="relative min-w-0 truncate font-mono font-semibold text-foreground text-sm after:absolute after:inset-x-0 after:bottom-0 after:h-px after:origin-left after:scale-x-0 after:bg-primary after:transition-transform after:duration-300 after:ease-out group-hover:after:scale-x-100 motion-reduce:after:transition-none">
+      <p
+        title={name}
+        className="relative min-w-0 truncate font-mono font-semibold text-foreground text-sm after:absolute after:inset-x-0 after:bottom-0 after:h-px after:origin-left after:scale-x-0 after:bg-primary after:transition-transform after:duration-300 after:ease-out group-hover:after:scale-x-100 motion-reduce:after:transition-none"
+      >
         {name}
       </p>
       <ArrowUpRightIcon
@@ -95,7 +98,7 @@ export const AppCard = ({
       />
     </div>
     {description ? (
-      <p className="mt-1.5 line-clamp-2 max-w-[48ch] text-muted-foreground/80 text-xs leading-5">
+      <p className="mt-1.5 line-clamp-2 max-w-[48ch] text-pretty text-muted-foreground/80 text-xs leading-5">
         {description}
       </p>
     ) : null}
@@ -103,7 +106,7 @@ export const AppCard = ({
       <StatusBadge status={status} />
       {plan ? <PlanBadge plan={plan} /> : null}
       {updatedAt ? (
-        <span className="ml-auto font-mono text-[10px] text-muted-foreground/70 tabular-nums">
+        <span className="ml-auto whitespace-nowrap font-mono text-[10px] text-muted-foreground/70 tabular-nums">
           {updatedAt}
         </span>
       ) : null}

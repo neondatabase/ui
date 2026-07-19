@@ -171,7 +171,7 @@ export const UpgradeDialog = ({
         </div>
 
         {plan.note ? (
-          <p className="text-center font-mono text-[10px] text-muted-foreground/70">
+          <p className="text-pretty text-center text-[10px] text-muted-foreground/70">
             {plan.note}
           </p>
         ) : null}

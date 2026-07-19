@@ -79,16 +79,19 @@ const GatedCard = ({
     className="flex min-h-[168px] flex-col overflow-hidden rounded-lg border border-border/60 bg-card transition-colors hover:border-border"
     data-slot="usage-panel-gated"
   >
-    <p className="truncate px-4 pt-4 font-medium font-mono text-muted-foreground text-xs">
+    <p
+      className="truncate px-4 pt-4 font-medium font-mono text-muted-foreground text-xs"
+      title={label}
+    >
       {label}
     </p>
     <div className="flex flex-1 flex-col items-center justify-center gap-3 px-4 pb-4">
-      <p className="font-mono text-[10px] text-muted-foreground/70">
+      <p className="text-[10px] text-muted-foreground/70">
         available on a paid plan
       </p>
       {onUpgrade ? (
         <Button
-          className="h-6 rounded-full border border-border/60 px-2.5 font-mono text-muted-foreground text-xs transition-colors hover:border-primary/60 hover:bg-transparent hover:text-primary active:scale-[0.98]"
+          className="h-6 rounded-full border border-border/60 px-2.5 text-muted-foreground text-xs transition-colors hover:border-primary/60 hover:bg-transparent hover:text-primary active:scale-[0.98]"
           onClick={onUpgrade}
           size="sm"
           variant="ghost"
@@ -121,7 +124,7 @@ export const UsagePanel = ({
       <h3 className="font-mono text-muted-foreground text-xs">usage</h3>
       {filter ??
         (period ? (
-          <span className="font-mono text-[10px] text-muted-foreground/70">
+          <span className="font-mono text-[10px] text-muted-foreground/70 tabular-nums">
             {period}
           </span>
         ) : null)}
@@ -156,7 +159,7 @@ export const UsagePanel = ({
 
     {meteredThrough ? (
       <p
-        className="font-mono text-[10px] text-muted-foreground/70"
+        className="text-[10px] text-muted-foreground/70 tabular-nums"
         data-slot="usage-panel-lag"
       >
         {meteredThrough}

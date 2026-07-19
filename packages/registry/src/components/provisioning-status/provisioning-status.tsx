@@ -169,14 +169,14 @@ export const ProvisioningStatus = ({
         {previous ? (
           <span
             aria-hidden="true"
-            className="fade-out-0 slide-out-to-top-3 col-start-1 row-start-1 animate-out fill-mode-forwards font-mono text-xs duration-200 ease-in motion-reduce:animate-none"
+            className="fade-out-0 slide-out-to-top-3 col-start-1 row-start-1 animate-out fill-mode-forwards text-xs duration-200 ease-in motion-reduce:animate-none"
             key={`out-${previous}`}
           >
             {previous}
           </span>
         ) : null}
         <span
-          className="fade-in-0 slide-in-from-bottom-3 col-start-1 row-start-1 animate-in font-mono text-xs duration-300 motion-reduce:animate-none"
+          className="fade-in-0 slide-in-from-bottom-3 col-start-1 row-start-1 animate-in text-xs duration-300 motion-reduce:animate-none"
           key={line}
         >
           <span

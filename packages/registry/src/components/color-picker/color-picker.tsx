@@ -357,7 +357,7 @@ export const ColorPicker = ({
               <span className="font-mono text-muted-foreground text-xs">#</span>
               <input
                 aria-label="Hex value"
-                className="h-7 w-full min-w-0 border border-border/60 bg-transparent px-1.5 font-mono text-xs outline-none transition-colors focus:border-primary"
+                className="h-7 w-full min-w-0 border border-border/60 bg-transparent px-1.5 font-mono text-base outline-none transition-colors focus:border-primary sm:text-xs"
                 onBlur={() => commitHex(draft ?? hex)}
                 onChange={(event) => setDraft(event.target.value)}
                 onKeyDown={(event) => {

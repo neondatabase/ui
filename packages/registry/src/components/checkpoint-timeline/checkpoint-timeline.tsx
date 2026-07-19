@@ -64,7 +64,7 @@ const ROW_STAGGER_MS = 60;
  * hidden (slid 8px behind the row) → revealed on row hover/focus →
  * held visible while restoring → fully absent while another row acts. */
 const ACTION_BASE =
-  "h-6 shrink-0 rounded-full border border-border/60 px-2.5 font-mono text-muted-foreground text-xs transition-[opacity,translate,color,border-color] duration-200 ease-out hover:border-border hover:bg-transparent hover:text-foreground active:scale-[0.98] motion-reduce:translate-x-0 motion-reduce:transition-none";
+  "h-6 shrink-0 rounded-full border border-border/60 px-2.5 text-muted-foreground text-xs transition-[opacity,translate,color,border-color] duration-200 ease-out hover:border-border hover:bg-transparent hover:text-foreground active:scale-[0.98] motion-reduce:translate-x-0 motion-reduce:transition-none";
 const ACTION_HIDDEN =
   "-translate-x-2 opacity-0 focus-visible:translate-x-0 focus-visible:opacity-100 group-focus-within:translate-x-0 group-focus-within:opacity-100 group-hover:translate-x-0 group-hover:opacity-100";
 const ACTION_RESTORING = "translate-x-0 opacity-100";
@@ -107,7 +107,11 @@ const MetaLine = ({ checkpoint }: { checkpoint: Checkpoint }) => {
   if (checkpoint.projectId) {
     parts.push({
       key: "project",
-      node: <span className="truncate">{checkpoint.projectId}</span>,
+      node: (
+        <span className="truncate" title={checkpoint.projectId}>
+          {checkpoint.projectId}
+        </span>
+      ),
     });
   }
 
@@ -173,6 +177,7 @@ const CheckpointRow = ({
               ? "text-foreground"
               : "text-foreground/80 group-focus-within:text-foreground group-hover:text-foreground"
           )}
+          title={checkpoint.label}
         >
           {checkpoint.label}
         </p>
@@ -181,7 +186,7 @@ const CheckpointRow = ({
             current
           </span>
         ) : null}
-        <span className="ml-auto shrink-0 font-mono text-[10px] text-muted-foreground/70">
+        <span className="ml-auto shrink-0 font-mono text-[10px] text-muted-foreground/70 tabular-nums">
           {checkpoint.createdAt}
         </span>
       </div>

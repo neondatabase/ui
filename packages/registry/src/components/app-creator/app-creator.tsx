@@ -231,7 +231,7 @@ export const AppCreator = ({
     >
       <textarea
         aria-label="Describe the app you want to build"
-        className="max-h-40 min-h-16 w-full resize-none bg-transparent p-3 text-sm caret-primary outline-none placeholder:text-muted-foreground/60 disabled:cursor-not-allowed"
+        className="max-h-40 min-h-16 w-full resize-none bg-transparent p-3 text-base caret-primary outline-none placeholder:text-muted-foreground/60 disabled:cursor-not-allowed sm:text-sm"
         disabled={locked}
         onChange={(event) => {
           setPrompt(event.target.value);

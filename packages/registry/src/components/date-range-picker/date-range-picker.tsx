@@ -175,7 +175,7 @@ export const DateRangePicker = ({
     <Popover onOpenChange={handleOpenChange} open={open}>
       <PopoverTrigger
         className={cn(
-          "inline-flex h-6 items-center gap-1.5 rounded-full border border-border/60 px-2.5 font-mono text-muted-foreground text-xs transition-colors hover:border-border hover:text-foreground",
+          "inline-flex h-6 items-center gap-1.5 rounded-full border border-border/60 px-2.5 font-mono text-muted-foreground text-xs tabular-nums transition-colors hover:border-border hover:text-foreground",
           className
         )}
         data-slot="date-range-picker"
@@ -202,7 +202,7 @@ export const DateRangePicker = ({
         >
           {presets.map((preset) => (
             <button
-              className="rounded-sm px-2 py-1 text-left font-mono text-[11px] text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+              className="rounded-sm px-2 py-1 text-left text-[11px] text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
               key={preset.label}
               onClick={() => pickPreset(preset)}
               type="button"
@@ -225,7 +225,7 @@ export const DateRangePicker = ({
               ‹
             </button>
             <span
-              className="fade-in-0 animate-in font-mono text-foreground text-xs duration-150 motion-reduce:animate-none"
+              className="fade-in-0 animate-in font-mono text-foreground text-xs tabular-nums duration-150 motion-reduce:animate-none"
               key={MONTH_LABEL.format(month)}
             >
               {MONTH_LABEL.format(month).toLowerCase()}

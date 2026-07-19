@@ -8,6 +8,17 @@
 */
 
 @import "shadcn/tailwind.css";
+
+/* Typography base: macOS renders text heavier than intended, so smooth
+   once at the root; font-synthesis off so a missing weight or italic
+   fails visibly instead of rendering a faked face. */
+@layer base {
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-synthesis: none;
+  }
+}
 @keyframes neon-skeleton-pulse {
   0%,
   100% {

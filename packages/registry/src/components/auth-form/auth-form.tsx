@@ -228,14 +228,14 @@ const AuthFormHeader = ({
         {mark}
       </span>
     ) : null}
-    <h2 className="font-semibold text-foreground text-xl tracking-tight">
+    <h2 className="text-balance font-semibold text-foreground text-xl tracking-tight">
       {title}
     </h2>
     {/* The form's voice: normally the pitch, on failure the verdict —
         swapped in place so the frame never moves. */}
     <p
       className={cn(
-        "fade-in-0 animate-in text-sm duration-200 motion-reduce:animate-none",
+        "fade-in-0 animate-in text-pretty text-sm duration-200 motion-reduce:animate-none",
         error ? "text-destructive" : "text-muted-foreground"
       )}
       data-slot={error ? "auth-form-error" : undefined}
@@ -299,7 +299,7 @@ const ResetSentFace = ({
     </svg>
     {onResend ? (
       <button
-        className="font-mono text-muted-foreground text-xs underline-offset-4 transition-colors hover:text-foreground hover:underline"
+        className="text-muted-foreground text-xs underline-offset-4 transition-colors hover:text-foreground hover:underline"
         disabled={isBusy}
         onClick={onResend}
         type="button"
@@ -341,7 +341,7 @@ const AuthFormMeta = ({
           className="flex items-center gap-3 text-muted-foreground/60"
         >
           <span className="h-px flex-1 bg-border/60" />
-          <span className="font-mono text-[10px]">or continue with</span>
+          <span className="text-[10px]">or continue with</span>
           <span className="h-px flex-1 bg-border/60" />
         </div>
         <div
@@ -358,7 +358,7 @@ const AuthFormMeta = ({
               variant="outline"
             >
               {provider.icon}
-              <span className="font-mono text-xs">{provider.label}</span>
+              <span className="text-xs">{provider.label}</span>
             </Button>
           ))}
         </div>
@@ -540,7 +540,7 @@ const RequirementsPopover = ({
       {requirements.map((rule) => (
         <span
           className={cn(
-            "flex items-center gap-2 font-mono text-xs transition-colors duration-200",
+            "flex items-center gap-2 text-xs transition-colors duration-200",
             rule.met ? "text-foreground" : "text-muted-foreground/70"
           )}
           data-met={rule.met || undefined}
@@ -576,7 +576,7 @@ const RequirementsPopover = ({
 /* The field frame stays neutral in every state — the beam under the
  * input and the label carry the verdict. */
 const FIELD_INPUT =
-  "w-full rounded-md border border-border/60 bg-transparent px-3 py-2 text-sm caret-primary outline-none transition-colors placeholder:text-muted-foreground/60 hover:border-border focus:border-border disabled:cursor-not-allowed disabled:opacity-60";
+  "w-full rounded-md border border-border/60 bg-transparent px-3 py-2 text-base caret-primary sm:text-sm outline-none transition-colors placeholder:text-muted-foreground/60 hover:border-border focus:border-border disabled:cursor-not-allowed disabled:opacity-60";
 
 /** A verdict glyph that draws itself in, stroke first to last. */
 const DrawnGlyph = ({ kind }: { kind: "check" | "cross" }) => (
@@ -651,7 +651,7 @@ const AuthField = ({
       <span className="flex items-baseline justify-between">
         <span
           className={cn(
-            "fade-in-0 min-w-0 flex-1 animate-in truncate font-mono text-xs duration-200 motion-reduce:animate-none",
+            "fade-in-0 min-w-0 flex-1 animate-in truncate text-xs duration-200 motion-reduce:animate-none",
             error
               ? "text-destructive"
               : "text-muted-foreground transition-colors group-focus-within:text-foreground"

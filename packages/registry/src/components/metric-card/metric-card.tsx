@@ -457,7 +457,10 @@ export const MetricCard = ({
         {...props}
       >
         <CardHeader className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 pt-4">
-          <CardTitle className="truncate font-mono font-medium text-muted-foreground text-xs">
+          <CardTitle
+            className="truncate font-mono font-medium text-muted-foreground text-xs"
+            title={label}
+          >
             {label}
           </CardTitle>
           <NeonLoader
@@ -487,7 +490,10 @@ export const MetricCard = ({
         {...props}
       >
         <CardHeader className="px-4 pt-4">
-          <CardTitle className="truncate font-mono font-medium text-muted-foreground text-xs">
+          <CardTitle
+            className="truncate font-mono font-medium text-muted-foreground text-xs"
+            title={label}
+          >
             {label}
           </CardTitle>
         </CardHeader>
@@ -497,7 +503,7 @@ export const MetricCard = ({
               <TriangleAlertIcon aria-hidden="true" className="size-3.5" />
               <p className="font-medium text-xs">Data unavailable</p>
             </div>
-            <p className="mt-2 text-muted-foreground text-xs leading-relaxed">
+            <p className="mt-2 text-pretty text-muted-foreground text-xs leading-relaxed">
               {message}
             </p>
           </div>
@@ -511,7 +517,10 @@ export const MetricCard = ({
   return (
     <Card className={cn(metricCardClassName, className)} {...props}>
       <CardHeader className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3 px-4 pt-4">
-        <CardTitle className="truncate font-mono font-medium text-muted-foreground text-xs">
+        <CardTitle
+          className="truncate font-mono font-medium text-muted-foreground text-xs"
+          title={label}
+        >
           {label}
         </CardTitle>
         {delta === undefined ? null : (

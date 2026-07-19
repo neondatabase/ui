@@ -3,6 +3,7 @@
 import type { ComponentProps, ReactNode } from "react";
 import { useState } from "react";
 
+import { AnimatedWash } from "@/components/animated-wash/animated-wash";
 import { NeonLoader } from "@/components/neon-loader/neon-loader";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -203,6 +204,7 @@ export const PreviewFrame = ({
         <span
           className="min-w-0 flex-1 truncate font-mono text-muted-foreground text-xs"
           data-slot="preview-frame-url"
+          title={displayUrl(displaySrc ?? src)}
         >
           {displayUrl(displaySrc ?? src)}
         </span>
@@ -258,7 +260,7 @@ export const PreviewFrame = ({
           /* One semantic wake affordance: the whole scrim is the button. */
           <button
             className={cn(
-              "fade-in-0 group/wake absolute inset-0 flex w-full animate-in flex-col items-center justify-center gap-3 bg-background/90 duration-300 motion-reduce:animate-none",
+              "fade-in-0 group/wake absolute inset-0 isolate flex w-full animate-in flex-col items-center justify-center gap-3 overflow-hidden bg-background/90 duration-300 motion-reduce:animate-none",
               onWake ? "cursor-pointer" : "cursor-default"
             )}
             data-slot="preview-frame-sleeping"
@@ -266,13 +268,18 @@ export const PreviewFrame = ({
             onClick={onWake}
             type="button"
           >
+            <AnimatedWash
+              aria-hidden="true"
+              className="-z-10 pointer-events-none absolute inset-x-0 bottom-0 h-32 text-muted-foreground opacity-50"
+              data-slot="preview-frame-wash"
+            />
             <MoonIcon />
             <p className="font-mono text-muted-foreground text-xs">sleeping</p>
-            <p className="max-w-sm text-center text-muted-foreground/70 text-xs">
+            <p className="max-w-sm text-pretty text-center text-muted-foreground/70 text-xs">
               {sleepingDetail}
             </p>
             {onWake ? (
-              <span className="mt-1 inline-flex h-6 items-center rounded-full border border-border/60 px-2.5 font-mono text-muted-foreground text-xs transition-colors group-hover/wake:border-primary/60 group-hover/wake:text-primary">
+              <span className="mt-1 inline-flex h-6 items-center rounded-full border border-border/60 px-2.5 text-muted-foreground text-xs transition-colors group-hover/wake:border-primary/60 group-hover/wake:text-primary">
                 Wake sandbox
               </span>
             ) : null}
@@ -280,21 +287,31 @@ export const PreviewFrame = ({
         ) : null}
         {state === "waking" ? (
           <div
-            className="fade-in-0 slide-in-from-bottom-1 absolute inset-0 flex animate-in flex-col items-center justify-center gap-4 bg-background/90 duration-300 motion-reduce:animate-none"
+            className="fade-in-0 slide-in-from-bottom-1 absolute inset-0 isolate flex animate-in flex-col items-center justify-center gap-4 overflow-hidden bg-background/90 duration-300 motion-reduce:animate-none"
             data-slot="preview-frame-waking"
           >
+            <AnimatedWash
+              aria-hidden="true"
+              className="-z-10 pointer-events-none absolute inset-x-0 bottom-0 h-32 text-primary"
+              data-slot="preview-frame-wash"
+            />
             <NeonLoader label={wakingLabel} showLabel={false} size="md" />
-            <p className="shimmer shimmer-duration-2400 font-mono text-muted-foreground text-xs">
+            <p className="shimmer shimmer-duration-2400 text-muted-foreground text-xs">
               {wakingLabel}…
             </p>
           </div>
         ) : null}
         {state === "error" ? (
           <div
-            className="fade-in-0 slide-in-from-bottom-1 absolute inset-0 flex animate-in flex-col items-center justify-center gap-3 bg-background/90 duration-300 motion-reduce:animate-none"
+            className="fade-in-0 slide-in-from-bottom-1 absolute inset-0 isolate flex animate-in flex-col items-center justify-center gap-3 overflow-hidden bg-background/90 duration-300 motion-reduce:animate-none"
             data-slot="preview-frame-error"
             role="alert"
           >
+            <AnimatedWash
+              aria-hidden="true"
+              className="-z-10 pointer-events-none absolute inset-x-0 bottom-0 h-32 text-destructive opacity-50"
+              data-slot="preview-frame-wash"
+            />
             <p className="flex items-baseline gap-2 text-sm">
               <span className="font-mono text-destructive text-xs">error</span>
               <span className="font-medium text-foreground">
@@ -302,7 +319,7 @@ export const PreviewFrame = ({
               </span>
             </p>
             {errorDetail ? (
-              <p className="max-w-sm text-center text-muted-foreground text-xs">
+              <p className="max-w-sm text-pretty text-center text-muted-foreground text-xs">
                 {errorDetail}
               </p>
             ) : null}

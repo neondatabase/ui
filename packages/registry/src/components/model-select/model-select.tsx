@@ -226,7 +226,7 @@ const SearchField = ({
       />
       <input
         aria-label="Search models"
-        className="h-9 w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+        className="h-9 w-full bg-transparent text-base outline-none placeholder:text-muted-foreground sm:text-sm"
         onChange={(event) => onQueryChange(event.target.value)}
         onKeyDown={handleKeyDown}
         placeholder="Search models…"
@@ -325,7 +325,9 @@ export const ModelSelect = ({
           {selected ? (
             <>
               <ProviderLogo logo={logos?.[selected.provider]} />
-              <span className="truncate">{selected.name}</span>
+              <span className="truncate" title={selected.name}>
+                {selected.name}
+              </span>
               {valueSuffix}
             </>
           ) : (
@@ -402,11 +404,14 @@ export const ModelSelect = ({
                             <ProviderLogo logo={logos?.[model.provider]} />
                             <span className="shrink-0">{model.name}</span>
                             {model.tag ? (
-                              <span className="shrink-0 border border-border/60 px-1 py-px font-mono text-[9px] text-muted-foreground uppercase leading-none">
+                              <span className="shrink-0 border border-border/60 px-1 py-px font-mono text-[9px] text-muted-foreground uppercase leading-none tracking-wide">
                                 {model.tag}
                               </span>
                             ) : null}
-                            <span className="ml-auto truncate pl-3 font-mono text-[10px] text-muted-foreground/70">
+                            <span
+                              className="ml-auto truncate pl-3 font-mono text-[10px] text-muted-foreground/70"
+                              title={model.id}
+                            >
                               {model.id}
                             </span>
                           </div>

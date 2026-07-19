@@ -351,7 +351,7 @@ export const ChatInput = ({
     >
       <textarea
         aria-label="Message the agent"
-        className="block max-h-40 w-full resize-none bg-transparent px-3.5 pt-3 pb-1.5 text-sm outline-none placeholder:text-muted-foreground"
+        className="block max-h-40 w-full resize-none bg-transparent px-3.5 pt-3 pb-1.5 text-base outline-none placeholder:text-muted-foreground sm:text-sm"
         disabled={disabled}
         onChange={(event) => setText(event.target.value)}
         onInput={autoGrow}

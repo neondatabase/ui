@@ -90,9 +90,9 @@ export const EmptyState = ({
     >
       {icon ?? <FadedMark />}
     </span>
-    <p className="font-medium text-foreground text-sm">{title}</p>
+    <p className="text-balance font-medium text-foreground text-sm">{title}</p>
     {description ? (
-      <p className="mt-1.5 max-w-xs text-muted-foreground text-xs leading-5">
+      <p className="mt-1.5 max-w-xs text-pretty text-muted-foreground text-xs leading-5">
         {description}
       </p>
     ) : null}
