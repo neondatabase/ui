@@ -1,7 +1,8 @@
 "use client";
 
 import type { ComponentProps, FocusEvent, FormEvent, ReactNode } from "react";
-import { useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -402,6 +403,91 @@ const beamTone = (
   return "scale-x-0 bg-primary group-focus-within:scale-x-100";
 };
 
+/* ─────────────────────────────────────────────────────────
+ * REQUIREMENTS POPOVER
+ *
+ * Portaled to the body and pinned to the input's rect (fixed
+ * position, re-measured on scroll and resize), so it floats
+ * above every sibling — no stacking context, not even the
+ * charged CTA's glow, can paint over it. Each rule flips
+ * from a muted dot to a drawn primary check as the password
+ * satisfies it. Floating, so nothing in the form shifts.
+ * ───────────────────────────────────────────────────────── */
+const RequirementsPopover = ({
+  anchor,
+  requirements,
+}: {
+  anchor: { current: HTMLInputElement | null };
+  requirements: PasswordRequirement[];
+}) => {
+  const [rect, setRect] = useState<DOMRect | null>(null);
+
+  useEffect(() => {
+    const measure = () => {
+      const el = anchor.current;
+
+      if (el) {
+        setRect(el.getBoundingClientRect());
+      }
+    };
+
+    const frame = requestAnimationFrame(measure);
+    window.addEventListener("scroll", measure, true);
+    window.addEventListener("resize", measure);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", measure, true);
+      window.removeEventListener("resize", measure);
+    };
+  }, [anchor]);
+
+  if (!rect) {
+    return null;
+  }
+
+  return createPortal(
+    <div
+      aria-hidden="true"
+      className="fade-in-0 slide-in-from-bottom-1 pointer-events-none fixed z-50 flex w-max animate-in flex-col gap-1.5 rounded-md border border-border/60 bg-popover p-3 shadow-lg duration-200 motion-reduce:animate-none"
+      data-slot="auth-form-requirements"
+      style={{ left: rect.left, top: rect.bottom + 8 }}
+    >
+      {requirements.map((rule) => (
+        <span
+          className={cn(
+            "flex items-center gap-2 font-mono text-xs transition-colors duration-200",
+            rule.met ? "text-foreground" : "text-muted-foreground/70"
+          )}
+          data-met={rule.met || undefined}
+          key={rule.label}
+        >
+          {rule.met ? (
+            <svg
+              className="size-3 text-primary"
+              fill="none"
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2.5"
+              viewBox="0 0 24 24"
+            >
+              <path
+                className="neon-check-draw"
+                d="M4 12.5 10 18.5 20 6"
+                pathLength={1}
+              />
+            </svg>
+          ) : (
+            <span className="mx-[5px] size-0.5 rounded-full bg-muted-foreground/70" />
+          )}
+          {rule.label}
+        </span>
+      ))}
+    </div>,
+    document.body
+  );
+};
+
 /* The field frame stays neutral in every state — the beam under the
  * input and the label carry the verdict. */
 const FIELD_INPUT =
@@ -465,6 +551,8 @@ const AuthField = ({
   valid?: boolean;
 }) => {
   const messageId = useId();
+  const anchorRef = useRef<HTMLInputElement>(null);
+  const [focused, setFocused] = useState(false);
 
   return (
     <label
@@ -499,11 +587,14 @@ const AuthField = ({
           className={cn(FIELD_INPUT, (valid || error) && "pr-9")}
           disabled={disabled}
           name={name}
-          onBlur={(event: FocusEvent<HTMLInputElement>) =>
-            onLeave(name, event.target.value)
-          }
+          onBlur={(event: FocusEvent<HTMLInputElement>) => {
+            setFocused(false);
+            onLeave(name, event.target.value);
+          }}
           onChange={() => onEdit(name)}
+          onFocus={() => setFocused(true)}
           placeholder={placeholder}
+          ref={anchorRef}
           type={type}
         />
         {/* The beam: primary light sweeps in on focus; a verdict
@@ -523,47 +614,8 @@ const AuthField = ({
         />
         {valid ? <DrawnGlyph kind="check" /> : null}
         {error ? <DrawnGlyph kind="cross" /> : null}
-        {/* Requirements popover: floats under the field while focused —
-            each rule flips from a muted dot to a primary check as the
-            password satisfies it. Floating, so nothing shifts. */}
-        {requirements ? (
-          <span
-            aria-hidden="true"
-            className="pointer-events-none absolute top-full left-0 z-50 mt-2 flex w-max translate-y-1 flex-col gap-1.5 rounded-md border border-border/60 bg-popover p-3 opacity-0 shadow-lg transition-[opacity,translate] duration-200 group-focus-within:translate-y-0 group-focus-within:opacity-100 motion-reduce:transition-none"
-            data-slot="auth-form-requirements"
-          >
-            {requirements.map((rule) => (
-              <span
-                className={cn(
-                  "flex items-center gap-2 font-mono text-xs transition-colors duration-200",
-                  rule.met ? "text-foreground" : "text-muted-foreground/70"
-                )}
-                data-met={rule.met || undefined}
-                key={rule.label}
-              >
-                {rule.met ? (
-                  <svg
-                    className="size-3 text-primary"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2.5"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      className="neon-check-draw"
-                      d="M4 12.5 10 18.5 20 6"
-                      pathLength={1}
-                    />
-                  </svg>
-                ) : (
-                  <span className="mx-[5px] size-0.5 rounded-full bg-muted-foreground/70" />
-                )}
-                {rule.label}
-              </span>
-            ))}
-          </span>
+        {requirements && focused ? (
+          <RequirementsPopover anchor={anchorRef} requirements={requirements} />
         ) : null}
       </span>
     </label>
