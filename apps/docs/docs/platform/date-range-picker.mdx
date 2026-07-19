@@ -1,0 +1,62 @@
+---
+title: DateRangePicker
+description: A hand-built date range picker in the Neon language.
+---
+
+`DateRangePicker` is a range picker built from scratch in the house vocabulary — no calendar library. The trigger is a mono pill reading the range; the panel opens with a preset rail (one click, done) beside a single month grid. Pick a start and the tentative range washes `primary/10` under the pointer; the second click lands the end and closes. Today wears a hairline ring, never color — color belongs to the selection. [UsagePanel](/docs/agent/usage-panel) rides it in the filter slot to drive consumption queries.
+
+<DateRangePickerPreview />
+
+## Install
+
+```bash
+npx shadcn@latest add https://ui.neon.com/r/date-range-picker.json
+```
+
+## Usage
+
+```tsx
+import { DateRangePicker } from "@/components/neon-ui/date-range-picker";
+
+<DateRangePicker
+  value={range}
+  onValueChange={(next) => {
+    setRange(next);
+    refetchUsage(next);
+  }}
+/>;
+```
+
+## Props
+
+<TypeTable
+  type={{
+    value: {
+      type: "DateRange",
+      description: "{ from: Date; to: Date }",
+      required: true,
+    },
+    onValueChange: {
+      type: "(range: DateRange) => void",
+      description: "Fires when a range lands (second click or preset).",
+      required: true,
+    },
+    presets: {
+      type: "DateRangePreset[]",
+      description: "Quick ranges in the rail: { label, days }.",
+      default: "last 7 / 14 / 30 days",
+    },
+    disableFuture: {
+      type: "boolean",
+      description: "Days after today stay unselectable.",
+      default: "true",
+    },
+  }}
+/>
+
+## Accessibility
+
+- Every day is a real button labelled by its number inside a labelled month; disabled future days are `disabled`.
+- Presets and month navigation are plain buttons — the whole panel is keyboard-traversable with Tab.
+- The Base UI popover contributes focus management, Escape dismissal, and outside-click close.
+- Panel entrance and month crossfade are static under `prefers-reduced-motion`.

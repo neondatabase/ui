@@ -520,6 +520,45 @@
           "type": "registry:component"
         }
       ]
+    },
+    {
+      "name": "usage-panel",
+      "type": "registry:component",
+      "title": "UsagePanel",
+      "description": "Per-project consumption grid composing MetricCard, with plan-gated metrics and metering-lag notice.",
+      "registryDependencies": ["utils", "neon-tokens", "button", "metric-card"],
+      "files": [
+        {
+          "path": "src/components/usage-panel/usage-panel.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "popover",
+      "type": "registry:ui",
+      "title": "Popover",
+      "description": "Base UI popover in the house chrome.",
+      "registryDependencies": ["utils", "neon-tokens"],
+      "files": [
+        {
+          "path": "src/components/ui/popover.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "date-range-picker",
+      "type": "registry:component",
+      "title": "DateRangePicker",
+      "description": "Custom date range picker: mono pill trigger, preset rail, hand-built month grid with range wash.",
+      "registryDependencies": ["utils", "neon-tokens", "popover"],
+      "files": [
+        {
+          "path": "src/components/date-range-picker/date-range-picker.tsx",
+          "type": "registry:component"
+        }
+      ]
     }
   ]
 }

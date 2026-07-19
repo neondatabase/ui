@@ -1,0 +1,18 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "popover",
+  "title": "Popover",
+  "description": "Base UI popover in the house chrome.",
+  "registryDependencies": [
+    "utils",
+    "neon-tokens"
+  ],
+  "files": [
+    {
+      "path": "src/components/ui/popover.tsx",
+      "content": "\"use client\";\n\nimport { Popover as PopoverPrimitive } from \"@base-ui/react/popover\";\n\nimport { cn } from \"@/lib/utils\";\n\nfunction Popover(props: PopoverPrimitive.Root.Props) {\n  return <PopoverPrimitive.Root {...props} />;\n}\n\nfunction PopoverTrigger(props: PopoverPrimitive.Trigger.Props) {\n  return <PopoverPrimitive.Trigger data-slot=\"popover-trigger\" {...props} />;\n}\n\nfunction PopoverContent({\n  align = \"start\",\n  className,\n  sideOffset = 6,\n  ...props\n}: PopoverPrimitive.Popup.Props & {\n  align?: PopoverPrimitive.Positioner.Props[\"align\"];\n  sideOffset?: PopoverPrimitive.Positioner.Props[\"sideOffset\"];\n}) {\n  return (\n    <PopoverPrimitive.Portal>\n      <PopoverPrimitive.Positioner align={align} sideOffset={sideOffset}>\n        <PopoverPrimitive.Popup\n          className={cn(\n            \"fade-in-0 slide-in-from-bottom-1 z-50 animate-in rounded-lg border border-border/60 bg-card p-3 duration-200 motion-reduce:animate-none\",\n            className\n          )}\n          data-slot=\"popover-content\"\n          {...props}\n        />\n      </PopoverPrimitive.Positioner>\n    </PopoverPrimitive.Portal>\n  );\n}\n\nexport { Popover, PopoverContent, PopoverTrigger };\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

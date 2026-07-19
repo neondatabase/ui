@@ -16,6 +16,7 @@ export default defineComponents({
     CheckpointTimelinePreview: "./demos/checkpoint-timeline-preview.tsx",
     ColorPickerPreview: "./demos/color-picker-preview.tsx",
     ConfirmDialogPreview: "./demos/confirm-dialog-preview.tsx",
+    DateRangePickerPreview: "./demos/date-range-picker-preview.tsx",
     EmptyStatePreview: "./demos/empty-state-preview.tsx",
     MetricCardDeltaVariants: "./demos/metric-card-delta-variants.tsx",
     MetricCardFormatVariants: "./demos/metric-card-format-variants.tsx",
@@ -31,6 +32,7 @@ export default defineComponents({
     ThinkingModelSelectPreview: "./demos/thinking-model-select-preview.tsx",
     ThinkingSelectPreview: "./demos/thinking-select-preview.tsx",
     ToolCallChipPreview: "./demos/tool-call-chip-preview.tsx",
+    UsagePanelPreview: "./demos/usage-panel-preview.tsx",
     WorkspaceTabsPreview: "./demos/workspace-tabs-preview.tsx",
   },
 });

@@ -1,0 +1,110 @@
+---
+title: UsagePanel
+description: Per-project consumption grid with plan gating and metering-lag honesty.
+---
+
+`UsagePanel` is the workspace's usage tab: a grid of [MetricCard](/docs/platform/metric-card)s over the v2 per-project consumption metrics — compute as CU-hours, storage and egress as bytes — under a mono header with the billing period — or a [DateRangePicker](/docs/platform/date-range-picker) in the `filter` slot when the range should be the user's call. Cards enter one at a time in metric order. A plan-gated metric keeps its card frame but holds its voice: mono "available on a paid plan" with a quiet upgrade pill — an invitation, not a wall. And when metering trails real time, the footer says exactly how far, because the numbers shouldn't pretend to be live.
+
+<UsagePanelPreview />
+
+## Install
+
+```bash
+npx shadcn@latest add https://ui.neon.com/r/usage-panel.json
+```
+
+## Usage
+
+```tsx
+import { UsagePanel } from "@/components/neon-ui/usage-panel";
+
+<UsagePanel
+  metrics={[
+    {
+      id: "compute_unit_seconds",
+      label: "Compute",
+      value: 22.3,
+      unit: "CU-hrs",
+    },
+    {
+      id: "storage_bytes",
+      label: "Storage",
+      value: 3_380_000_000,
+      format: "bytes",
+    },
+    {
+      id: "egress_bytes",
+      label: "Egress",
+      value: 731_000_000,
+      format: "bytes",
+    },
+    {
+      id: "branch_compute",
+      label: "Branch compute",
+      value: 0,
+      gated: plan === "free",
+    },
+  ]}
+  period="Jul 1 – Jul 18"
+  meteredThrough="metered through 21:40 UTC · ~15m behind"
+  onUpgrade={() => openUpgrade()}
+/>;
+```
+
+Each metric accepts the full MetricCard surface: `delta`, `comparisonLabel`, `trend`, `format`, `unit`.
+
+## States
+
+- **Gated** — `gated: true` swaps the value for the plan gate inside the same frame; `onUpgrade` renders the pill.
+- **Metering lag** — `meteredThrough` renders the mono footer notice.
+- **Loading** — `isLoading` skeletons every card through MetricCard.
+- **Error** — `error` renders the house error line above the grid while cards hold their last values.
+
+## Props
+
+<TypeTable
+  type={{
+    metrics: {
+      type: "UsageMetric[]",
+      description:
+        "Display order; id, label, value plus the MetricCard surface and an optional gated flag.",
+      required: true,
+    },
+    period: {
+      type: "string",
+      description: 'Billing period readout, e.g. "Jul 1 – Jul 18".',
+    },
+    filter: {
+      type: "ReactNode",
+      description:
+        "Header filter slot, e.g. a DateRangePicker; takes the period readout's place.",
+    },
+    meteredThrough: {
+      type: "string",
+      description: "Metering-lag notice rendered as a quiet mono footer.",
+    },
+    onUpgrade: {
+      type: "() => void",
+      description: "Renders the upgrade action on gated metrics.",
+    },
+    isLoading: {
+      type: "boolean",
+      default: "false",
+    },
+    error: {
+      type: "string | null",
+      description: "Panel-level failure rendered above the grid.",
+    },
+    footer: {
+      type: "ReactNode",
+      description: "Extra content after the lag notice, e.g. an invoices link.",
+    },
+  }}
+/>
+
+## Accessibility
+
+- The panel is a `section` with a heading; the grid is plain flow content — cards carry their own labels.
+- Gated cards state the constraint in text; the upgrade action is a real button.
+- The error line is `role="alert"`; loading states ride MetricCard's `aria-busy`.
+- Entrance stagger is static under `prefers-reduced-motion`.
