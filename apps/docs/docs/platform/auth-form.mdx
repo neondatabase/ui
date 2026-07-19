@@ -42,6 +42,7 @@ The reason [`NeonAurora`](/docs/shaders/neon-aurora) exists: use it as the cover
 - **Busy** — `isBusy` locks everything and the working label shimmers (`Sign in` → `Signing in…`).
 - **Error** — `error` takes over the description slot with `role="alert"`; `fieldErrors` pin to fields until you clear them.
 - **Sign up** — `mode="sign-up"` adds the name field, retitles the card, flips the footer link, and requires 8+ character passwords.
+- **Reset** — `mode="reset"` shows the email field alone with reset copy; wire `onForgotPassword` to switch into it. Once your API sends the link, set `resetSentTo` and the form flips to its confirmation face: a drawn check, "Check your email", and an optional `onResend` link. The footer always offers the way back to sign in.
 
 No state changes the form's height — every verdict animates in place.
 
@@ -117,7 +118,7 @@ The default sign-up password rule (8–128 characters) mirrors Better Auth's ser
       required: true,
     },
     mode: {
-      type: '"sign-in" | "sign-up"',
+      type: '"sign-in" | "sign-up" | "reset"',
       default: '"sign-in"',
     },
     onModeChange: {
@@ -138,6 +139,15 @@ The default sign-up password rule (8–128 characters) mirrors Better Auth's ser
       type: "Partial<Record<AuthFieldName, string>>",
       description:
         "Server-side verdicts pinned to fields (e.g. incorrect password).",
+    },
+    resetSentTo: {
+      type: "string | null",
+      description:
+        "The email a reset link was sent to; flips reset mode to its confirmation face.",
+    },
+    onResend: {
+      type: "() => void",
+      description: "Renders the send-again link on the confirmation face.",
     },
     validators: {
       type: "Partial<Record<AuthFieldName, AuthValidator>>",

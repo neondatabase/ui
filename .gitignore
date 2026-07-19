@@ -40,3 +40,8 @@ internal/
 node_modules/
 apps/docs/dist/
 apps/docs/.blume/
+
+# pi agent artifacts
+.pi/
+skills-lock.json
+.vscode/

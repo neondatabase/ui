@@ -14,8 +14,7 @@ export default defineConfig({
       },
     ],
   },
-  description:
-    "The official Neon UI Registry. Production-ready components and blocks for building modern applications on Neon.",
+  description: "The UI Layer for building applications on Neon.",
   // Component previews read straight from the registry demos, so the Preview
   // tab renders the exact source the Code tab shows. theme.css injects the Neon
   // design tokens into the isolated preview frame.
@@ -38,8 +37,8 @@ export default defineConfig({
     accent: "#00e599",
     background: { dark: "#0c0d0d" },
     fonts: {
-      body: "geist",
-      display: "geist",
+      body: "inter",
+      display: "inter",
       mono: "geist-mono",
     },
   },

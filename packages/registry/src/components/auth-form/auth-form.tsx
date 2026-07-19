@@ -7,7 +7,7 @@ import { createPortal } from "react-dom";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-export type AuthMode = "sign-in" | "sign-up";
+export type AuthMode = "sign-in" | "sign-up" | "reset";
 
 export type AuthFieldName = "name" | "email" | "password";
 
@@ -52,6 +52,13 @@ export type AuthFormProps = Omit<ComponentProps<"form">, "onSubmit"> & {
   onProvider?: (id: string) => void;
   /** Renders the forgot link on the password row (sign-in only). */
   onForgotPassword?: () => void;
+  /**
+   * The email a reset link was sent to. In reset mode this flips the
+   * form to its confirmation face.
+   */
+  resetSentTo?: string | null;
+  /** Renders the "send again" link on the confirmation face. */
+  onResend?: () => void;
   /** Brand mark slot above the title. */
   mark?: ReactNode;
   title?: string;
@@ -142,6 +149,9 @@ const VALIDATORS: Record<
   AuthMode,
   Partial<Record<AuthFieldName, (value: string) => string | null>>
 > = {
+  reset: {
+    email: validateEmail,
+  },
   "sign-in": {
     email: validateEmail,
     password: (value) => (value ? null : "Add your password."),
@@ -164,6 +174,12 @@ const COPY: Record<
   AuthMode,
   { title: string; description: string; action: string; working: string }
 > = {
+  reset: {
+    action: "Send reset link",
+    description: "Enter your email and we'll send you a reset link.",
+    title: "Reset your password",
+    working: "Sending…",
+  },
   "sign-in": {
     action: "Sign in",
     description: "Sign in to continue to your workspace.",
@@ -232,18 +248,87 @@ const AuthFormHeader = ({
 );
 
 /** Divider, provider buttons, and the mode-swap footer. */
+const FIELD_NAMES: Record<AuthMode, AuthFieldName[]> = {
+  reset: ["email"],
+  "sign-in": ["email", "password"],
+  "sign-up": ["name", "email", "password"],
+};
+
+/** Header copy resolution: overrides win, then the face speaks. */
+const headerCopy = (
+  copy: (typeof COPY)[AuthMode],
+  sent: boolean,
+  resetSentTo: string | null,
+  title?: string,
+  description?: string
+) => ({
+  description:
+    description ??
+    (sent ? `A reset link is on its way to ${resetSentTo}.` : copy.description),
+  title: title ?? (sent ? "Check your email" : copy.title),
+});
+
+/** The confirmation face: a drawn check and the way back. */
+const ResetSentFace = ({
+  isBusy,
+  onResend,
+}: {
+  isBusy: boolean;
+  onResend?: () => void;
+}) => (
+  <div
+    className={cn("flex flex-col items-center gap-4 py-2", RISE)}
+    data-slot="auth-form-reset-sent"
+    style={{ animationDelay: `${TIMING.fields}ms` }}
+  >
+    <svg
+      aria-hidden="true"
+      className="size-8 text-primary"
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="1.5"
+      viewBox="0 0 24 24"
+    >
+      <path
+        className="neon-check-draw"
+        d="M4 12.5 10 18.5 20 6"
+        pathLength={1}
+      />
+    </svg>
+    {onResend ? (
+      <button
+        className="font-mono text-muted-foreground text-xs underline-offset-4 transition-colors hover:text-foreground hover:underline"
+        disabled={isBusy}
+        onClick={onResend}
+        type="button"
+      >
+        send again
+      </button>
+    ) : null}
+  </div>
+);
+
+/* The footer swap per face: each mode offers the way back. */
+const META_SWAP: Record<AuthMode, { ask: string; to: AuthMode; go: string }> = {
+  reset: { ask: "Remembered it?", go: "Sign in", to: "sign-in" },
+  "sign-in": { ask: "New here?", go: "Create account", to: "sign-up" },
+  "sign-up": { ask: "Already have an account?", go: "Sign in", to: "sign-in" },
+};
+
 const AuthFormMeta = ({
   isBusy,
+  mode,
   onModeChange,
   onProvider,
   providers,
-  signUp,
 }: {
   isBusy: boolean;
+  mode: AuthMode;
   onModeChange?: (mode: AuthMode) => void;
   onProvider?: (id: string) => void;
   providers?: AuthProvider[];
-  signUp: boolean;
 }) => (
   <div
     className={cn("flex flex-col gap-4", RISE)}
@@ -281,13 +366,13 @@ const AuthFormMeta = ({
     ) : null}
     {onModeChange ? (
       <p className="text-center text-muted-foreground text-xs">
-        {signUp ? "Already have an account?" : "New here?"}{" "}
+        {META_SWAP[mode].ask}{" "}
         <button
           className="text-foreground underline underline-offset-4 transition-colors hover:text-primary"
-          onClick={() => onModeChange(signUp ? "sign-in" : "sign-up")}
+          onClick={() => onModeChange(META_SWAP[mode].to)}
           type="button"
         >
-          {signUp ? "Sign in" : "Create account"}
+          {META_SWAP[mode].go}
         </button>
       </p>
     ) : null}
@@ -655,9 +740,103 @@ const passwordTrailing = (
   ) : undefined;
 };
 
+/** The per-mode field stack; hidden (not unmounted) on the sent face. */
+const AuthFormFields = ({
+  hidden,
+  isBusy,
+  meter,
+  mode,
+  onEdit,
+  onForgotPassword,
+  onLeave,
+  requirements,
+  verdictFor,
+}: {
+  hidden: boolean;
+  isBusy: boolean;
+  meter: StrengthMeter | null;
+  mode: AuthMode;
+  onEdit: (field: AuthFieldName) => void;
+  onForgotPassword?: () => void;
+  onLeave: (field: AuthFieldName, value: string) => void;
+  requirements?: PasswordRequirement[];
+  verdictFor: (field: AuthFieldName) => {
+    error: string | null;
+    valid: boolean;
+  };
+}) => {
+  const signUp = mode === "sign-up";
+  const reset = mode === "reset";
+
+  return (
+    <div
+      className={cn("flex flex-col gap-4", hidden && "hidden")}
+      key={`${mode}-${String(hidden)}`}
+    >
+      {signUp ? (
+        <AuthField
+          autoComplete="name"
+          delay={TIMING.fields}
+          disabled={isBusy}
+          label="name"
+          name="name"
+          onEdit={onEdit}
+          onLeave={onLeave}
+          placeholder="Ada Lovelace"
+          type="text"
+          {...verdictFor("name")}
+        />
+      ) : null}
+      <AuthField
+        autoComplete="email"
+        delay={TIMING.fields + (signUp ? TIMING.fieldStagger : 0)}
+        disabled={isBusy}
+        label="email"
+        name="email"
+        onEdit={onEdit}
+        onLeave={onLeave}
+        placeholder="you@example.com"
+        type="email"
+        {...verdictFor("email")}
+      />
+      {reset ? null : (
+        <AuthField
+          autoComplete={signUp ? "new-password" : "current-password"}
+          delay={TIMING.fields + TIMING.fieldStagger * (signUp ? 2 : 1)}
+          disabled={isBusy}
+          label="password"
+          meter={meter}
+          name="password"
+          onEdit={onEdit}
+          onLeave={onLeave}
+          placeholder="••••••••"
+          requirements={requirements}
+          trailing={passwordTrailing(signUp, meter, onForgotPassword)}
+          type="password"
+          {...verdictFor("password")}
+        />
+      )}
+    </div>
+  );
+};
+
 type Verdicts = Partial<
   Record<AuthFieldName, { error: string | null; valid: boolean }>
 >;
+
+/** Server verdicts pin first; local blur/submit verdicts follow. */
+const resolveVerdict = (
+  field: AuthFieldName,
+  verdicts: Verdicts,
+  fieldErrors?: Partial<Record<AuthFieldName, string>>
+) => {
+  const server = fieldErrors?.[field];
+  const local = verdicts[field];
+  return {
+    error: server ?? local?.error ?? null,
+    valid: !server && local?.valid === true,
+  };
+};
 
 /** The ignition action. */
 const AuthFormAction = ({
@@ -737,9 +916,11 @@ export const AuthForm = ({
   mode = "sign-in",
   onForgotPassword,
   onModeChange,
+  onResend,
   onProvider,
   onSubmit,
   providers,
+  resetSentTo = null,
   title,
   validators,
   variant = "card",
@@ -747,6 +928,8 @@ export const AuthForm = ({
 }: AuthFormProps) => {
   const copy = COPY[mode];
   const signUp = mode === "sign-up";
+  const reset = mode === "reset";
+  const sent = reset && Boolean(resetSentTo);
   const rules = { ...VALIDATORS[mode], ...validators };
   const [judged, setJudged] = useState<{ mode: AuthMode; verdicts: Verdicts }>({
     mode,
@@ -762,18 +945,10 @@ export const AuthForm = ({
     setPassword("");
   }
 
-  const fieldNames: AuthFieldName[] = signUp
-    ? ["name", "email", "password"]
-    : ["email", "password"];
+  const fieldNames = FIELD_NAMES[mode];
 
-  const verdictFor = (field: AuthFieldName) => {
-    const server = fieldErrors?.[field];
-    const local = judged.verdicts[field];
-    return {
-      error: server ?? local?.error ?? null,
-      valid: !server && local?.valid === true,
-    };
-  };
+  const verdictFor = (field: AuthFieldName) =>
+    resolveVerdict(field, judged.verdicts, fieldErrors);
 
   const judge = (field: AuthFieldName, value: string) => {
     const check = rules[field];
@@ -828,6 +1003,10 @@ export const AuthForm = ({
       ...(signUp && { name: String(data.get("name") ?? "") }),
     };
 
+    if (sent) {
+      return;
+    }
+
     // Judge everything at once; the first failure takes focus.
     const { firstFailure, verdicts } = judgeAll(rules, fieldNames, data);
     setJudged({ mode, verdicts });
@@ -857,71 +1036,44 @@ export const AuthForm = ({
       {...props}
     >
       <AuthFormHeader
-        description={description ?? copy.description}
         error={error}
         mark={mark}
-        title={title ?? copy.title}
+        {...headerCopy(copy, sent, resetSentTo, title, description)}
       />
+
+      {/* The confirmation face: the fields yield — the form's work is
+          done, the inbox's begins. */}
+      {sent ? <ResetSentFace isBusy={isBusy} onResend={onResend} /> : null}
 
       {/* Fields crossfade when the mode flips, entering one at a time. */}
-      <div className="flex flex-col gap-4" key={mode}>
-        {signUp ? (
-          <AuthField
-            autoComplete="name"
-            delay={TIMING.fields}
-            disabled={isBusy}
-            label="name"
-            name="name"
-            onEdit={clear}
-            onLeave={judge}
-            placeholder="Ada Lovelace"
-            type="text"
-            {...verdictFor("name")}
-          />
-        ) : null}
-        <AuthField
-          autoComplete="email"
-          delay={TIMING.fields + (signUp ? TIMING.fieldStagger : 0)}
-          disabled={isBusy}
-          label="email"
-          name="email"
-          onEdit={clear}
-          onLeave={judge}
-          placeholder="you@example.com"
-          type="email"
-          {...verdictFor("email")}
-        />
-        <AuthField
-          autoComplete={signUp ? "new-password" : "current-password"}
-          delay={TIMING.fields + TIMING.fieldStagger * (signUp ? 2 : 1)}
-          disabled={isBusy}
-          label="password"
-          name="password"
-          onEdit={clear}
-          onLeave={judge}
-          meter={meter}
-          placeholder="••••••••"
-          requirements={requirements}
-          trailing={passwordTrailing(signUp, meter, onForgotPassword)}
-          type="password"
-          {...verdictFor("password")}
-        />
-      </div>
-
-      <AuthFormAction
-        charged={charged}
+      <AuthFormFields
+        hidden={sent}
         isBusy={isBusy}
-        label={copy.action}
-        working={copy.working}
+        meter={meter}
+        mode={mode}
+        onEdit={clear}
+        onForgotPassword={onForgotPassword}
+        onLeave={judge}
+        requirements={requirements}
+        verdictFor={verdictFor}
       />
+
+      {sent ? null : (
+        <AuthFormAction
+          charged={charged}
+          isBusy={isBusy}
+          label={copy.action}
+          working={copy.working}
+        />
+      )}
 
       {(providers?.length || onModeChange) && (
         <AuthFormMeta
           isBusy={isBusy}
+          mode={mode}
           onModeChange={onModeChange}
           onProvider={onProvider}
-          providers={providers}
-          signUp={signUp}
+          providers={reset ? undefined : providers}
         />
       )}
     </form>
