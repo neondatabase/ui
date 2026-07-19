@@ -58,6 +58,12 @@ const parseColor = (css: string): [number, number, number] => {
   return [(r ?? 0) / 255, (g ?? 0) / 255, (b ?? 0) / 255];
 };
 
+const warnDev = (message: string) => {
+  if (typeof process !== "undefined" && process.env.NODE_ENV !== "production") {
+    console.warn(message);
+  }
+};
+
 const compile = (
   gl: WebGLRenderingContext,
   type: number,
@@ -71,6 +77,15 @@ const compile = (
 
   gl.shaderSource(shader, source);
   gl.compileShader(shader);
+
+  if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+    warnDev(
+      `neon-ui: shader compile failed: ${gl.getShaderInfoLog(shader) ?? "unknown"}`
+    );
+    gl.deleteShader(shader);
+    return null;
+  }
+
   return shader;
 };
 
@@ -103,12 +118,29 @@ export const NeonAurora = ({
     const program = gl.createProgram();
 
     if (!(vertex && fragment && program)) {
+      if (vertex) {
+        gl.deleteShader(vertex);
+      }
+      if (fragment) {
+        gl.deleteShader(fragment);
+      }
       return;
     }
 
     gl.attachShader(program, vertex);
     gl.attachShader(program, fragment);
     gl.linkProgram(program);
+
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+      warnDev(
+        `neon-ui: program link failed: ${gl.getProgramInfoLog(program) ?? "unknown"}`
+      );
+      gl.deleteProgram(program);
+      gl.deleteShader(vertex);
+      gl.deleteShader(fragment);
+      return;
+    }
+
     // oxlint-disable-next-line react/react-compiler -- WebGL method, not a React hook
     gl.useProgram(program);
 
@@ -152,6 +184,12 @@ export const NeonAurora = ({
 
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     let frame = 0;
+    let staticFrame = false;
+
+    const renderStatic = () => {
+      gl.uniform1f(uTime, 7);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+    };
 
     const resize = () => {
       const width = Math.max(1, Math.round(canvas.clientWidth * dpr));
@@ -166,14 +204,28 @@ export const NeonAurora = ({
       gl.uniform2f(uResolution, canvas.width, canvas.height);
     };
 
-    const observer = new ResizeObserver(resize);
+    const observer = new ResizeObserver(() => {
+      resize();
+
+      if (staticFrame) {
+        renderStatic();
+      }
+    });
     observer.observe(canvas);
     resize();
+
+    const dispose = () => {
+      observer.disconnect();
+      gl.deleteBuffer(quad);
+      gl.deleteProgram(program);
+      gl.deleteShader(vertex);
+      gl.deleteShader(fragment);
+    };
 
     const draw = (now: number) => {
       // Skip GL work while hidden (e.g. behind a docs Code overlay's
       // visibility:hidden panel) — keep the loop alive, drop the cost.
-      if (!canvas.checkVisibility()) {
+      if (!(canvas.checkVisibility?.() ?? true)) {
         frame = requestAnimationFrame(draw);
         return;
       }
@@ -186,17 +238,17 @@ export const NeonAurora = ({
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
 
     if (reduced.matches || speed === 0) {
-      gl.uniform1f(uTime, 7);
+      staticFrame = true;
       resize();
-      gl.drawArrays(gl.TRIANGLES, 0, 3);
-      return () => observer.disconnect();
+      renderStatic();
+      return dispose;
     }
 
     frame = requestAnimationFrame(draw);
 
     return () => {
       cancelAnimationFrame(frame);
-      observer.disconnect();
+      dispose();
     };
   }, [
     accent,

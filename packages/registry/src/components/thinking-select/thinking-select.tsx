@@ -127,7 +127,7 @@ const GrainFill = ({ effort }: { effort: ThinkingEffort }) => {
       frame = requestAnimationFrame(draw);
 
       // Skip canvas work while hidden — the loop stays alive for free.
-      if (!canvas.checkVisibility()) {
+      if (!(canvas.checkVisibility?.() ?? true)) {
         return;
       }
 
