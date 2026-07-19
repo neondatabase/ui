@@ -376,12 +376,46 @@ details[class*="group/tt"] code.text-accent {
 }
 
 /*
- * Preview/Code tab shells: only the active panel exists in layout —
- * PreviewTabs locks the wrapper to the measured preview height before
- * switching, and preflight's [hidden] display:none removes the inactive
- * panel entirely (no double paint, and canvas loops pause via their
- * checkVisibility guards).
+ * Preview card code section: CSS line numbers for Shiki's .line spans,
+ * counted here so the markup stays plain source.
  */
+/* A quiet scrollbar for the opened code: hairline thumb, no track. */
+.preview-scroll {
+  scrollbar-color: var(--border) transparent;
+  scrollbar-width: thin;
+}
+
+.preview-scroll::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.preview-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.preview-scroll::-webkit-scrollbar-thumb {
+  background: color-mix(in oklch, var(--border) 80%, transparent);
+  border-radius: 999px;
+}
+
+.preview-scroll::-webkit-scrollbar-thumb:hover {
+  background: var(--muted-foreground);
+}
+
+.preview-code pre code {
+  counter-reset: line;
+}
+
+.preview-code pre code .line::before {
+  counter-increment: line;
+  content: counter(line);
+  display: inline-block;
+  width: 2.5ch;
+  margin-right: 1.25rem;
+  text-align: right;
+  color: color-mix(in oklch, var(--muted-foreground) 50%, transparent);
+}
 
 /*
  * Card wash: a grainy gradient rising from the bottom edge, colored by
