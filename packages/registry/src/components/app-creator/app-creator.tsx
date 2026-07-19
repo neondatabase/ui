@@ -158,10 +158,7 @@ const CreateAction = ({
     onClick={onCreate}
     size="sm"
   >
-    <span
-      className="fade-in-0 shimmer shimmer-duration-2400 relative animate-in duration-300"
-      key={state}
-    >
+    <span className="shimmer shimmer-duration-2400 relative" key={state}>
       {isCreating ? "Creating…" : actionLabel}
     </span>
   </Button>

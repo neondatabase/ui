@@ -481,6 +481,45 @@
           "type": "registry:component"
         }
       ]
+    },
+    {
+      "name": "checkpoint-timeline",
+      "type": "registry:component",
+      "title": "CheckpointTimeline",
+      "description": "Checkpoint history rail with git sha, snapshot indicator, project id, restore with busy state, and empty state.",
+      "registryDependencies": ["utils", "neon-tokens", "button", "empty-state"],
+      "files": [
+        {
+          "path": "src/components/checkpoint-timeline/checkpoint-timeline.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "dialog",
+      "type": "registry:ui",
+      "title": "Dialog",
+      "description": "Base UI dialog in the house chrome: card panel, hairline border, quiet rise.",
+      "registryDependencies": ["utils", "neon-tokens"],
+      "files": [
+        {
+          "path": "src/components/ui/dialog.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "confirm-dialog",
+      "type": "registry:component",
+      "title": "ConfirmDialog",
+      "description": "Destructive confirmation modal armed by press-and-hold, with keyboard hold support.",
+      "registryDependencies": ["utils", "neon-tokens", "button", "dialog"],
+      "files": [
+        {
+          "path": "src/components/confirm-dialog/confirm-dialog.tsx",
+          "type": "registry:component"
+        }
+      ]
     }
   ]
 }

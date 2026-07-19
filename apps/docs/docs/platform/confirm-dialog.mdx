@@ -1,0 +1,80 @@
+---
+title: ConfirmDialog
+description: Destructive confirmation armed by press-and-hold.
+---
+
+`ConfirmDialog` makes destructive actions deliberate: a modal that asks in plain language, and a confirm action you have to **hold**. Press and a destructive fill sweeps across the button for exactly `holdMs` — linear, because it's progress, not decoration. Release early and it springs back, no harm done; hold to the end and the action arms once and the dialog closes. Holding Space or Enter works the same way. [CheckpointTimeline](/docs/agent/checkpoint-timeline) pops it before every restore.
+
+<ConfirmDialogPreview />
+
+## Install
+
+```bash
+npx shadcn@latest add https://ui.neon.com/r/confirm-dialog.json
+```
+
+## Usage
+
+```tsx
+import { ConfirmDialog } from "@/components/neon-ui/confirm-dialog";
+
+<ConfirmDialog
+  open={open}
+  onOpenChange={setOpen}
+  onConfirm={() => deleteApp(app.id)}
+  title="Delete this app?"
+  description="acme-crm and its Neon project are deleted immediately. This cannot be undone."
+  confirmLabel="Hold to delete"
+/>;
+```
+
+## Props
+
+<TypeTable
+  type={{
+    open: {
+      type: "boolean",
+      description: "Controlled open state.",
+      required: true,
+    },
+    onOpenChange: {
+      type: "(open: boolean) => void",
+      required: true,
+    },
+    onConfirm: {
+      type: "() => void",
+      description:
+        "Runs once when the hold completes; the dialog closes itself.",
+      required: true,
+    },
+    title: {
+      type: "string",
+      description: "One line naming the action.",
+      required: true,
+    },
+    description: {
+      type: "ReactNode",
+      description: "What happens and what it costs — say it plainly.",
+    },
+    confirmLabel: {
+      type: "string",
+      default: '"Hold to confirm"',
+    },
+    cancelLabel: {
+      type: "string",
+      default: '"Cancel"',
+    },
+    holdMs: {
+      type: "number",
+      description: "How long the hold takes to arm.",
+      default: "1200",
+    },
+  }}
+/>
+
+## Accessibility
+
+- Base UI dialog semantics: focus trap, `aria-modal`, labelled by the title, described by the description; Escape and the cancel action both dismiss.
+- The hold works from the keyboard — hold Space or Enter; key repeat is ignored, releasing cancels.
+- The progress fill is decorative (`aria-hidden`); the hold requirement is stated in the visible label.
+- Closing mid-hold clears the timer — the action can never fire after dismissal.

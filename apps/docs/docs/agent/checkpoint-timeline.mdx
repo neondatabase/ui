@@ -1,0 +1,66 @@
+---
+title: CheckpointTimeline
+description: Checkpoint history with snapshot indicators and restore actions.
+---
+
+`CheckpointTimeline` is the workspace's undo history: every agent checkpoint on a hairline rail, newest first, with square markers in the status vocabulary — the latest holds primary, the past stays muted. Each row carries the label, a relative timestamp, and mono metadata chips: the git sha, a snapshot indicator when a database snapshot rides along, and the tenant project id. Restore pins the acting row under a shimmering label and locks the rest until the flight lands. Before the first checkpoint exists, [EmptyState](/docs/agent/empty-state) holds the space.
+
+<CheckpointTimelinePreview />
+
+## Install
+
+```bash
+npx shadcn@latest add https://ui.neon.com/r/checkpoint-timeline.json
+```
+
+## Usage
+
+```tsx
+import { CheckpointTimeline } from "@/components/neon-ui/checkpoint-timeline";
+
+<CheckpointTimeline
+  checkpoints={checkpoints}
+  restoringId={restoringId}
+  onRestore={(id) => restoreCheckpoint(id)}
+/>;
+```
+
+## States
+
+- **Entrance** — rows rise 8px one at a time, 60ms apart, newest first.
+- **Restoring** — the acting row's action swaps to a shimmering "Restoring…" and every other action dims until `restoringId` clears.
+- **Empty** — the built-in EmptyState explains what checkpoints are; replace it with the `empty` slot.
+
+## Props
+
+<TypeTable
+  type={{
+    checkpoints: {
+      type: "Checkpoint[]",
+      description:
+        "Newest first: id, label, createdAt, plus optional sha, snapshot, projectId.",
+      required: true,
+    },
+    onRestore: {
+      type: "(id: string) => void",
+      description: "Renders the restore action on every row.",
+    },
+    restoringId: {
+      type: "string | null",
+      description:
+        "The checkpoint currently restoring; locks every other action.",
+      default: "null",
+    },
+    empty: {
+      type: "ReactNode",
+      description: "Override the built-in empty state.",
+    },
+  }}
+/>
+
+## Accessibility
+
+- The history is an ordered list — position in time is structural, not visual.
+- Restore buttons are real buttons with busy state communicated through the label swap; locked actions are `disabled`.
+- Markers and the rail are decorative (`aria-hidden`); the timestamp text carries recency.
+- Entrance stagger and shimmer are static under `prefers-reduced-motion`.

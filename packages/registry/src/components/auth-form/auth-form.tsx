@@ -634,13 +634,14 @@ const AuthFormAction = ({
       disabled={isBusy}
       type="submit"
     >
-      <span
-        className={cn("fade-in-0 animate-in duration-300", {
-          "shimmer shimmer-duration-2400": isBusy,
-        })}
-        key={String(isBusy)}
-      >
-        {isBusy ? working : label}
+      {/* animate-in and shimmer both own the animation shorthand, so
+          the shimmer rides an inner span. */}
+      <span className="fade-in-0 animate-in duration-300" key={String(isBusy)}>
+        <span
+          className={cn("block", { "shimmer shimmer-duration-2400": isBusy })}
+        >
+          {isBusy ? working : label}
+        </span>
       </span>
     </Button>
   </div>
