@@ -126,6 +126,11 @@ const GrainFill = ({ effort }: { effort: ThinkingEffort }) => {
     const draw = (now: number) => {
       frame = requestAnimationFrame(draw);
 
+      // Skip canvas work while hidden — the loop stays alive for free.
+      if (!canvas.checkVisibility()) {
+        return;
+      }
+
       const host = canvas.parentElement;
       const fill = host?.querySelector<HTMLElement>(
         '[data-slot="elastic-slider-fill"]'

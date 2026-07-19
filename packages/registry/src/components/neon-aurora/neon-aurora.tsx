@@ -171,6 +171,13 @@ export const NeonAurora = ({
     resize();
 
     const draw = (now: number) => {
+      // Skip GL work while hidden (e.g. behind a docs Code overlay's
+      // visibility:hidden panel) — keep the loop alive, drop the cost.
+      if (!canvas.checkVisibility()) {
+        frame = requestAnimationFrame(draw);
+        return;
+      }
+
       gl.uniform1f(uTime, (now / 1000) * speed);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
       frame = requestAnimationFrame(draw);

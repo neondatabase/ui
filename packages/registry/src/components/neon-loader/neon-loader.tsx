@@ -160,6 +160,12 @@ export const NeonLoader = ({
     };
 
     const draw = (now: number) => {
+      // Skip canvas work while hidden — keep the loop alive, drop the cost.
+      if (!canvas.checkVisibility()) {
+        frame = requestAnimationFrame(draw);
+        return;
+      }
+
       const t = (now % duration) / duration;
       const progress = resolveProgress(t);
       const tick = Math.floor((now / 1000) * LOADER_TIMING.noiseFps);

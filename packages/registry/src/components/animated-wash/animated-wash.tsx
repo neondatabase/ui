@@ -167,6 +167,12 @@ export const AnimatedWash = ({
     hoverHost?.addEventListener("pointerleave", dropLift);
 
     const draw = (now: number) => {
+      // Skip GL work while hidden — keep the loop alive, drop the cost.
+      if (!canvas.checkVisibility()) {
+        frame = requestAnimationFrame(draw);
+        return;
+      }
+
       lift += (liftTarget - lift) * LIFT_EASE;
       gl.uniform1f(uLift, lift);
       gl.uniform1f(uTime, (now / 1000) * speed);
