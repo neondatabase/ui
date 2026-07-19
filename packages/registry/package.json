@@ -17,7 +17,6 @@
     "@ai-sdk/react": "^4.0.34",
     "@base-ui/react": "^1.6.0",
     "@neondatabase/api-client": "^2.7.3",
-    "@neondatabase/serverless": "^1.1.0",
     "@shadcn/react": "^0.2.1",
     "@visx/curve": "^4.0.0",
     "@visx/scale": "^4.0.0",

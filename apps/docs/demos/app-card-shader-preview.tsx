@@ -3,11 +3,12 @@
 
 import AppCardShaderDemo from "./app-card-shader-demo";
 import source from "./app-card-shader-demo.tsx?raw";
+import { highlightedHtml } from "./generated/app-card-shader-preview";
 import PreviewTabs from "./preview-tabs";
 
 export default function AppCardShaderPreview() {
   return (
-    <PreviewTabs minHeight={280} source={source}>
+    <PreviewTabs minHeight={280} highlighted={highlightedHtml} source={source}>
       <AppCardShaderDemo />
     </PreviewTabs>
   );

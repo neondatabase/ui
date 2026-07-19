@@ -4,11 +4,12 @@
 import { ProvisioningStatusDemo } from "@neon-ui/registry/components/provisioning-status/demo";
 
 import source from "../../../packages/registry/src/components/provisioning-status/demo.tsx?raw";
+import { highlightedHtml } from "./generated/provisioning-status-preview";
 import PreviewTabs from "./preview-tabs";
 
 export default function AuthFormPreview() {
   return (
-    <PreviewTabs minHeight={360} source={source}>
+    <PreviewTabs minHeight={360} highlighted={highlightedHtml} source={source}>
       <ProvisioningStatusDemo />
     </PreviewTabs>
   );

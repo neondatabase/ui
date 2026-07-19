@@ -22,21 +22,25 @@ export const ToolCallChipExample = ({
   parts: UIMessagePart<UIDataTypes, UITools>[];
 }) => (
   <div className="flex flex-wrap gap-2">
-    {parts.map((part, index) => {
+    {parts.map((part) => {
       if (part.type === "dynamic-tool") {
         return (
           <ToolCallChip
-            key={`${part.toolName}-${index.toString()}`}
+            key={part.toolCallId}
             name={part.toolName}
             state={chipState(part.state)}
           />
         );
       }
 
-      if (part.type.startsWith("tool-") && "state" in part) {
+      if (
+        part.type.startsWith("tool-") &&
+        "state" in part &&
+        "toolCallId" in part
+      ) {
         return (
           <ToolCallChip
-            key={`${part.type}-${index.toString()}`}
+            key={part.toolCallId}
             name={part.type.slice("tool-".length)}
             state={chipState(String(part.state))}
           />

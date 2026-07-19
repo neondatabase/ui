@@ -4,11 +4,12 @@
 import { ThinkingSelectDemo } from "@neon-ui/registry/components/thinking-select/demo";
 
 import source from "../../../packages/registry/src/components/thinking-select/demo.tsx?raw";
+import { highlightedHtml } from "./generated/thinking-select-preview";
 import PreviewTabs from "./preview-tabs";
 
 export default function ThinkingSelectPreview() {
   return (
-    <PreviewTabs minHeight={320} source={source}>
+    <PreviewTabs minHeight={320} highlighted={highlightedHtml} source={source}>
       <ThinkingSelectDemo />
     </PreviewTabs>
   );

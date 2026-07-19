@@ -4,11 +4,12 @@
 import { PreviewFrameDemo } from "@neon-ui/registry/components/preview-frame/demo";
 
 import source from "../../../packages/registry/src/components/preview-frame/demo.tsx?raw";
+import { highlightedHtml } from "./generated/preview-frame-preview";
 import PreviewTabs from "./preview-tabs";
 
 export default function AuthFormPreview() {
   return (
-    <PreviewTabs minHeight={440} source={source}>
+    <PreviewTabs minHeight={440} highlighted={highlightedHtml} source={source}>
       <PreviewFrameDemo />
     </PreviewTabs>
   );

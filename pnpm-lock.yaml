@@ -47,9 +47,6 @@ importers:
       shadcn:
         specifier: ^4.13.0
         version: 4.13.0(typescript@5.9.3)
-      shiki:
-        specifier: ^4.3.1
-        version: 4.3.1
     devDependencies:
       '@types/react':
         specifier: ^19.2.0
@@ -57,6 +54,9 @@ importers:
       '@types/react-dom':
         specifier: ^19.2.0
         version: 19.2.3(@types/react@19.2.17)
+      shiki:
+        specifier: ^4.3.1
+        version: 4.3.1
       tw-animate-css:
         specifier: ^1.4.0
         version: 1.4.0
@@ -78,9 +78,6 @@ importers:
       '@neondatabase/api-client':
         specifier: ^2.7.3
         version: 2.7.3
-      '@neondatabase/serverless':
-        specifier: ^1.1.0
-        version: 1.1.0
       '@shadcn/react':
         specifier: ^0.2.1
         version: 0.2.1(@types/react@19.2.17)(react@19.2.7)
@@ -1122,10 +1119,6 @@ packages:
 
   '@neondatabase/api-client@2.7.3':
     resolution: {integrity: sha512-hqJmcd8qeCNjcsSNlz77peGIwB9SLj8NC6kK6AjPRyb4bUvXB+TCmffx5893/0oRHYjqpua0nBLa5ql8z6acmw==}
-
-  '@neondatabase/serverless@1.1.0':
-    resolution: {integrity: sha512-r3ZZhRjEcfEdKIZnoB1RusNgvHuaBRqfCzV4Gi+5A9yUX0S4HTws/ASWqt13wL4y4I+0rqsWGdA2w7EQXHi3+Q==}
-    engines: {node: '>=19.0.0'}
 
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -6993,8 +6986,6 @@ snapshots:
     transitivePeerDependencies:
       - debug
       - supports-color
-
-  '@neondatabase/serverless@1.1.0': {}
 
   '@nodelib/fs.scandir@2.1.5':
     dependencies:

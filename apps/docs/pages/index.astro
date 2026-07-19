@@ -33,7 +33,9 @@ const { config, navigation } = data;
       </h1>
       <div class="actions">
         <a class="btn-primary" href="/agent/agent-chat">Browse components</a>
-        <InstallPicker client:load />
+        <div class="install">
+          <InstallPicker client:media="(min-width: 40rem)" />
+        </div>
       </div>
     </div>
   </main>
@@ -115,6 +117,18 @@ const { config, navigation } = data;
 
   .btn-primary:hover {
     box-shadow: 0 0 36px -6px var(--primary);
+  }
+
+  /* The install command is a desktop affordance: on a phone it wraps
+   * badly and nobody pastes shell commands from there anyway. */
+  .install {
+    display: contents;
+  }
+
+  @media (max-width: 39.9375rem) {
+    .install {
+      display: none;
+    }
   }
 
 

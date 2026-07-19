@@ -4,11 +4,12 @@
 import { AppCardDemo } from "@neon-ui/registry/components/app-card/demo";
 
 import source from "../../../packages/registry/src/components/app-card/demo.tsx?raw";
+import { highlightedHtml } from "./generated/app-card-preview";
 import PreviewTabs from "./preview-tabs";
 
 export default function AppCardPreview() {
   return (
-    <PreviewTabs minHeight={400} source={source}>
+    <PreviewTabs minHeight={400} highlighted={highlightedHtml} source={source}>
       <AppCardDemo />
     </PreviewTabs>
   );

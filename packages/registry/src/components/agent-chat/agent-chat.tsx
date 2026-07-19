@@ -2,7 +2,7 @@
 
 import type { ChatStatus, UIMessage } from "ai";
 import { Loader2Icon, SendIcon } from "lucide-react";
-import { motion, useReducedMotion } from "motion/react";
+import { domAnimation, LazyMotion, m, useReducedMotion } from "motion/react";
 import type {
   ComponentProps,
   FormEvent,
@@ -65,13 +65,13 @@ const TurnEntrance = ({ children }: { children: ReactNode }) => {
   }
 
   return (
-    <motion.div
+    <m.div
       animate={{ opacity: 1, y: 0 }}
       initial={{ opacity: 0, y: TURN_RISE_PX }}
       transition={TURN_SPRING}
     >
       {children}
-    </motion.div>
+    </m.div>
   );
 };
 
@@ -459,105 +459,107 @@ export const AgentChat = ({
       : null;
 
   return (
-    <div
-      className={cn("flex min-h-0 flex-col", className)}
-      data-slot="agent-chat"
-      {...props}
-    >
-      <MessageScrollerProvider autoScroll defaultScrollPosition="end">
-        <MessageScroller className="relative min-h-0 flex-1">
-          <MessageScrollerViewport className="neon-scroll-fade h-full">
-            <MessageScrollerContent className="p-4">
-              {messages.length === 0 && (emptyState ?? <DefaultEmptyState />)}
-              {messages.map((message, index) => {
-                let marker: string | null = null;
+    <LazyMotion features={domAnimation} strict>
+      <div
+        className={cn("flex min-h-0 flex-col", className)}
+        data-slot="agent-chat"
+        {...props}
+      >
+        <MessageScrollerProvider autoScroll defaultScrollPosition="end">
+          <MessageScroller className="relative min-h-0 flex-1">
+            <MessageScrollerViewport className="neon-scroll-fade h-full">
+              <MessageScrollerContent className="p-4">
+                {messages.length === 0 && (emptyState ?? <DefaultEmptyState />)}
+                {messages.map((message, index) => {
+                  let marker: string | null = null;
 
-                if (message.role === "user") {
-                  const metadata = turnMetadata(message);
-                  const previous = messages
-                    .slice(0, index)
-                    .findLast((entry) => entry.role === "user");
+                  if (message.role === "user") {
+                    const metadata = turnMetadata(message);
+                    const previous = messages
+                      .slice(0, index)
+                      .findLast((entry) => entry.role === "user");
 
-                  if (metadata) {
-                    marker = switchLabel(
-                      metadata,
-                      previous ? turnMetadata(previous) : null
-                    );
+                    if (metadata) {
+                      marker = switchLabel(
+                        metadata,
+                        previous ? turnMetadata(previous) : null
+                      );
+                    }
                   }
-                }
 
-                return (
-                  <MessageScrollerItem
-                    className={cn(
-                      message.role === "user"
-                        ? "mt-6 first:mt-0"
-                        : "mt-3 first:mt-0"
-                    )}
-                    key={message.id}
-                    scrollAnchor={index === lastUserIndex}
-                  >
-                    <TurnEntrance>
-                      {marker ? (
-                        <Marker className="mb-3" variant="separator">
-                          <MarkerContent className="font-mono text-[10px]">
-                            {marker}
-                          </MarkerContent>
-                        </Marker>
-                      ) : null}
-                      <ChatMessage message={message} />
-                    </TurnEntrance>
-                  </MessageScrollerItem>
-                );
-              })}
-              {status === "submitted" && (
-                <ChatWorkingIndicator className="mt-3" />
-              )}
-              {pendingSwitch && !busy ? (
-                <TurnEntrance>
-                  <Marker
-                    aria-live="polite"
-                    className="mt-3"
-                    variant="separator"
-                  >
-                    <MarkerContent className="font-mono text-[10px]">
-                      {pendingSwitch}
-                    </MarkerContent>
-                  </Marker>
-                </TurnEntrance>
-              ) : null}
-              {status === "error" && (
-                <div
-                  className="mt-3 flex items-center justify-between gap-3 border border-destructive/20 bg-destructive/[0.045] px-3 py-2"
-                  role="alert"
-                >
-                  <p className="text-destructive text-xs">
-                    The agent hit an error. Your message wasn’t lost.
-                  </p>
-                  {onRetry ? (
-                    <button
-                      className="shrink-0 border border-border/60 px-2 py-1 text-foreground text-xs transition-colors hover:border-border"
-                      onClick={onRetry}
-                      type="button"
+                  return (
+                    <MessageScrollerItem
+                      className={cn(
+                        message.role === "user"
+                          ? "mt-6 first:mt-0"
+                          : "mt-3 first:mt-0"
+                      )}
+                      key={message.id}
+                      scrollAnchor={index === lastUserIndex}
                     >
-                      Retry
-                    </button>
-                  ) : null}
-                </div>
-              )}
-            </MessageScrollerContent>
-          </MessageScrollerViewport>
-          <MessageScrollerButton className="-translate-x-1/2 absolute bottom-3 left-1/2" />
-        </MessageScroller>
-      </MessageScrollerProvider>
+                      <TurnEntrance>
+                        {marker ? (
+                          <Marker className="mb-3" variant="separator">
+                            <MarkerContent className="font-mono text-[10px]">
+                              {marker}
+                            </MarkerContent>
+                          </Marker>
+                        ) : null}
+                        <ChatMessage message={message} />
+                      </TurnEntrance>
+                    </MessageScrollerItem>
+                  );
+                })}
+                {status === "submitted" && (
+                  <ChatWorkingIndicator className="mt-3" />
+                )}
+                {pendingSwitch && !busy ? (
+                  <TurnEntrance>
+                    <Marker
+                      aria-live="polite"
+                      className="mt-3"
+                      variant="separator"
+                    >
+                      <MarkerContent className="font-mono text-[10px]">
+                        {pendingSwitch}
+                      </MarkerContent>
+                    </Marker>
+                  </TurnEntrance>
+                ) : null}
+                {status === "error" && (
+                  <div
+                    className="mt-3 flex items-center justify-between gap-3 border border-destructive/20 bg-destructive/[0.045] px-3 py-2"
+                    role="alert"
+                  >
+                    <p className="text-destructive text-xs">
+                      The agent hit an error. Your message wasn’t lost.
+                    </p>
+                    {onRetry ? (
+                      <button
+                        className="shrink-0 border border-border/60 px-2 py-1 text-foreground text-xs transition-colors hover:border-border"
+                        onClick={onRetry}
+                        type="button"
+                      >
+                        Retry
+                      </button>
+                    ) : null}
+                  </div>
+                )}
+              </MessageScrollerContent>
+            </MessageScrollerViewport>
+            <MessageScrollerButton className="-translate-x-1/2 absolute bottom-3 left-1/2" />
+          </MessageScroller>
+        </MessageScrollerProvider>
 
-      <ChatInput
-        busy={busy}
-        className="shrink-0"
-        controls={controls}
-        disabled={disabled}
-        onSend={onSend}
-        placeholder={placeholder}
-      />
-    </div>
+        <ChatInput
+          busy={busy}
+          className="shrink-0"
+          controls={controls}
+          disabled={disabled}
+          onSend={onSend}
+          placeholder={placeholder}
+        />
+      </div>
+    </LazyMotion>
   );
 };

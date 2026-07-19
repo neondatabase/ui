@@ -4,11 +4,12 @@
 import { AnimatedWashDemo } from "@neon-ui/registry/components/animated-wash/demo";
 
 import source from "../../../packages/registry/src/components/animated-wash/demo.tsx?raw";
+import { highlightedHtml } from "./generated/animated-wash-preview";
 import PreviewTabs from "./preview-tabs";
 
 export default function AnimatedWashPreview() {
   return (
-    <PreviewTabs minHeight={320} source={source}>
+    <PreviewTabs minHeight={320} highlighted={highlightedHtml} source={source}>
       <AnimatedWashDemo />
     </PreviewTabs>
   );

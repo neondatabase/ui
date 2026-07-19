@@ -4,11 +4,12 @@
 import { StatusBadgeDemo } from "@neon-ui/registry/components/status-badge/demo";
 
 import source from "../../../packages/registry/src/components/status-badge/demo.tsx?raw";
+import { highlightedHtml } from "./generated/status-badge-preview";
 import PreviewTabs from "./preview-tabs";
 
 export default function StatusBadgePreview() {
   return (
-    <PreviewTabs minHeight={320} source={source}>
+    <PreviewTabs minHeight={320} highlighted={highlightedHtml} source={source}>
       <StatusBadgeDemo />
     </PreviewTabs>
   );

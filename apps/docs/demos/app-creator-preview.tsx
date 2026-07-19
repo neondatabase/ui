@@ -4,11 +4,12 @@
 import { AppCreatorDemo } from "@neon-ui/registry/components/app-creator/demo";
 
 import source from "../../../packages/registry/src/components/app-creator/demo.tsx?raw";
+import { highlightedHtml } from "./generated/app-creator-preview";
 import PreviewTabs from "./preview-tabs";
 
 export default function AppCreatorPreview() {
   return (
-    <PreviewTabs minHeight={320} source={source}>
+    <PreviewTabs minHeight={320} highlighted={highlightedHtml} source={source}>
       <AppCreatorDemo />
     </PreviewTabs>
   );

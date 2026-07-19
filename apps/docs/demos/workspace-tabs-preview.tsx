@@ -4,11 +4,12 @@
 import { WorkspaceTabsDemo } from "@neon-ui/registry/components/workspace-tabs/demo";
 
 import source from "../../../packages/registry/src/components/workspace-tabs/demo.tsx?raw";
+import { highlightedHtml } from "./generated/workspace-tabs-preview";
 import PreviewTabs from "./preview-tabs";
 
 export default function AuthFormPreview() {
   return (
-    <PreviewTabs minHeight={360} source={source}>
+    <PreviewTabs minHeight={360} highlighted={highlightedHtml} source={source}>
       <WorkspaceTabsDemo />
     </PreviewTabs>
   );

@@ -388,13 +388,18 @@ details[class*="group/tt"] code.text-accent {
  */
 /* The sidebar's scrollbar sits on the LEFT edge (rtl trick on the
  * scroll container; children flip back to ltr), so it never crowds
- * the labels. */
-[data-blume-nav-drawer] {
-  direction: rtl;
-}
+ * the labels. Desktop only: below lg the same element is the
+ * off-canvas drawer, and faking rtl flips its start-0 anchor and
+ * rtl:translate-x hide direction, leaving it stuck half-open on
+ * mobile. */
+@media (min-width: 64rem) {
+  [data-blume-nav-drawer] {
+    direction: rtl;
+  }
 
-[data-blume-nav-drawer] > * {
-  direction: ltr;
+  [data-blume-nav-drawer] > * {
+    direction: ltr;
+  }
 }
 
 /* A hairline under the nav, in the house stroke. */
@@ -451,11 +456,20 @@ dialog > div:last-child > div:last-child > span:last-child {
   background: var(--muted-foreground);
 }
 
-.preview-code pre code {
+/*
+ * Build-time Shiki output: colors are inlined with light-dark(), and the
+ * root is a <div class="shiki"> (not <pre>) so Blume's `.prose pre`
+ * enhancer skips it. Restore pre-like text layout here.
+ */
+.preview-code .shiki {
+  white-space: pre;
+}
+
+.preview-code .shiki code {
   counter-reset: line;
 }
 
-.preview-code pre code .line::before {
+.preview-code .shiki code .line::before {
   counter-increment: line;
   content: counter(line);
   display: inline-block;

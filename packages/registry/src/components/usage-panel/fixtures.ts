@@ -148,18 +148,4 @@ export const sampleMetrics: UsageMetric[] = [
   },
 ];
 
-/** The free-plan view: branch compute is locked. */
-export const gatedMetrics: UsageMetric[] = [
-  ...sampleMetrics,
-  {
-    format: "number",
-    gated: true,
-    id: "branch_compute_unit_seconds",
-    label: "Branch compute",
-    value: 0,
-  },
-];
-
-export const samplePeriod = "Jul 1 – Jul 18";
-
 export const sampleLag = "metered through 21:40 UTC · ~15m behind";

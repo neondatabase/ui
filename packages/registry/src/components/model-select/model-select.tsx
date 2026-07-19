@@ -2,7 +2,7 @@
 
 import { Select as SelectPrimitive } from "@base-ui/react/select";
 import { SearchIcon } from "lucide-react";
-import { motion } from "motion/react";
+import { domAnimation, LazyMotion, m } from "motion/react";
 import type { ComponentProps, KeyboardEvent, ReactNode } from "react";
 import { useEffect, useRef, useState } from "react";
 
@@ -144,18 +144,20 @@ const HighlightGlide = () => {
   }, []);
 
   return (
-    <motion.span
-      animate={
-        rect
-          ? { height: rect.height, opacity: 1, top: rect.top }
-          : { opacity: 0 }
-      }
-      aria-hidden="true"
-      className="pointer-events-none absolute inset-x-1 border-primary border-l-2 bg-accent"
-      initial={false}
-      ref={ref}
-      transition={GLIDE_SPRING}
-    />
+    <LazyMotion features={domAnimation} strict>
+      <m.span
+        animate={
+          rect
+            ? { height: rect.height, opacity: 1, top: rect.top }
+            : { opacity: 0 }
+        }
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-1 border-primary border-l-2 bg-accent"
+        initial={false}
+        ref={ref}
+        transition={GLIDE_SPRING}
+      />
+    </LazyMotion>
   );
 };
 
@@ -277,8 +279,9 @@ export const ModelSelect = ({
 }: ModelSelectProps) => {
   const [query, setQuery] = useState("");
   const searchRef = useRef<HTMLInputElement>(null);
-  const visible = excludeModels?.length
-    ? models.filter((model) => !excludeModels.includes(model.id))
+  const excluded = new Set(excludeModels);
+  const visible = excluded.size
+    ? models.filter((model) => !excluded.has(model.id))
     : models;
   const selected = visible.find(
     (model) => model.id === (value ?? defaultValue)

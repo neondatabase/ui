@@ -3,11 +3,12 @@
 
 import ChatMessageDemo from "./chat-message-demo";
 import source from "./chat-message-demo.tsx?raw";
+import { highlightedHtml } from "./generated/chat-message-preview";
 import PreviewTabs from "./preview-tabs";
 
 export default function ChatMessageDemoPreview() {
   return (
-    <PreviewTabs minHeight={360} source={source}>
+    <PreviewTabs minHeight={360} highlighted={highlightedHtml} source={source}>
       <ChatMessageDemo />
     </PreviewTabs>
   );

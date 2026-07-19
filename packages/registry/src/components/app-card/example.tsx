@@ -25,18 +25,23 @@ const projectStatus = (project: NeonProject): AppStatus => {
   }
 };
 
+const RELATIVE_TIME_UNITS: [Intl.RelativeTimeFormatUnit, number][] = [
+  ["day", 86_400],
+  ["hour", 3600],
+  ["minute", 60],
+];
+
+// Built once at module scope: constructing an Intl formatter is expensive.
+const relativeTimeFormatter = new Intl.RelativeTimeFormat("en", {
+  style: "narrow",
+});
+
 const timeAgo = (iso: string) => {
   const seconds = Math.max(0, (Date.now() - Date.parse(iso)) / 1000);
-  const units: [Intl.RelativeTimeFormatUnit, number][] = [
-    ["day", 86_400],
-    ["hour", 3600],
-    ["minute", 60],
-  ];
-  const formatter = new Intl.RelativeTimeFormat("en", { style: "narrow" });
 
-  for (const [unit, span] of units) {
+  for (const [unit, span] of RELATIVE_TIME_UNITS) {
     if (seconds >= span) {
-      return formatter.format(-Math.floor(seconds / span), unit);
+      return relativeTimeFormatter.format(-Math.floor(seconds / span), unit);
     }
   }
 

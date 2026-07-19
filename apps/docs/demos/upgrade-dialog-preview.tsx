@@ -4,11 +4,12 @@
 import { UpgradeDialogDemo } from "@neon-ui/registry/components/upgrade-dialog/demo";
 
 import source from "../../../packages/registry/src/components/upgrade-dialog/demo.tsx?raw";
+import { highlightedHtml } from "./generated/upgrade-dialog-preview";
 import PreviewTabs from "./preview-tabs";
 
 export default function AuthFormPreview() {
   return (
-    <PreviewTabs minHeight={360} source={source}>
+    <PreviewTabs minHeight={360} highlighted={highlightedHtml} source={source}>
       <UpgradeDialogDemo />
     </PreviewTabs>
   );

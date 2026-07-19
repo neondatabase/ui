@@ -4,11 +4,12 @@
 import { MetricCardDemo } from "@neon-ui/registry/components/metric-card/demo";
 
 import source from "../../../packages/registry/src/components/metric-card/demo.tsx?raw";
+import { highlightedHtml } from "./generated/metric-card-preview";
 import PreviewTabs from "./preview-tabs";
 
 export default function MetricCardPreview() {
   return (
-    <PreviewTabs minHeight={400} source={source}>
+    <PreviewTabs minHeight={400} highlighted={highlightedHtml} source={source}>
       <MetricCardDemo />
     </PreviewTabs>
   );

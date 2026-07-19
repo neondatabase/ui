@@ -1,6 +1,3 @@
-/** The workspace's standard tab set. */
-export const workspaceTabIds = ["preview", "checkpoints", "usage"] as const;
-
 export const sampleCheckpointCount = 4;
 
 export const paneCopy = {

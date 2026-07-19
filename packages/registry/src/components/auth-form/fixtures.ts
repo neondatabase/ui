@@ -6,9 +6,6 @@ export const sampleProviders: AuthProvider[] = [
   { id: "google", label: "Google" },
 ];
 
-/** A structured failure the way the API reports it. */
-export const sampleError = "That email and password don't match.";
-
 /** A server-side verdict pinned to one field. */
 export const sampleFieldErrors = {
   password: "Incorrect password.",

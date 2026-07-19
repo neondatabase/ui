@@ -3,11 +3,12 @@
 
 import ChatWorkingDemo from "./chat-working-demo";
 import source from "./chat-working-demo.tsx?raw";
+import { highlightedHtml } from "./generated/chat-working-preview";
 import PreviewTabs from "./preview-tabs";
 
 export default function ChatWorkingDemoPreview() {
   return (
-    <PreviewTabs minHeight={220} source={source}>
+    <PreviewTabs minHeight={220} highlighted={highlightedHtml} source={source}>
       <ChatWorkingDemo />
     </PreviewTabs>
   );
