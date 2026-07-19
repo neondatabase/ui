@@ -10,13 +10,6 @@ export default defineConfig({
   // domain — and flip to ui.neon.com automatically when that becomes
   // the production domain.
   description: "The UI Layer for building applications on Neon.",
-  // Component previews read straight from the registry demos, so the Preview
-  // tab renders the exact source the Code tab shows. theme.css injects the Neon
-  // design tokens into the isolated preview frame.
-  examples: {
-    css: "examples/theme.css",
-    source: "../../packages/registry/src/components/**/demo.tsx",
-  },
   // Header repository link, edit-on-GitHub, and feedback actions.
   github: {
     owner: "neonpostgres",
