@@ -379,6 +379,13 @@ details[class*="group/tt"] code.text-accent {
  * Preview card code section: CSS line numbers for Shiki's .line spans,
  * counted here so the markup stays plain source.
  */
+/* The site is dark-only (theme.mode: dark); Blume always renders the
+ * header theme toggle, so hide it — data-blume-theme-toggle is its
+ * stable hook. */
+[data-blume-theme-toggle] {
+  display: none !important;
+}
+
 /*
  * Search: collapse Blume's result-preview pane — the dialog becomes a
  * single full-width results list. The pane has no stable hook, so the
