@@ -33,7 +33,8 @@ import { PreviewFrame } from "@/components/neon-ui/preview-frame";
 
 - **Ready** — the app full bleed; the header dot holds primary.
 - **Refresh** — the built-in refresh remounts the iframe and the glyph turns once (500ms ease-out), so the click reads even when the reload is instant.
-- **Waking** — a scrim covers the app with the NeonLoader and one mono line; the dot breathes muted. Use it for cold starts and post-restart polling.
+- **Sleeping** — the app dims behind a scrim with a moon, mono `sleeping`, and a detail line; the dot rests dim. A click anywhere on the frame (or the wake action) calls `onWake`.
+- **Waking** — a scrim covers the app with the NeonLoader and one mono line; the dot breathes muted. Use it for cold starts, wakes, and post-restart polling.
 - **Error** — the scrim holds with a mono `error` prefix, an optional detail line, and a restart action; the dot cools to destructive.
 - **Reload on signal** — increment `reloadSignal` from outside (e.g. after each agent edit) to remount the frame with zero chrome motion.
 
@@ -60,9 +61,20 @@ Every overlay is absolute — the frame never changes height. The restart button
       default: "src",
     },
     state: {
-      type: '"ready" | "waking" | "error"',
-      description: "Lifecycle state; waking and error render as overlays.",
+      type: '"ready" | "sleeping" | "waking" | "error"',
+      description:
+        "Lifecycle state; everything but ready renders as an overlay.",
       default: '"ready"',
+    },
+    onWake: {
+      type: "() => void",
+      description:
+        "Renders the wake action in the sleeping state; the whole scrim is click-to-wake.",
+    },
+    sleepingDetail: {
+      type: "string",
+      description: "One line under the sleeping title.",
+      default: '"Compute suspended after inactivity."',
     },
     reloadSignal: {
       type: "number",

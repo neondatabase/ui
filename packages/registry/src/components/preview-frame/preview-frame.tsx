@@ -7,7 +7,7 @@ import { NeonLoader } from "@/components/neon-loader/neon-loader";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-export type PreviewFrameState = "ready" | "waking" | "error";
+export type PreviewFrameState = "ready" | "sleeping" | "waking" | "error";
 
 export type PreviewFrameProps = Omit<ComponentProps<"div">, "title"> & {
   /** The sandbox URL the frame renders. */
@@ -20,10 +20,15 @@ export type PreviewFrameProps = Omit<ComponentProps<"div">, "title"> & {
   /** Accessible name for the iframe, e.g. the app's name. */
   title: string;
   /**
-   * Lifecycle state: "ready" shows the app, "waking" covers it with
-   * the loader while the sandbox spins up, "error" offers a restart.
+   * Lifecycle state: "ready" shows the app, "sleeping" dims it behind
+   * a wake-on-click scrim, "waking" covers it with the loader while
+   * the sandbox spins up, "error" offers a restart.
    */
   state?: PreviewFrameState;
+  /** Renders the wake action in the sleeping state. */
+  onWake?: () => void;
+  /** One line under the sleeping title. */
+  sleepingDetail?: string;
   /**
    * Bump this number to force a reload from outside — e.g. after the
    * agent finishes an edit. Merged with the internal refresh count.
@@ -55,6 +60,10 @@ export type PreviewFrameProps = Omit<ComponentProps<"div">, "title"> & {
  *           ease-out) while the iframe remounts — the
  *           chrome acknowledges the click even when the
  *           app reloads too fast to notice
+ *  sleeping the app dims behind the scrim — suspended, not
+ *           gone; the dot rests dim, and a click anywhere
+ *           on the frame (or the wake action) brings the
+ *           compute back
  *  waking   a scrim covers the app; the NeonLoader
  *           resolves out of grain with one mono line under
  *           it; the dot breathes muted
@@ -68,6 +77,7 @@ export type PreviewFrameProps = Omit<ComponentProps<"div">, "title"> & {
 const STATE_DOT: Record<PreviewFrameState, string> = {
   error: "bg-destructive",
   ready: "bg-primary",
+  sleeping: "bg-muted-foreground/40",
   waking: "animate-pulse bg-muted-foreground/60 motion-reduce:animate-none",
 };
 
@@ -126,6 +136,21 @@ const ExternalIcon = () => (
 /** Strips the scheme so the readout stays quiet, like a browser. */
 const displayUrl = (src: string) => src.replace(/^https?:\/\//u, "");
 
+const MoonIcon = () => (
+  <svg
+    aria-hidden="true"
+    className="size-4 text-muted-foreground/70"
+    fill="none"
+    stroke="currentColor"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    strokeWidth="1.5"
+    viewBox="0 0 24 24"
+  >
+    <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" />
+  </svg>
+);
+
 export const PreviewFrame = ({
   actions,
   className,
@@ -133,6 +158,8 @@ export const PreviewFrame = ({
   errorDetail,
   onRefresh,
   onRestart,
+  onWake,
+  sleepingDetail = "Compute suspended after inactivity.",
   reloadSignal = 0,
   sandbox = "allow-scripts allow-same-origin allow-forms",
   src,
@@ -227,6 +254,30 @@ export const PreviewFrame = ({
           src={src}
           title={title}
         />
+        {state === "sleeping" ? (
+          /* One semantic wake affordance: the whole scrim is the button. */
+          <button
+            className={cn(
+              "fade-in-0 group/wake absolute inset-0 flex w-full animate-in flex-col items-center justify-center gap-3 bg-background/90 duration-300 motion-reduce:animate-none",
+              onWake ? "cursor-pointer" : "cursor-default"
+            )}
+            data-slot="preview-frame-sleeping"
+            disabled={!onWake}
+            onClick={onWake}
+            type="button"
+          >
+            <MoonIcon />
+            <p className="font-mono text-muted-foreground text-xs">sleeping</p>
+            <p className="max-w-sm text-center text-muted-foreground/70 text-xs">
+              {sleepingDetail}
+            </p>
+            {onWake ? (
+              <span className="mt-1 inline-flex h-6 items-center rounded-full border border-border/60 px-2.5 font-mono text-muted-foreground text-xs transition-colors group-hover/wake:border-primary/60 group-hover/wake:text-primary">
+                Wake sandbox
+              </span>
+            ) : null}
+          </button>
+        ) : null}
         {state === "waking" ? (
           <div
             className="fade-in-0 slide-in-from-bottom-1 absolute inset-0 flex animate-in flex-col items-center justify-center gap-4 bg-background/90 duration-300 motion-reduce:animate-none"

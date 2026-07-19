@@ -6,7 +6,7 @@ import { sampleErrorDetail, sampleSrc, sampleUrl } from "./fixtures";
 import type { PreviewFrameState } from "./preview-frame";
 import { PreviewFrame } from "./preview-frame";
 
-const STATES: PreviewFrameState[] = ["ready", "waking", "error"];
+const STATES: PreviewFrameState[] = ["ready", "sleeping", "waking", "error"];
 
 export const PreviewFrameDemo = () => {
   const [state, setState] = useState<PreviewFrameState>("ready");
@@ -23,6 +23,7 @@ export const PreviewFrameDemo = () => {
         displaySrc={sampleUrl}
         errorDetail={sampleErrorDetail}
         onRestart={restart}
+        onWake={restart}
         src={sampleSrc}
         state={state}
         title="acme-crm preview"
