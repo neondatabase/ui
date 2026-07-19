@@ -5,7 +5,7 @@ seo:
   image: /og-cards/docs/agent/thinking-model-select.png
 ---
 
-`ThinkingModelSelect` composes [ModelSelect](/docs/agent/model-select) and [ThinkingSelect](/docs/agent/thinking-select) into one control: the model popup gains a pinned thinking footer, the trigger echoes the current effort, and Tab cycles effort levels while the popup is open. The footer disappears automatically for models that cannot reason. Three sizes cover dense toolbars through roomy composer bars.
+`ThinkingModelSelect` composes [ModelSelect](/agent/model-select) and [ThinkingSelect](/agent/thinking-select) into one control: the model popup gains a pinned thinking footer, the trigger echoes the current effort, and Tab cycles effort levels while the popup is open. The footer disappears automatically for models that cannot reason. Three sizes cover dense toolbars through roomy composer bars.
 
 <ThinkingModelSelectPreview />
 
@@ -31,7 +31,7 @@ import { ThinkingModelSelect } from "@/components/neon-ui/thinking-model-select"
 
 ## Props
 
-Accepts every [ModelSelect](/docs/agent/model-select) prop except the composition slots (including `excludeModels`), plus:
+Accepts every [ModelSelect](/agent/model-select) prop except the composition slots (including `excludeModels`), plus:
 
 <TypeTable
   type={{
@@ -75,7 +75,7 @@ await fetch(`${gatewayUrl}/v1/chat/completions`, {
 
 ## Accessibility
 
-- Inherits [ModelSelect](/docs/agent/model-select)'s listbox semantics: keyboard-first navigation, type-to-search, and a labelled trigger.
-- The embedded effort slider is [ThinkingSelect](/docs/agent/thinking-select)'s labelled slider (`aria-label="Thinking effort"`), reachable with Tab from the list and adjustable with arrow keys.
+- Inherits [ModelSelect](/agent/model-select)'s listbox semantics: keyboard-first navigation, type-to-search, and a labelled trigger.
+- The embedded effort slider is [ThinkingSelect](/agent/thinking-select)'s labelled slider (`aria-label="Thinking effort"`), reachable with Tab from the list and adjustable with arrow keys.
 - The trigger's effort readout is decorative (`aria-hidden`); the slider carries the value for assistive technology.
 - Sparkle and glide motion are static under `prefers-reduced-motion`.

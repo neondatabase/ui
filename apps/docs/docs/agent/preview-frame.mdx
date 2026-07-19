@@ -5,7 +5,7 @@ seo:
   image: /og-cards/docs/agent/preview-frame.png
 ---
 
-`PreviewFrame` is the workspace's window into the running app: a sandboxed iframe in quiet chrome — a status dot, a mono URL readout, and refresh / restart / open-in-new-tab actions. The chrome never moves; lifecycle states play out as overlays. While the sandbox wakes, the [NeonLoader](/docs/platform/neon-loader) resolves out of grain over a scrim; on error, a structured panel offers a restart. When the agent finishes an edit, bump `reloadSignal` and the frame remounts without any chrome motion.
+`PreviewFrame` is the workspace's window into the running app: a sandboxed iframe in quiet chrome — a status dot, a mono URL readout, and refresh / restart / open-in-new-tab actions. The chrome never moves; lifecycle states play out as overlays. While the sandbox wakes, the [NeonLoader](/platform/neon-loader) resolves out of grain over a scrim; on error, a structured panel offers a restart. When the agent finishes an edit, bump `reloadSignal` and the frame remounts without any chrome motion.
 
 <PreviewFramePreview />
 

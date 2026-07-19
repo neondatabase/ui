@@ -5,7 +5,7 @@ seo:
   image: /og-cards/docs/agent/checkpoint-timeline.png
 ---
 
-`CheckpointTimeline` is the workspace's undo history: every agent checkpoint on a hairline rail, newest first, with square markers in the status vocabulary — the latest holds primary, the past stays muted. Each row carries the label, a relative timestamp, and mono metadata chips: the git sha, a snapshot indicator when a database snapshot rides along, and the tenant project id. Restore pins the acting row under a shimmering label and locks the rest until the flight lands. Before the first checkpoint exists, [EmptyState](/docs/agent/empty-state) holds the space.
+`CheckpointTimeline` is the workspace's undo history: every agent checkpoint on a hairline rail, newest first, with square markers in the status vocabulary — the latest holds primary, the past stays muted. Each row carries the label, a relative timestamp, and mono metadata chips: the git sha, a snapshot indicator when a database snapshot rides along, and the tenant project id. Restore pins the acting row under a shimmering label and locks the rest until the flight lands. Before the first checkpoint exists, [EmptyState](/agent/empty-state) holds the space.
 
 <CheckpointTimelinePreview />
 

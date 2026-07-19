@@ -2,7 +2,7 @@ import { defineConfig } from "blume";
 
 export default defineConfig({
   content: {
-    sources: [{ prefix: "docs", root: "docs", type: "filesystem" }],
+    sources: [{ root: "docs", type: "filesystem" }],
   },
   // deployment.site stays unset on purpose: Blume derives it from
   // Vercel's env (VERCEL_PROJECT_PRODUCTION_URL) per deployment, so

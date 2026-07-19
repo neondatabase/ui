@@ -5,7 +5,7 @@ seo:
   image: /og-cards/docs/agent/agent-chat.png
 ---
 
-`AgentChat` is the conversation pane for an agent platform: turns scroll in a message scroller that follows streams while you are pinned to the bottom (with a jump-to-latest button when you are not), user turns render as bubbles, agent turns as streamed markdown with [ToolCallChip](/docs/agent/tool-call-chip) invocations and quiet reasoning lines, and the composer has a controls slot for [ThinkingModelSelect](/docs/agent/thinking-model-select). Typed against the AI SDK's `UIMessage` — bring your own `useChat` transport.
+`AgentChat` is the conversation pane for an agent platform: turns scroll in a message scroller that follows streams while you are pinned to the bottom (with a jump-to-latest button when you are not), user turns render as bubbles, agent turns as streamed markdown with [ToolCallChip](/agent/tool-call-chip) invocations and quiet reasoning lines, and the composer has a controls slot for [ThinkingModelSelect](/agent/thinking-model-select). Typed against the AI SDK's `UIMessage` — bring your own `useChat` transport.
 
 The preview streams a scripted vibe-coding session through the real `useChat` lifecycle (no model or network): press send to play the next turn.
 
@@ -101,7 +101,7 @@ The composer on its own: auto-growing textarea, controls slot, Enter to send.
 
 ### ChatWorkingIndicator
 
-The busy row: the Neon mark and the status line painted with the same shadcn `shimmer` gradient, sweeping in sync. Tune both at once with `shimmer-duration-*` or `shimmer-color-*` on the wrapper; the grain-resolve [NeonLoader](/docs/platform/neon-loader) remains available standalone. Rendered automatically while a message is submitted; the `label` is yours.
+The busy row: the Neon mark and the status line painted with the same shadcn `shimmer` gradient, sweeping in sync. Tune both at once with `shimmer-duration-*` or `shimmer-color-*` on the wrapper; the grain-resolve [NeonLoader](/platform/neon-loader) remains available standalone. Rendered automatically while a message is submitted; the `label` is yours.
 
 <ChatWorkingPreview />
 
