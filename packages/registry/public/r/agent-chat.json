@@ -11,14 +11,14 @@
   ],
   "registryDependencies": [
     "utils",
-    "message",
-    "message-scroller",
-    "bubble",
-    "marker",
-    "button",
-    "tool-call-chip",
-    "neon-tokens",
-    "empty-state"
+    "https://ui.neon.com/r/message.json",
+    "https://ui.neon.com/r/message-scroller.json",
+    "https://ui.neon.com/r/bubble.json",
+    "https://ui.neon.com/r/marker.json",
+    "https://ui.neon.com/r/button.json",
+    "https://ui.neon.com/r/tool-call-chip.json",
+    "https://ui.neon.com/r/neon-tokens.json",
+    "https://ui.neon.com/r/empty-state.json"
   ],
   "files": [
     {

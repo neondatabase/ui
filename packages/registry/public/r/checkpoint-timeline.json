@@ -5,9 +5,9 @@
   "description": "Checkpoint history rail with git sha, snapshot indicator, project id, restore with busy state, and empty state.",
   "registryDependencies": [
     "utils",
-    "neon-tokens",
-    "button",
-    "empty-state"
+    "https://ui.neon.com/r/neon-tokens.json",
+    "https://ui.neon.com/r/button.json",
+    "https://ui.neon.com/r/empty-state.json"
   ],
   "files": [
     {

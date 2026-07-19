@@ -5,7 +5,7 @@
   "description": "Noise-resolve loading indicator animated from the official Neon mark.",
   "registryDependencies": [
     "utils",
-    "neon-tokens"
+    "https://ui.neon.com/r/neon-tokens.json"
   ],
   "files": [
     {

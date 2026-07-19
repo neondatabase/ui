@@ -5,9 +5,9 @@
   "description": "Pricing dialog with drawn-check feature list and a processing upgrade action.",
   "registryDependencies": [
     "utils",
-    "neon-tokens",
-    "button",
-    "dialog"
+    "https://ui.neon.com/r/neon-tokens.json",
+    "https://ui.neon.com/r/button.json",
+    "https://ui.neon.com/r/dialog.json"
   ],
   "files": [
     {

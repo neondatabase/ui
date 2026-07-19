@@ -5,8 +5,8 @@
   "description": "Workspace tab bar with gliding underline, per-tab action slot, and pane crossfade.",
   "registryDependencies": [
     "utils",
-    "neon-tokens",
-    "tabs"
+    "https://ui.neon.com/r/neon-tokens.json",
+    "https://ui.neon.com/r/tabs.json"
   ],
   "files": [
     {

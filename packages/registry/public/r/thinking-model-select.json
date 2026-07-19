@@ -5,9 +5,9 @@
   "description": "Model picker with an embedded reasoning-effort slider in the popup footer.",
   "registryDependencies": [
     "utils",
-    "model-select",
-    "thinking-select",
-    "neon-tokens"
+    "https://ui.neon.com/r/model-select.json",
+    "https://ui.neon.com/r/thinking-select.json",
+    "https://ui.neon.com/r/neon-tokens.json"
   ],
   "files": [
     {

@@ -5,9 +5,9 @@
   "description": "Sandbox iframe with wake, restart, and refresh lifecycle, reload-on-signal, and chrome header.",
   "registryDependencies": [
     "utils",
-    "neon-tokens",
-    "button",
-    "neon-loader"
+    "https://ui.neon.com/r/neon-tokens.json",
+    "https://ui.neon.com/r/button.json",
+    "https://ui.neon.com/r/neon-loader.json"
   ],
   "files": [
     {

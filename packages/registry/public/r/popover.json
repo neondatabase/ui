@@ -5,7 +5,7 @@
   "description": "Base UI popover in the house chrome.",
   "registryDependencies": [
     "utils",
-    "neon-tokens"
+    "https://ui.neon.com/r/neon-tokens.json"
   ],
   "files": [
     {

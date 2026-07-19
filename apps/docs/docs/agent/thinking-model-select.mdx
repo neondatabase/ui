@@ -72,3 +72,10 @@ await fetch(`${gatewayUrl}/v1/chat/completions`, {
   }),
 });
 ```
+
+## Accessibility
+
+- Inherits [ModelSelect](/docs/agent/model-select)'s listbox semantics: keyboard-first navigation, type-to-search, and a labelled trigger.
+- The embedded effort slider is [ThinkingSelect](/docs/agent/thinking-select)'s labelled slider (`aria-label="Thinking effort"`), reachable with Tab from the list and adjustable with arrow keys.
+- The trigger's effort readout is decorative (`aria-hidden`); the slider carries the value for assistive technology.
+- Sparkle and glide motion are static under `prefers-reduced-motion`.

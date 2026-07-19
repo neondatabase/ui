@@ -5,8 +5,8 @@
   "description": "The email/password card: mode switching, providers, structured errors, and a working state — Better Auth-shaped.",
   "registryDependencies": [
     "utils",
-    "neon-tokens",
-    "button"
+    "https://ui.neon.com/r/neon-tokens.json",
+    "https://ui.neon.com/r/button.json"
   ],
   "files": [
     {

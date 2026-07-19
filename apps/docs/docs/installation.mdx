@@ -15,6 +15,12 @@ npx shadcn@latest add https://ui.neon.com/r/branch-picker.json
 
 The component, its dependencies, and a typed example land in your components directory. From there it's your code: restyle it, rip parts out, wire it to your own state.
 
+Every component pulls in `components/tokens.css` — the Neon palette, radius, and animation keyframes. Import it once in your global stylesheet:
+
+```css
+@import "../components/tokens.css";
+```
+
 ## Prerequisites
 
 - React 19 and Tailwind v4

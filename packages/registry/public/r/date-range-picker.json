@@ -5,8 +5,8 @@
   "description": "Custom date range picker: mono pill trigger, preset rail, hand-built month grid with range wash.",
   "registryDependencies": [
     "utils",
-    "neon-tokens",
-    "popover"
+    "https://ui.neon.com/r/neon-tokens.json",
+    "https://ui.neon.com/r/popover.json"
   ],
   "files": [
     {

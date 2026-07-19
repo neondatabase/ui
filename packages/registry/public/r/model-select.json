@@ -8,8 +8,8 @@
   ],
   "registryDependencies": [
     "utils",
-    "select",
-    "neon-tokens"
+    "https://ui.neon.com/r/select.json",
+    "https://ui.neon.com/r/neon-tokens.json"
   ],
   "files": [
     {

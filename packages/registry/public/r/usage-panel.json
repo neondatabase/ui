@@ -5,9 +5,9 @@
   "description": "Per-project consumption grid composing MetricCard, with plan-gated metrics and metering-lag notice.",
   "registryDependencies": [
     "utils",
-    "neon-tokens",
-    "button",
-    "metric-card"
+    "https://ui.neon.com/r/neon-tokens.json",
+    "https://ui.neon.com/r/button.json",
+    "https://ui.neon.com/r/metric-card.json"
   ],
   "files": [
     {

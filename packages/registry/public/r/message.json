@@ -5,7 +5,7 @@
   "description": "Conversation message layout primitive with avatar, content, and footer.",
   "registryDependencies": [
     "utils",
-    "neon-tokens"
+    "https://ui.neon.com/r/neon-tokens.json"
   ],
   "files": [
     {

@@ -8,8 +8,8 @@
   ],
   "registryDependencies": [
     "utils",
-    "elastic-slider",
-    "neon-tokens"
+    "https://ui.neon.com/r/elastic-slider.json",
+    "https://ui.neon.com/r/neon-tokens.json"
   ],
   "files": [
     {

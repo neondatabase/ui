@@ -5,10 +5,10 @@
   "description": "Provisioning, waking, and error panel states composing NeonLoader with a live status detail line.",
   "registryDependencies": [
     "utils",
-    "neon-tokens",
-    "button",
-    "neon-loader",
-    "animated-wash"
+    "https://ui.neon.com/r/neon-tokens.json",
+    "https://ui.neon.com/r/button.json",
+    "https://ui.neon.com/r/neon-loader.json",
+    "https://ui.neon.com/r/animated-wash.json"
   ],
   "files": [
     {

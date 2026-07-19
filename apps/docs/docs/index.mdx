@@ -5,22 +5,45 @@ seo:
   image: /og-home.png
 ---
 
-Every team building on Neon ends up writing the same UI. A branch picker. A connection string card with a copy button. A usage meter. A file dropzone wired to Neon Storage. Neon UI is a shadcn registry with all of it, ready to install:
+Every team building an agent platform on Neon ends up writing the same UI. An auth card. A model picker. A sandbox preview with a wake button. A usage panel over consumption metrics. Neon UI is a shadcn registry with all of it, ready to install:
 
 ```bash
-npx shadcn@latest add https://ui.neon.com/r/branch-picker.json
+npx shadcn@latest add https://ui.neon.com/r/auth-form.json
 ```
 
 The component source lands in your project. It's your code from that point on.
 
-:::note Neon UI is under active development. Components land in milestones; watch the [changelog](/changelog) for releases. :::
+<Callout type="note">
+  Neon UI is under active development. Components land in milestones; watch the
+  [repository](https://github.com/neonpostgres/ui) for releases.
+</Callout>
 
-## Categories
+## Catalog
 
-- **Brand** — NeonAurora, SQLConfetti
-- **Database** — BranchTree, BranchPicker, BranchDiff, SchemaExplorer, SQLRunner, QueryHistory
-- **Storage** — FileDropzone, FileBrowser
-- **Infrastructure** — ComputeStatus, AutoscaleChart, ConnectionCard, UsageCard, HealthCard, LogsViewer
-- **AI** — ModelPicker, PromptPlayground, CostMeter, TokenGraph
-- **Authentication** — SessionList, ApiKeyList, OrganizationSwitcher
-- **Dashboard** — ActivityFeed, MetricCard, CommandPalette
+<CardGroup cols={2}>
+  <Card title="Agent" href="/docs/agent/agent-chat" icon="sparkles">
+    The workspace where an agent builds and runs an app: chat, model controls,
+    sandbox preview, checkpoints, usage, and upgrade. 15 components.
+  </Card>
+  <Card
+    title="Platform"
+    href="/docs/platform/auth-form"
+    icon="layout-dashboard"
+  >
+    The surfaces every product needs, in the Neon language: auth, confirmation,
+    date ranges, metrics, and the brand loader. 5 components.
+  </Card>
+  <Card title="Shaders" href="/docs/shaders/neon-aurora" icon="zap">
+    Brand light, rendered live: the aurora hero field and the ambient grain
+    wash. 2 components.
+  </Card>
+  <Card title="Misc" href="/docs/misc/color-picker" icon="palette">
+    The one-offs: a mono-labeled OKLCH color picker, with more to come.
+  </Card>
+</CardGroup>
+
+Every component ships four artifacts (source, fixtures, demo, and a typed example wired to the real surface it fronts) and follows the same rules: presentational props, color reserved for the light, zero layout shift, reduced-motion safe.
+
+## Next
+
+Database, storage, and AI-gateway component sets (BranchPicker, SQLRunner, FileDropzone, CostMeter, and friends) are the next phase.

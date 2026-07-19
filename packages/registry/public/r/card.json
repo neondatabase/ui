@@ -5,7 +5,7 @@
   "description": "Neon-themed card container primitive and its sub-parts.",
   "registryDependencies": [
     "utils",
-    "neon-tokens"
+    "https://ui.neon.com/r/neon-tokens.json"
   ],
   "files": [
     {

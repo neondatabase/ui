@@ -5,9 +5,9 @@
   "description": "Destructive confirmation modal armed by press-and-hold, with keyboard hold support.",
   "registryDependencies": [
     "utils",
-    "neon-tokens",
-    "button",
-    "dialog"
+    "https://ui.neon.com/r/neon-tokens.json",
+    "https://ui.neon.com/r/button.json",
+    "https://ui.neon.com/r/dialog.json"
   ],
   "files": [
     {

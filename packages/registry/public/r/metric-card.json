@@ -11,11 +11,11 @@
   ],
   "registryDependencies": [
     "utils",
-    "card",
-    "badge",
-    "skeleton",
-    "neon-loader",
-    "neon-tokens"
+    "https://ui.neon.com/r/card.json",
+    "https://ui.neon.com/r/badge.json",
+    "https://ui.neon.com/r/skeleton.json",
+    "https://ui.neon.com/r/neon-loader.json",
+    "https://ui.neon.com/r/neon-tokens.json"
   ],
   "files": [
     {

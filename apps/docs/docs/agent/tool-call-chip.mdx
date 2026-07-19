@@ -47,3 +47,10 @@ import { ToolCallChip } from "@/components/neon-ui/tool-call-chip";
 ## Wiring to Neon
 
 Map AI SDK tool parts (from `message.parts`) onto chips: `output-available` → done, `output-error` → error, anything else → running. The typed example shows the full mapping for both static and dynamic tool parts.
+
+## Accessibility
+
+- The chip is plain text with an icon, announced as one phrase: the tool name and its state.
+- Running state exposes `role="status"`, so completion is announced without stealing focus.
+- The spinner-to-wrench swap is conveyed by the status text, not color alone.
+- Spinner rotation is static under `prefers-reduced-motion`.

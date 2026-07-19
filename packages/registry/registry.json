@@ -34,7 +34,10 @@
       "title": "Button",
       "description": "Neon-themed button primitive with variants (Base UI).",
       "dependencies": ["@base-ui/react", "class-variance-authority"],
-      "registryDependencies": ["utils", "neon-tokens"],
+      "registryDependencies": [
+        "utils",
+        "https://ui.neon.com/r/neon-tokens.json"
+      ],
       "files": [
         {
           "path": "src/components/ui/button.tsx",
@@ -47,7 +50,10 @@
       "type": "registry:ui",
       "title": "Card",
       "description": "Neon-themed card container primitive and its sub-parts.",
-      "registryDependencies": ["utils", "neon-tokens"],
+      "registryDependencies": [
+        "utils",
+        "https://ui.neon.com/r/neon-tokens.json"
+      ],
       "files": [
         {
           "path": "src/components/ui/card.tsx",
@@ -61,7 +67,10 @@
       "title": "Badge",
       "description": "Status badge primitive (Base UI render pattern).",
       "dependencies": ["@base-ui/react", "class-variance-authority"],
-      "registryDependencies": ["utils", "neon-tokens"],
+      "registryDependencies": [
+        "utils",
+        "https://ui.neon.com/r/neon-tokens.json"
+      ],
       "files": [
         {
           "path": "src/components/ui/badge.tsx",
@@ -74,7 +83,10 @@
       "type": "registry:ui",
       "title": "Skeleton",
       "description": "Loading placeholder primitive.",
-      "registryDependencies": ["utils", "neon-tokens"],
+      "registryDependencies": [
+        "utils",
+        "https://ui.neon.com/r/neon-tokens.json"
+      ],
       "files": [
         {
           "path": "src/components/ui/skeleton.tsx",
@@ -88,7 +100,10 @@
       "title": "Tabs",
       "description": "Accessible tab navigation primitive (Base UI).",
       "dependencies": ["@base-ui/react", "class-variance-authority"],
-      "registryDependencies": ["utils", "neon-tokens"],
+      "registryDependencies": [
+        "utils",
+        "https://ui.neon.com/r/neon-tokens.json"
+      ],
       "files": [
         {
           "path": "src/components/ui/tabs.tsx",
@@ -101,7 +116,10 @@
       "type": "registry:component",
       "title": "NeonLoader",
       "description": "Noise-resolve loading indicator animated from the official Neon mark.",
-      "registryDependencies": ["utils", "neon-tokens"],
+      "registryDependencies": [
+        "utils",
+        "https://ui.neon.com/r/neon-tokens.json"
+      ],
       "files": [
         {
           "path": "src/components/neon-loader/neon-loader.tsx",
@@ -115,7 +133,10 @@
       "title": "Select",
       "description": "Accessible select primitive (Base UI).",
       "dependencies": ["@base-ui/react"],
-      "registryDependencies": ["utils", "neon-tokens"],
+      "registryDependencies": [
+        "utils",
+        "https://ui.neon.com/r/neon-tokens.json"
+      ],
       "files": [
         {
           "path": "src/components/ui/select.tsx",
@@ -129,7 +150,10 @@
       "title": "ElasticSlider",
       "description": "Slider with elastic rubber-band drag and magnetic snap (by @iamncdai, MIT).",
       "dependencies": ["motion"],
-      "registryDependencies": ["utils", "neon-tokens"],
+      "registryDependencies": [
+        "utils",
+        "https://ui.neon.com/r/neon-tokens.json"
+      ],
       "files": [
         {
           "path": "src/components/ui/elastic-slider.tsx",
@@ -146,7 +170,11 @@
       "type": "registry:component",
       "title": "ModelSelect",
       "description": "Model picker for agent chat input bars, grouped by provider.",
-      "registryDependencies": ["utils", "select", "neon-tokens"],
+      "registryDependencies": [
+        "utils",
+        "https://ui.neon.com/r/select.json",
+        "https://ui.neon.com/r/neon-tokens.json"
+      ],
       "files": [
         {
           "path": "src/components/model-select/model-select.tsx",
@@ -160,7 +188,11 @@
       "type": "registry:component",
       "title": "ThinkingSelect",
       "description": "Reasoning-effort selector: Off, Low, Medium, High.",
-      "registryDependencies": ["utils", "elastic-slider", "neon-tokens"],
+      "registryDependencies": [
+        "utils",
+        "https://ui.neon.com/r/elastic-slider.json",
+        "https://ui.neon.com/r/neon-tokens.json"
+      ],
       "files": [
         {
           "path": "src/components/thinking-select/thinking-select.tsx",
@@ -176,9 +208,9 @@
       "description": "Model picker with an embedded reasoning-effort slider in the popup footer.",
       "registryDependencies": [
         "utils",
-        "model-select",
-        "thinking-select",
-        "neon-tokens"
+        "https://ui.neon.com/r/model-select.json",
+        "https://ui.neon.com/r/thinking-select.json",
+        "https://ui.neon.com/r/neon-tokens.json"
       ],
       "files": [
         {
@@ -192,7 +224,10 @@
       "type": "registry:ui",
       "title": "Message",
       "description": "Conversation message layout primitive with avatar, content, and footer.",
-      "registryDependencies": ["utils", "neon-tokens"],
+      "registryDependencies": [
+        "utils",
+        "https://ui.neon.com/r/neon-tokens.json"
+      ],
       "files": [
         {
           "path": "src/components/ui/message.tsx",
@@ -205,7 +240,10 @@
       "type": "registry:ui",
       "title": "Bubble",
       "description": "Chat bubble primitive with grouping and reactions.",
-      "registryDependencies": ["utils", "neon-tokens"],
+      "registryDependencies": [
+        "utils",
+        "https://ui.neon.com/r/neon-tokens.json"
+      ],
       "files": [
         {
           "path": "src/components/ui/bubble.tsx",
@@ -218,7 +256,10 @@
       "type": "registry:ui",
       "title": "Marker",
       "description": "Inline conversation status marker.",
-      "registryDependencies": ["utils", "neon-tokens"],
+      "registryDependencies": [
+        "utils",
+        "https://ui.neon.com/r/neon-tokens.json"
+      ],
       "files": [
         {
           "path": "src/components/ui/marker.tsx",
@@ -231,7 +272,11 @@
       "type": "registry:ui",
       "title": "MessageScroller",
       "description": "Chat scroll container with turn anchoring, auto-follow, and jump-to-latest.",
-      "registryDependencies": ["utils", "neon-tokens", "button"],
+      "registryDependencies": [
+        "utils",
+        "https://ui.neon.com/r/neon-tokens.json",
+        "https://ui.neon.com/r/button.json"
+      ],
       "files": [
         {
           "path": "src/components/ui/message-scroller.tsx",
@@ -246,7 +291,10 @@
       "title": "ToolCallChip",
       "description": "Compact running/complete/error indicator for one agent tool invocation.",
       "dependencies": ["lucide-react"],
-      "registryDependencies": ["utils", "neon-tokens"],
+      "registryDependencies": [
+        "utils",
+        "https://ui.neon.com/r/neon-tokens.json"
+      ],
       "files": [
         {
           "path": "src/components/tool-call-chip/tool-call-chip.tsx",
@@ -262,14 +310,14 @@
       "dependencies": ["ai", "@ai-sdk/react", "streamdown", "lucide-react"],
       "registryDependencies": [
         "utils",
-        "message",
-        "message-scroller",
-        "bubble",
-        "marker",
-        "button",
-        "tool-call-chip",
-        "neon-tokens",
-        "empty-state"
+        "https://ui.neon.com/r/message.json",
+        "https://ui.neon.com/r/message-scroller.json",
+        "https://ui.neon.com/r/bubble.json",
+        "https://ui.neon.com/r/marker.json",
+        "https://ui.neon.com/r/button.json",
+        "https://ui.neon.com/r/tool-call-chip.json",
+        "https://ui.neon.com/r/neon-tokens.json",
+        "https://ui.neon.com/r/empty-state.json"
       ],
       "files": [
         {
@@ -291,11 +339,11 @@
       ],
       "registryDependencies": [
         "utils",
-        "card",
-        "badge",
-        "skeleton",
-        "neon-loader",
-        "neon-tokens"
+        "https://ui.neon.com/r/card.json",
+        "https://ui.neon.com/r/badge.json",
+        "https://ui.neon.com/r/skeleton.json",
+        "https://ui.neon.com/r/neon-loader.json",
+        "https://ui.neon.com/r/neon-tokens.json"
       ],
       "files": [
         {
@@ -322,7 +370,10 @@
       "type": "registry:component",
       "title": "StatusBadge",
       "description": "Dot-and-label status vocabulary for apps and branches, with a billing PlanBadge companion.",
-      "registryDependencies": ["utils", "neon-tokens"],
+      "registryDependencies": [
+        "utils",
+        "https://ui.neon.com/r/neon-tokens.json"
+      ],
       "files": [
         {
           "path": "src/components/status-badge/status-badge.tsx",
@@ -335,7 +386,10 @@
       "type": "registry:component",
       "title": "EmptyState",
       "description": "Intentional dashed-border placeholder with title, description, icon, and action slots.",
-      "registryDependencies": ["utils", "neon-tokens"],
+      "registryDependencies": [
+        "utils",
+        "https://ui.neon.com/r/neon-tokens.json"
+      ],
       "files": [
         {
           "path": "src/components/empty-state/empty-state.tsx",
@@ -349,7 +403,11 @@
       "title": "AppCard",
       "description": "Tenant dashboard grid card composing the status vocabulary: name, badges, timestamp, one-link hover.",
       "dependencies": ["lucide-react"],
-      "registryDependencies": ["utils", "neon-tokens", "status-badge"],
+      "registryDependencies": [
+        "utils",
+        "https://ui.neon.com/r/neon-tokens.json",
+        "https://ui.neon.com/r/status-badge.json"
+      ],
       "files": [
         {
           "path": "src/components/app-card/app-card.tsx",
@@ -380,7 +438,10 @@
       "title": "ColorPicker",
       "description": "Swatch-and-hex trigger opening an HSV field, hue rail, hex input, and preset swatches.",
       "dependencies": ["@base-ui/react"],
-      "registryDependencies": ["utils", "neon-tokens"],
+      "registryDependencies": [
+        "utils",
+        "https://ui.neon.com/r/neon-tokens.json"
+      ],
       "files": [
         {
           "path": "src/components/color-picker/color-picker.tsx",
@@ -396,9 +457,9 @@
       "dependencies": ["lucide-react"],
       "registryDependencies": [
         "utils",
-        "neon-tokens",
-        "button",
-        "status-badge"
+        "https://ui.neon.com/r/neon-tokens.json",
+        "https://ui.neon.com/r/button.json",
+        "https://ui.neon.com/r/status-badge.json"
       ],
       "files": [
         {
@@ -412,7 +473,11 @@
       "type": "registry:component",
       "title": "AuthForm",
       "description": "The email/password card: mode switching, providers, structured errors, and a working state \u2014 Better Auth-shaped.",
-      "registryDependencies": ["utils", "neon-tokens", "button"],
+      "registryDependencies": [
+        "utils",
+        "https://ui.neon.com/r/neon-tokens.json",
+        "https://ui.neon.com/r/button.json"
+      ],
       "files": [
         {
           "path": "src/components/auth-form/auth-form.tsx",
@@ -442,7 +507,12 @@
       "type": "registry:component",
       "title": "PreviewFrame",
       "description": "Sandbox iframe with wake, restart, and refresh lifecycle, reload-on-signal, and chrome header.",
-      "registryDependencies": ["utils", "neon-tokens", "button", "neon-loader"],
+      "registryDependencies": [
+        "utils",
+        "https://ui.neon.com/r/neon-tokens.json",
+        "https://ui.neon.com/r/button.json",
+        "https://ui.neon.com/r/neon-loader.json"
+      ],
       "files": [
         {
           "path": "src/components/preview-frame/preview-frame.tsx",
@@ -455,7 +525,11 @@
       "type": "registry:component",
       "title": "WorkspaceTabs",
       "description": "Workspace tab bar with gliding underline, per-tab action slot, and pane crossfade.",
-      "registryDependencies": ["utils", "neon-tokens", "tabs"],
+      "registryDependencies": [
+        "utils",
+        "https://ui.neon.com/r/neon-tokens.json",
+        "https://ui.neon.com/r/tabs.json"
+      ],
       "files": [
         {
           "path": "src/components/workspace-tabs/workspace-tabs.tsx",
@@ -470,10 +544,10 @@
       "description": "Provisioning, waking, and error panel states composing NeonLoader with a live status detail line.",
       "registryDependencies": [
         "utils",
-        "neon-tokens",
-        "button",
-        "neon-loader",
-        "animated-wash"
+        "https://ui.neon.com/r/neon-tokens.json",
+        "https://ui.neon.com/r/button.json",
+        "https://ui.neon.com/r/neon-loader.json",
+        "https://ui.neon.com/r/animated-wash.json"
       ],
       "files": [
         {
@@ -487,7 +561,12 @@
       "type": "registry:component",
       "title": "CheckpointTimeline",
       "description": "Checkpoint history rail with git sha, snapshot indicator, project id, restore with busy state, and empty state.",
-      "registryDependencies": ["utils", "neon-tokens", "button", "empty-state"],
+      "registryDependencies": [
+        "utils",
+        "https://ui.neon.com/r/neon-tokens.json",
+        "https://ui.neon.com/r/button.json",
+        "https://ui.neon.com/r/empty-state.json"
+      ],
       "files": [
         {
           "path": "src/components/checkpoint-timeline/checkpoint-timeline.tsx",
@@ -500,7 +579,10 @@
       "type": "registry:ui",
       "title": "Dialog",
       "description": "Base UI dialog in the house chrome: card panel, hairline border, quiet rise.",
-      "registryDependencies": ["utils", "neon-tokens"],
+      "registryDependencies": [
+        "utils",
+        "https://ui.neon.com/r/neon-tokens.json"
+      ],
       "files": [
         {
           "path": "src/components/ui/dialog.tsx",
@@ -513,7 +595,12 @@
       "type": "registry:component",
       "title": "ConfirmDialog",
       "description": "Destructive confirmation modal armed by press-and-hold, with keyboard hold support.",
-      "registryDependencies": ["utils", "neon-tokens", "button", "dialog"],
+      "registryDependencies": [
+        "utils",
+        "https://ui.neon.com/r/neon-tokens.json",
+        "https://ui.neon.com/r/button.json",
+        "https://ui.neon.com/r/dialog.json"
+      ],
       "files": [
         {
           "path": "src/components/confirm-dialog/confirm-dialog.tsx",
@@ -526,7 +613,12 @@
       "type": "registry:component",
       "title": "UsagePanel",
       "description": "Per-project consumption grid composing MetricCard, with plan-gated metrics and metering-lag notice.",
-      "registryDependencies": ["utils", "neon-tokens", "button", "metric-card"],
+      "registryDependencies": [
+        "utils",
+        "https://ui.neon.com/r/neon-tokens.json",
+        "https://ui.neon.com/r/button.json",
+        "https://ui.neon.com/r/metric-card.json"
+      ],
       "files": [
         {
           "path": "src/components/usage-panel/usage-panel.tsx",
@@ -539,7 +631,10 @@
       "type": "registry:ui",
       "title": "Popover",
       "description": "Base UI popover in the house chrome.",
-      "registryDependencies": ["utils", "neon-tokens"],
+      "registryDependencies": [
+        "utils",
+        "https://ui.neon.com/r/neon-tokens.json"
+      ],
       "files": [
         {
           "path": "src/components/ui/popover.tsx",
@@ -552,7 +647,11 @@
       "type": "registry:component",
       "title": "DateRangePicker",
       "description": "Custom date range picker: mono pill trigger, preset rail, hand-built month grid with range wash.",
-      "registryDependencies": ["utils", "neon-tokens", "popover"],
+      "registryDependencies": [
+        "utils",
+        "https://ui.neon.com/r/neon-tokens.json",
+        "https://ui.neon.com/r/popover.json"
+      ],
       "files": [
         {
           "path": "src/components/date-range-picker/date-range-picker.tsx",
@@ -565,7 +664,12 @@
       "type": "registry:component",
       "title": "UpgradeDialog",
       "description": "Pricing dialog with drawn-check feature list and a processing upgrade action.",
-      "registryDependencies": ["utils", "neon-tokens", "button", "dialog"],
+      "registryDependencies": [
+        "utils",
+        "https://ui.neon.com/r/neon-tokens.json",
+        "https://ui.neon.com/r/button.json",
+        "https://ui.neon.com/r/dialog.json"
+      ],
       "files": [
         {
           "path": "src/components/upgrade-dialog/upgrade-dialog.tsx",

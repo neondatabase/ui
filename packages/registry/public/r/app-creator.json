@@ -8,9 +8,9 @@
   ],
   "registryDependencies": [
     "utils",
-    "neon-tokens",
-    "button",
-    "status-badge"
+    "https://ui.neon.com/r/neon-tokens.json",
+    "https://ui.neon.com/r/button.json",
+    "https://ui.neon.com/r/status-badge.json"
   ],
   "files": [
     {

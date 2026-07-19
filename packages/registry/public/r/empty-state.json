@@ -5,7 +5,7 @@
   "description": "Intentional dashed-border placeholder with title, description, icon, and action slots.",
   "registryDependencies": [
     "utils",
-    "neon-tokens"
+    "https://ui.neon.com/r/neon-tokens.json"
   ],
   "files": [
     {
