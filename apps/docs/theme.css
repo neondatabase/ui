@@ -379,6 +379,24 @@ details[class*="group/tt"] code.text-accent {
  * Preview card code section: CSS line numbers for Shiki's .line spans,
  * counted here so the markup stays plain source.
  */
+/*
+ * Search: collapse Blume's result-preview pane — the dialog becomes a
+ * single full-width results list. The pane has no stable hook, so the
+ * grid template's 22rem column is the anchor; the trailing ⌘J hint in
+ * the footer goes with it.
+ */
+dialog div[class*="22rem"] {
+  grid-template-columns: minmax(0, 1fr) !important;
+}
+
+dialog div[class*="22rem"] > div:last-child {
+  display: none !important;
+}
+
+dialog > div:last-child > div:last-child > span:last-child {
+  display: none !important;
+}
+
 /* A quiet scrollbar for the opened code: hairline thumb, no track. */
 .preview-scroll {
   scrollbar-color: var(--border) transparent;
