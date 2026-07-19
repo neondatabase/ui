@@ -24,3 +24,13 @@ npx shadcn@latest add https://ui.neon.com/r/auth-form.json
 ```
 
 Every component ships presentational-first (data in as props, typed examples for the real Neon wiring), reduced-motion safe, on React 19, Tailwind v4, and Base UI.
+
+---
+
+<div align="center">
+
+[Neon](https://neon.com) · [Neon Docs](https://neon.com/docs) · [Console](https://console.neon.tech) · [Brand](https://neon.com/brand) · [@neondatabase](https://x.com/neondatabase)
+
+Built on [Neon](https://neon.com) · [Contribute](CONTRIBUTING.md)
+
+</div>
