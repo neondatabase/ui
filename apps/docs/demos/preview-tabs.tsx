@@ -4,6 +4,7 @@ import { Button } from "@neon-ui/registry/components/ui/button";
 import { CheckIcon, CopyIcon } from "lucide-react";
 import type { ReactNode } from "react";
 import { useEffect, useId, useRef, useState } from "react";
+import type * as Shiki from "shiki";
 
 /* ─────────────────────────────────────────────────────────
  * PREVIEW CARD STORYBOARD
@@ -23,10 +24,12 @@ import { useEffect, useId, useRef, useState } from "react";
  *           edge
  *  collapse the same road home; scroll position resets so
  *           the glimpse always shows the opening lines
- *  code     plain source renders instantly; Shiki
- *           (github-dark, Blume's code theme) swaps in
- *           once it lazily loads, with line numbers
- *           counted in CSS
+ *  code     plain source renders instantly with the same
+ *           gutter Shiki's line numbers will occupy, and
+ *           Shiki (github-dark, Blume's code theme) swaps
+ *           in during idle time right after hydration —
+ *           long before the first expand, so opening the
+ *           code never re-renders under the reader
  *  motion   static under prefers-reduced-motion
  * ───────────────────────────────────────────────────────── */
 const GLIMPSE_HEIGHT = 128;
@@ -36,6 +39,40 @@ const EASE_OUT = "cubic-bezier(0.23, 1, 0.32, 1)";
 /** The scroll container only scrolls once open. */
 const cnScroll = (expanded: boolean) =>
   expanded ? "preview-scroll overflow-auto" : "overflow-hidden";
+
+/** Both code layers share one grid cell and crossfade by opacity. */
+const cnLayer = (visible: boolean) =>
+  `preview-code col-start-1 row-start-1 p-5 pb-14 text-xs leading-5 transition-opacity duration-300 motion-reduce:transition-none ${
+    visible ? "opacity-100" : "opacity-0"
+  }`;
+
+/* One highlighter, one result per source — shared across every card
+ * on the page and across remounts. */
+const htmlCache = new Map<string, string>();
+let shikiImport: Promise<typeof Shiki> | null = null;
+
+const highlight = async (code: string) => {
+  const cached = htmlCache.get(code);
+
+  if (cached) {
+    return cached;
+  }
+
+  shikiImport ??= import("shiki");
+  const { codeToHtml } = await shikiImport;
+  const html = await codeToHtml(code, { lang: "tsx", theme: "github-dark" });
+  htmlCache.set(code, html);
+  return html;
+};
+
+const idleCallback = (task: () => void) => {
+  if ("requestIdleCallback" in window) {
+    window.requestIdleCallback(task);
+    return;
+  }
+
+  window.setTimeout(task, 300);
+};
 
 export default function PreviewTabs({
   children,
@@ -54,29 +91,25 @@ export default function PreviewTabs({
   const scrollRef = useRef<HTMLDivElement>(null);
   const regionId = useId();
 
+  // Highlight during idle time right after hydration — the glimpse is
+  // visible at rest, so by the first expand the crossfade has long
+  // since settled. Cached sources resolve immediately.
   useEffect(() => {
-    if (!expanded || highlighted !== null) {
-      return;
-    }
-
     let cancelled = false;
 
-    (async () => {
-      const { codeToHtml } = await import("shiki");
-      const html = await codeToHtml(source.trim(), {
-        lang: "tsx",
-        theme: "github-dark",
-      });
+    // oxlint-disable-next-line promise/prefer-await-to-callbacks -- requestIdleCallback is a callback API
+    idleCallback(async () => {
+      const html = await highlight(source.trim());
 
       if (!cancelled) {
         setHighlighted(html);
       }
-    })();
+    });
 
     return () => {
       cancelled = true;
     };
-  }, [expanded, highlighted, source]);
+  }, [source]);
 
   const toggle = () => {
     setExpanded((current) => {
@@ -118,19 +151,29 @@ export default function PreviewTabs({
             ref={scrollRef}
             style={{ maxHeight: EXPANDED_MAX }}
           >
-            {highlighted ? (
+            {/* Two pixel-identical layers in one grid cell: the plain
+                source paints first, the highlighted layer crossfades
+                over it — color is the only thing that changes. */}
+            <div className="grid">
               <div
-                className="preview-code p-5 pb-14 text-xs leading-5 [&_pre]:!m-0 [&_pre]:!rounded-none [&_pre]:!border-0 [&_pre]:!bg-transparent [&_pre]:!p-0 [&_code]:font-mono"
-                // oxlint-disable-next-line react/no-danger -- Shiki output from our own source text
-                dangerouslySetInnerHTML={{ __html: highlighted }}
-              />
-            ) : (
-              <div className="preview-code p-5 pb-14 text-xs leading-5">
-                <code className="block whitespace-pre font-mono">
+                aria-hidden={highlighted !== null}
+                className={cnLayer(highlighted === null)}
+              >
+                <code
+                  className="block whitespace-pre font-mono"
+                  style={{ paddingLeft: "calc(2.5ch + 1.25rem)" }}
+                >
                   {source.trim()}
                 </code>
               </div>
-            )}
+              {highlighted ? (
+                <div
+                  className={`${cnLayer(true)} [&_pre]:!m-0 [&_pre]:!rounded-none [&_pre]:!border-0 [&_pre]:!bg-transparent [&_pre]:!p-0 [&_code]:font-mono`}
+                  // oxlint-disable-next-line react/no-danger -- Shiki output from our own source text
+                  dangerouslySetInnerHTML={{ __html: highlighted }}
+                />
+              ) : null}
+            </div>
           </div>
 
           {/* The fade that keeps the resting glimpse quiet. */}

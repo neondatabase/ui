@@ -379,6 +379,11 @@ details[class*="group/tt"] code.text-accent {
  * Preview card code section: CSS line numbers for Shiki's .line spans,
  * counted here so the markup stays plain source.
  */
+/* A hairline under the nav, in the house stroke. */
+[data-blume-header] {
+  border-bottom: 1px solid color-mix(in oklch, var(--border) 60%, transparent);
+}
+
 /* The site is dark-only (theme.mode: dark); Blume always renders the
  * header theme toggle, so hide it — data-blume-theme-toggle is its
  * stable hook. */
