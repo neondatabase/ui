@@ -2,10 +2,10 @@
 title: UsagePanel
 description: Per-project consumption grid with plan gating and metering-lag honesty.
 seo:
-  image: /og-cards/docs/agent/usage-panel.png
+  image: /og-cards/docs/platform/usage-panel.png
 ---
 
-`UsagePanel` is the workspace's usage tab: a grid of [MetricCard](/platform/metric-card)s over the v2 per-project consumption metrics — compute as CU-hours, storage and egress as bytes — under a mono header with the billing period — or a [DateRangePicker](/platform/date-range-picker) in the `filter` slot when the range should be the user's call. Cards enter one at a time in metric order. A plan-gated metric keeps its card frame but holds its voice: mono "available on a paid plan" with a quiet upgrade pill — an invitation, not a wall. And when metering trails real time, the footer says exactly how far, because the numbers shouldn't pretend to be live.
+`UsagePanel` is the workspace's usage tab: a grid of [MetricCard](/app/metric-card)s over the v2 per-project consumption metrics — compute as CU-hours, storage and egress as bytes — under a mono header with the billing period — or a [DateRangePicker](/app/date-range-picker) in the `filter` slot when the range should be the user's call. Cards enter one at a time in metric order. A plan-gated metric keeps its card frame but holds its voice: mono "available on a paid plan" with a quiet upgrade pill — an invitation, not a wall. And when metering trails real time, the footer says exactly how far, because the numbers shouldn't pretend to be live.
 
 <UsagePanelPreview />
 

@@ -5,6 +5,96 @@
   "installCommand": "pnpm install --frozen-lockfile",
   "redirects": [
     {
+      "source": "/agent/app-card",
+      "destination": "/platform/app-card",
+      "permanent": true
+    },
+    {
+      "source": "/agent/app-creator",
+      "destination": "/platform/app-creator",
+      "permanent": true
+    },
+    {
+      "source": "/agent/checkpoint-timeline",
+      "destination": "/platform/checkpoint-timeline",
+      "permanent": true
+    },
+    {
+      "source": "/agent/empty-state",
+      "destination": "/app/empty-state",
+      "permanent": true
+    },
+    {
+      "source": "/agent/preview-frame",
+      "destination": "/platform/preview-frame",
+      "permanent": true
+    },
+    {
+      "source": "/agent/provisioning-status",
+      "destination": "/platform/provisioning-status",
+      "permanent": true
+    },
+    {
+      "source": "/agent/status-badge",
+      "destination": "/platform/status-badge",
+      "permanent": true
+    },
+    {
+      "source": "/agent/upgrade-dialog",
+      "destination": "/platform/upgrade-dialog",
+      "permanent": true
+    },
+    {
+      "source": "/agent/usage-panel",
+      "destination": "/platform/usage-panel",
+      "permanent": true
+    },
+    {
+      "source": "/agent/workspace-tabs",
+      "destination": "/platform/workspace-tabs",
+      "permanent": true
+    },
+    {
+      "source": "/misc/color-picker",
+      "destination": "/app/color-picker",
+      "permanent": true
+    },
+    {
+      "source": "/platform/auth-form",
+      "destination": "/app/auth-form",
+      "permanent": true
+    },
+    {
+      "source": "/platform/confirm-dialog",
+      "destination": "/app/confirm-dialog",
+      "permanent": true
+    },
+    {
+      "source": "/platform/date-range-picker",
+      "destination": "/app/date-range-picker",
+      "permanent": true
+    },
+    {
+      "source": "/platform/metric-card",
+      "destination": "/app/metric-card",
+      "permanent": true
+    },
+    {
+      "source": "/platform/neon-loader",
+      "destination": "/brand/neon-loader",
+      "permanent": true
+    },
+    {
+      "source": "/shaders/animated-wash",
+      "destination": "/brand/animated-wash",
+      "permanent": true
+    },
+    {
+      "source": "/shaders/neon-aurora",
+      "destination": "/brand/neon-aurora",
+      "permanent": true
+    },
+    {
       "source": "/docs/:path*",
       "destination": "/:path*",
       "permanent": true

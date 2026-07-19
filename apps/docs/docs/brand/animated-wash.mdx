@@ -2,12 +2,12 @@
 title: AnimatedWash
 description: WebGL grain-gradient shader wash, colored by currentColor with a hover lift.
 seo:
-  image: /og-cards/docs/shaders/animated-wash.png
+  image: /og-cards/docs/brand/animated-wash.png
 ---
 
 `AnimatedWash` is the registry's shader component: a color gradient rising from the bottom edge, dithered with animated grain that breathes cell by cell. Adapted from [paper-design/shaders](https://github.com/paper-design/shaders) (Apache-2.0), rebuilt as a single-purpose fork — the GLSL lives in `animated-wash-shader.ts`, the React mount in `animated-wash.tsx`.
 
-It reads `currentColor` at mount (the same contract as [NeonLoader](/platform/neon-loader)), so a `text-primary` or `text-destructive` on any ancestor colors it, and it rethemes with the token contract. Hovering the nearest interactive ancestor — or any element marked `data-wash-hover` — lifts and warms the field.
+It reads `currentColor` at mount (the same contract as [NeonLoader](/brand/neon-loader)), so a `text-primary` or `text-destructive` on any ancestor colors it, and it rethemes with the token contract. Hovering the nearest interactive ancestor — or any element marked `data-wash-hover` — lifts and warms the field.
 
 <AnimatedWashPreview />
 
@@ -63,7 +63,7 @@ Drag the props live — `speed` at 0 freezes the field, `intensity` fills in the
 
 ## Composition
 
-[AppCard](/agent/app-card) accepts it through the `wash` slot, where the status vocabulary supplies the tint automatically.
+[AppCard](/platform/app-card) accepts it through the `wash` slot, where the status vocabulary supplies the tint automatically.
 
 ## Wiring to Neon
 

@@ -212,7 +212,8 @@ details[class*="group/tt"] code.text-accent {
   }
 }
 
-.neon-scroll-fade {
+.neon-scroll-fade,
+[data-blume-nav-drawer] {
   -webkit-mask-image: linear-gradient(
     to bottom,
     transparent 0,
@@ -231,24 +232,29 @@ details[class*="group/tt"] code.text-accent {
   scrollbar-width: thin;
 }
 
-.neon-scroll-fade::-webkit-scrollbar {
+.neon-scroll-fade::-webkit-scrollbar,
+[data-blume-nav-drawer]::-webkit-scrollbar {
   width: 6px;
 }
 
-.neon-scroll-fade::-webkit-scrollbar-track {
+.neon-scroll-fade::-webkit-scrollbar-track,
+[data-blume-nav-drawer]::-webkit-scrollbar-track {
   background: transparent;
 }
 
-.neon-scroll-fade::-webkit-scrollbar-thumb {
+.neon-scroll-fade::-webkit-scrollbar-thumb,
+[data-blume-nav-drawer]::-webkit-scrollbar-thumb {
   background: var(--border);
 }
 
-.neon-scroll-fade::-webkit-scrollbar-thumb:hover {
+.neon-scroll-fade::-webkit-scrollbar-thumb:hover,
+[data-blume-nav-drawer]::-webkit-scrollbar-thumb:hover {
   background: var(--muted-foreground);
 }
 
 @supports (animation-timeline: scroll()) {
-  .neon-scroll-fade {
+  .neon-scroll-fade,
+  [data-blume-nav-drawer] {
     animation:
       neon-scroll-fade-reveal-t 1ms ease-in-out,
       neon-scroll-fade-reveal-b 1ms ease-in-out;
@@ -261,7 +267,8 @@ details[class*="group/tt"] code.text-accent {
 }
 
 @supports not (animation-timeline: scroll()) {
-  .neon-scroll-fade {
+  .neon-scroll-fade,
+  [data-blume-nav-drawer] {
     --neon-scroll-fade-t: 0px;
     --neon-scroll-fade-b: 0px;
   }
@@ -379,6 +386,17 @@ details[class*="group/tt"] code.text-accent {
  * Preview card code section: CSS line numbers for Shiki's .line spans,
  * counted here so the markup stays plain source.
  */
+/* The sidebar's scrollbar sits on the LEFT edge (rtl trick on the
+ * scroll container; children flip back to ltr), so it never crowds
+ * the labels. */
+[data-blume-nav-drawer] {
+  direction: rtl;
+}
+
+[data-blume-nav-drawer] > * {
+  direction: ltr;
+}
+
 /* A hairline under the nav, in the house stroke. */
 [data-blume-header] {
   border-bottom: 1px solid color-mix(in oklch, var(--border) 60%, transparent);

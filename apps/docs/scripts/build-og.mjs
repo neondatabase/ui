@@ -23,7 +23,6 @@ const root = import.meta.dirname;
 const docsDir = join(root, "..", "docs");
 const outDir = join(root, "..", "public", "og-cards");
 const blank = join(root, "..", "assets", "og-blank.png");
-const homeSrc = join(root, "..", "assets", "og-home-src.png");
 
 const WIDTH = 2400;
 const HEIGHT = 1260;
@@ -114,9 +113,33 @@ const results = await Promise.all(
 
 const count = results.reduce((sum, n) => sum + n, 0);
 
-// The home page ships the designed card untouched (center-crop to 1200×630).
-await sharp(homeSrc)
-  .resize(OUT_WIDTH, OUT_HEIGHT, { fit: "cover" })
+// The home card: the landing headline composed on the blank frame —
+// white first line, the gradient carrying "building with Neon."
+const HOME_SIZE = 168;
+const homeOverlay = `
+<svg width="${WIDTH}" height="${HEIGHT}" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="neon" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#00e599"/>
+      <stop offset="1" stop-color="#38bdf8"/>
+    </linearGradient>
+  </defs>
+  <text x="${MARGIN_X}" y="300" font-family="Inter" font-weight="600"
+    font-size="${HOME_SIZE}" fill="#ffffff" letter-spacing="-4">The UI layer for</text>
+  <text x="${MARGIN_X}" y="490" font-family="Inter" font-weight="600"
+    font-size="${HOME_SIZE}" fill="url(#neon)" letter-spacing="-4">building with Neon.</text>
+</svg>`;
+
+const homeFlat = await sharp(Buffer.from(homeOverlay))
+  .resize(WIDTH, HEIGHT)
+  .png()
+  .toBuffer();
+const homeFull = await sharp(blank)
+  .composite([{ input: homeFlat, left: 0, top: 0 }])
+  .png()
+  .toBuffer();
+await sharp(homeFull)
+  .resize(OUT_WIDTH, OUT_HEIGHT)
   .png({ compressionLevel: 9 })
   .toFile(join(root, "..", "public", "og-home.png"));
 
