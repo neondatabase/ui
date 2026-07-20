@@ -1,9 +1,9 @@
 "use client";
 
 import { Button } from "@neon-ui/registry/components/ui/button";
-import { CheckIcon, CopyIcon } from "lucide-react";
+import { CheckIcon, CopyIcon, Maximize2Icon, XIcon } from "lucide-react";
 import type { ReactNode } from "react";
-import { useId, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 
 /* ─────────────────────────────────────────────────────────
  * PREVIEW CARD STORYBOARD
@@ -40,11 +40,17 @@ const cnScroll = (expanded: boolean) =>
 
 export default function PreviewTabs({
   children,
+  fullSize = false,
+  fullSizeTitle = "Full-size preview",
   highlighted,
   minHeight = 320,
   source,
 }: {
   children: ReactNode;
+  /** Adds an "open full size" action that shows the demo in a modal. */
+  fullSize?: boolean;
+  /** Heading announced by the full-size dialog. */
+  fullSizeTitle?: string;
   /** Build-time highlighted HTML for the source (see build-highlighted.mjs). */
   highlighted: string;
   /** Minimum height of the preview stage in px. */
@@ -54,8 +60,32 @@ export default function PreviewTabs({
 }) {
   const [expanded, setExpanded] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [fullOpen, setFullOpen] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const regionId = useId();
+
+  // A fixed overlay, NOT a native <dialog>: the top layer would sit
+  // above portaled popups (Base UI selects render into document.body),
+  // leaving dropdowns invisible behind the modal.
+  useEffect(() => {
+    if (!fullOpen) {
+      return;
+    }
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setFullOpen(false);
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      document.body.style.removeProperty("overflow");
+    };
+  }, [fullOpen]);
 
   const toggle = () => {
     setExpanded((current) => {
@@ -76,11 +106,46 @@ export default function PreviewTabs({
   return (
     <div className="overflow-hidden rounded-lg border border-border/60 bg-background">
       <div
-        className="not-prose flex items-center justify-center bg-muted/10 p-8 preview-ghost"
+        className="not-prose relative flex items-center justify-center bg-muted/10 p-8 preview-ghost"
         style={{ minHeight }}
       >
         {children}
+        {fullSize ? (
+          <Button
+            aria-label="Open full size"
+            className="absolute top-3 right-3 text-muted-foreground hover:text-foreground"
+            onClick={() => setFullOpen(true)}
+            size="icon-sm"
+            variant="ghost"
+          >
+            <Maximize2Icon />
+          </Button>
+        ) : null}
       </div>
+
+      {/* Near-fullscreen and chromeless: the block IS the dialog.
+          The close button floats outside it, on the backdrop. */}
+      {fullSize && fullOpen ? (
+        <dialog
+          aria-label={fullSizeTitle}
+          aria-modal="true"
+          className="fixed inset-0 z-40 m-0 h-dvh max-h-none w-screen max-w-none border-0 bg-black/70 p-0 text-foreground backdrop-blur-sm"
+          open
+        >
+          <Button
+            aria-label="Close full-size preview"
+            className="fixed top-4 right-4 z-10 rounded-full border border-border/60 bg-card text-muted-foreground shadow-lg hover:text-foreground"
+            onClick={() => setFullOpen(false)}
+            size="icon"
+            variant="ghost"
+          >
+            <XIcon />
+          </Button>
+          <div className="not-prose flex h-full items-center overflow-auto p-6 md:p-10">
+            <div className="mx-auto w-full max-w-4xl">{children}</div>
+          </div>
+        </dialog>
+      ) : null}
 
       <div className="relative border-border/60 border-t">
         <div

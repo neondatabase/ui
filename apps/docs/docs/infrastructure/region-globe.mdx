@@ -1,0 +1,134 @@
+---
+title: RegionGlobe
+description: Tilted 3D dotted globe that spins to the selected server region.
+seo:
+  image: /og-cards/docs/infrastructure/region-globe.png
+---
+
+`RegionGlobe` is the ornamental half of region picking: a Three.js globe (via [globe.gl](https://globe.gl)) with three land treatments via `variant`: **relief** (default — the Natural Earth topology map as both grayscale texture and height map, tinted by `muted-foreground` so it stays monochrome in either theme), **dots** (the house dot-matrix land bitmap on a plain sphere), and **outlines** (Natural Earth country borders). The atmosphere glow is tunable too: `glow={false}` removes it, `glowColor`/`glowAltitude` restyle it. Changing regions emits a travel effect after globe.gl's [emit-arcs example](https://globe.gl/example/emit-arcs-on-click/): a dashed primary arc flies from the previous region while rings ripple out of both endpoints. Region markers are clickable dots with a hover popover (name, mono region id, and a color-coded `ping: x ms` when `latencies` is provided); while `spin` is on the globe idles on a slow auto-rotate, and choosing a region flies the camera to it on a downward tilt. Colors are probed live from the theme tokens, and under `prefers-reduced-motion` both the spin and the flight are disabled. Pair it with [RegionSelect](/infrastructure/region-select) as the input and `useRegionPing` for a live latency caption.
+
+<RegionGlobePreview />
+
+## Install
+
+```bash
+npx shadcn@latest add https://ui.neon.com/r/region-globe.json
+```
+
+## Usage
+
+```tsx
+import { RegionGlobe } from "@/components/neon-ui/region-globe";
+import { useRegionPing } from "@/hooks/use-region-ping";
+
+const { pings } = useRegionPing({
+  "aws-us-east-1": "https://us-east-1.aws.example.com/health",
+});
+
+<RegionGlobe regions={regions} value={region} />
+<p>~{pings[region]} ms from your location</p>
+```
+
+## Props
+
+<TypeTable
+  type={{
+    regions: {
+      type: "ServerRegion[]",
+      description: "Regions rendered as markers on the globe.",
+    },
+    value: {
+      type: "string",
+      description: "Region id the globe spins to; its marker renders larger.",
+    },
+    onValueChange: {
+      type: "(value: string) => void",
+      description:
+        "Makes the marker dots clickable; called with the picked region id.",
+    },
+    latencies: {
+      type: "Record<string, number | null>",
+      description:
+        "Measured round-trips by region id; shown color-coded in each marker's hover popover.",
+    },
+    spin: {
+      type: "boolean",
+      default: "false",
+      description:
+        "Keep the globe slowly turning, e.g. until the user picks a region.",
+    },
+    tilt: {
+      type: "number",
+      default: "12",
+      description: "Camera latitude lead in degrees; a slight downward tilt.",
+    },
+    variant: {
+      type: '"relief" | "dots" | "outlines"',
+      default: '"relief"',
+      description:
+        "Land treatment: monochrome height map, the house dot-matrix bitmap, or country borders. Fixed at mount — remount (key) to switch.",
+    },
+    glow: {
+      type: "boolean",
+      default: "true",
+      description: "Set false to remove the atmosphere glow entirely.",
+    },
+    glowColor: {
+      type: "string",
+      description: "Glow color; defaults to the theme's primary token.",
+    },
+    glowAltitude: {
+      type: "number",
+      default: "0.12",
+      description: "Glow reach as a fraction of the globe radius.",
+    },
+    countriesUrl: {
+      type: "string",
+      description:
+        "Country borders GeoJSON for the outlines variant; defaults to globe.gl's Natural Earth 110m dataset (CDN).",
+    },
+    textureUrl: {
+      type: "string",
+      description:
+        "Grayscale surface texture; defaults to the Natural Earth topology map (CDN, relief variant only).",
+    },
+    bumpUrl: {
+      type: "string",
+      description:
+        "Height map for the relief; defaults to the same topology map.",
+    },
+  }}
+/>
+
+## useRegionPing
+
+Install separately (`https://ui.neon.com/r/use-region-ping.json`) or let a block pull it in. The hook measures browser round-trips with opaque `no-cors` HEAD requests — a warmup pays DNS + TLS, then the best of `samples` sequential timings wins. Endpoints just need to be reachable; the response is never read.
+
+<TypeTable
+  type={{
+    urls: {
+      type: "Record<string, string>",
+      description: "Endpoint per region id to measure against.",
+    },
+    samples: {
+      type: "number",
+      default: "3",
+      description: "Timed requests per region after the warmup.",
+    },
+    enabled: {
+      type: "boolean",
+      default: "true",
+      description: "Set false to defer, then call refresh() when ready.",
+    },
+  }}
+/>
+
+Returns `{ pings, status, refresh }` — `pings` maps region ids to milliseconds (or `null` when unreachable), `status` walks `idle → measuring → done`.
+
+## Accessibility
+
+- The globe is decorative (`aria-hidden` canvas); dot clicks are a pointer-only enhancement, so selection state must live in a real input like [RegionSelect](/infrastructure/region-select).
+- Idle spin, camera flight, and the arc/ring travel effect are disabled under `prefers-reduced-motion` — the globe jumps to the region instead.
+- The default texture loads from the three-globe CDN; pass `textureUrl`/`bumpUrl` to self-host.
+- Note the size trade-off: globe.gl brings Three.js (~160 kB gzip); use [RegionSelect](/infrastructure/region-select)'s flat map where that's too heavy.
+- Caption ping readouts should be `aria-live="polite"`, as in the demo.

@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "node scripts/build-highlighted.mjs && blume dev",
-    "build": "node scripts/build-highlighted.mjs && blume build && node scripts/patch-head.mjs",
+    "build": "node scripts/build-highlighted.mjs && blume build && node scripts/patch-head.mjs && node scripts/sync-registry.mjs",
     "typecheck": "tsc --noEmit",
     "test": "vitest run --passWithNoTests"
   },

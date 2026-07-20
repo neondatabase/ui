@@ -1,0 +1,128 @@
+---
+title: RegionSelect
+description: Server location picker — an interactive dot-matrix world map synced with an accessible select.
+seo:
+  image: /og-cards/docs/infrastructure/region-select.png
+---
+
+`RegionSelect` turns the region dropdown from project creation into the map itself. Every datacenter is a live marker on a dot-matrix world map: hover lifts a label pill with the city and region id, click selects, and the chosen marker glows primary with a slow ping halo. A floating region card mirrors the selection — name, mono region id, and your measured round-trip when `latencies` is provided — and the select underneath is the same input — so keyboard and screen-reader users get the full flow without ever touching the map. The land bitmap draws once to a canvas in the current theme's ink, not thousands of DOM nodes.
+
+<RegionSelectPreview />
+
+## Install
+
+```bash
+npx shadcn@latest add https://ui.neon.com/r/region-select.json
+```
+
+## Usage
+
+```tsx
+import { RegionSelect } from "@/components/neon-ui/region-select";
+
+<RegionSelect
+  regions={[
+    {
+      id: "aws-us-east-1",
+      name: "US East 1 (N. Virginia)",
+      provider: "AWS",
+      lat: 38.9,
+      lng: -77.4,
+    },
+    {
+      id: "aws-eu-central-1",
+      name: "Europe Central 1 (Frankfurt)",
+      provider: "AWS",
+      lat: 50.11,
+      lng: 8.68,
+    },
+  ]}
+  value={region}
+  onValueChange={setRegion}
+/>;
+```
+
+## Props
+
+<TypeTable
+  type={{
+    regions: {
+      type: "ServerRegion[]",
+      description:
+        "Regions to plot and list; each needs an id, name, and lat/lng. Order drives the select.",
+    },
+    value: {
+      type: "string",
+      description: "Controlled selected region id.",
+    },
+    defaultValue: {
+      type: "string",
+      description: "Uncontrolled initial region id.",
+    },
+    onValueChange: {
+      type: "(value: string) => void",
+      description: "Fires on marker click or select change.",
+    },
+    placeholder: {
+      type: "string",
+      default: '"Select region"',
+      description: "Select placeholder before a region is chosen.",
+    },
+    hideSelect: {
+      type: "boolean",
+      description:
+        "Hide the select under the map; markers become the only input.",
+    },
+    hideCard: {
+      type: "boolean",
+      description: "Hide the floating region card on the map.",
+    },
+    cardSuffix: {
+      type: "ReactNode",
+      description:
+        "Extra content inside the region card, e.g. a latency badge.",
+    },
+    latencies: {
+      type: "Record<string, number | null>",
+      description:
+        "Measured round-trips by region id (e.g. from useRegionPing); the selected region's ping folds into the card's mono line.",
+    },
+  }}
+/>
+
+## ServerRegion
+
+<TypeTable
+  type={{
+    id: {
+      type: "string",
+      description:
+        'Region id, e.g. "aws-us-east-1". Shown mono in the marker pill.',
+    },
+    name: {
+      type: "string",
+      description: 'Human-readable name, e.g. "US East 1 (N. Virginia)".',
+    },
+    provider: {
+      type: "string",
+      description: 'Optional provider prefix for labels, e.g. "AWS".',
+    },
+    lat: { type: "number", description: "Datacenter latitude." },
+    lng: { type: "number", description: "Datacenter longitude." },
+    disabled: {
+      type: "boolean",
+      description: "Unavailable region; marker and option render dimmed.",
+    },
+  }}
+/>
+
+## Accessibility
+
+- Markers are real buttons with `aria-pressed` and full labels; the hover pill is presentational.
+- The select is the same input, so the complete keyboard and screen-reader flow needs no map interaction. Keep it visible unless another accessible input drives the value.
+- The ping halo on the selected marker is static under `prefers-reduced-motion`; the map canvas is decorative (`aria-hidden`).
+
+## Notes
+
+- The map is Natural Earth 110m land sampled onto a 192×69 equirectangular grid (Antarctica clipped) and shipped as a compact hex bitmap — no map library, no fetch.
+- The canvas re-inks itself on theme flips by watching the root element's class, so the dots always match `text-muted-foreground`.

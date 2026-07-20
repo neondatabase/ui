@@ -128,6 +128,39 @@
       ]
     },
     {
+      "name": "label",
+      "type": "registry:ui",
+      "title": "Label",
+      "description": "Form label primitive.",
+      "registryDependencies": [
+        "utils",
+        "https://ui.neon.com/r/neon-tokens.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/label.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "input",
+      "type": "registry:ui",
+      "title": "Input",
+      "description": "Accessible text input primitive (Base UI).",
+      "dependencies": ["@base-ui/react"],
+      "registryDependencies": [
+        "utils",
+        "https://ui.neon.com/r/neon-tokens.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/input.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "select",
       "type": "registry:ui",
       "title": "Select",
@@ -140,6 +173,23 @@
       "files": [
         {
           "path": "src/components/ui/select.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "switch",
+      "type": "registry:ui",
+      "title": "Switch",
+      "description": "Accessible switch primitive (Base UI).",
+      "dependencies": ["@base-ui/react"],
+      "registryDependencies": [
+        "utils",
+        "https://ui.neon.com/r/neon-tokens.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/switch.tsx",
           "type": "registry:ui"
         }
       ]
@@ -472,7 +522,7 @@
       "name": "auth-form",
       "type": "registry:component",
       "title": "AuthForm",
-      "description": "The email/password card: mode switching, providers, structured errors, and a working state \u2014 Better Auth-shaped.",
+      "description": "The email/password card: mode switching, providers, structured errors, and a working state — Better Auth-shaped.",
       "registryDependencies": [
         "utils",
         "https://ui.neon.com/r/neon-tokens.json",
@@ -554,6 +604,76 @@
         {
           "path": "src/components/provisioning-status/provisioning-status.tsx",
           "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "region-card",
+      "type": "registry:component",
+      "title": "RegionCard",
+      "description": "Floating server-info chip: region name, mono id, and a color-coded ping line.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": [
+        "utils",
+        "https://ui.neon.com/r/neon-tokens.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/region-card/region-card.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "region-select",
+      "type": "registry:component",
+      "title": "RegionSelect",
+      "description": "Server location picker: an interactive dot-matrix world map synced with an accessible select.",
+      "registryDependencies": [
+        "utils",
+        "https://ui.neon.com/r/select.json",
+        "https://ui.neon.com/r/neon-tokens.json",
+        "https://ui.neon.com/r/region-card.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/region-select/region-select.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/region-select/map-dots.ts",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "region-globe",
+      "type": "registry:component",
+      "title": "RegionGlobe",
+      "description": "Tilted 3D globe (globe.gl) with a monochrome relief surface, clickable region markers, and arc travel effects between regions.",
+      "dependencies": ["globe.gl"],
+      "registryDependencies": [
+        "utils",
+        "https://ui.neon.com/r/neon-tokens.json",
+        "https://ui.neon.com/r/region-select.json",
+        "https://ui.neon.com/r/region-card.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/region-globe/region-globe.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "use-region-ping",
+      "type": "registry:hook",
+      "title": "useRegionPing",
+      "description": "Measures browser round-trip latency to per-region endpoints via opaque no-cors requests.",
+      "files": [
+        {
+          "path": "src/hooks/use-region-ping.ts",
+          "type": "registry:hook"
         }
       ]
     },
@@ -675,6 +795,31 @@
         {
           "path": "src/components/upgrade-dialog/upgrade-dialog.tsx",
           "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "create-project",
+      "type": "registry:block",
+      "title": "CreateProject",
+      "description": "Create-project onboarding panel: project form on the left, the interactive region map on the right.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": [
+        "utils",
+        "https://ui.neon.com/r/neon-tokens.json",
+        "https://ui.neon.com/r/button.json",
+        "https://ui.neon.com/r/input.json",
+        "https://ui.neon.com/r/select.json",
+        "https://ui.neon.com/r/switch.json",
+        "https://ui.neon.com/r/region-select.json",
+        "https://ui.neon.com/r/region-globe.json",
+        "https://ui.neon.com/r/region-card.json",
+        "https://ui.neon.com/r/label.json"
+      ],
+      "files": [
+        {
+          "path": "src/blocks/create-project/create-project.tsx",
+          "type": "registry:block"
         }
       ]
     }

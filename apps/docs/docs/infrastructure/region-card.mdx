@@ -1,0 +1,66 @@
+---
+title: RegionCard
+description: Floating server-info chip — region name, mono id, and a color-coded ping line.
+seo:
+  image: /og-cards/docs/infrastructure/region-card.png
+---
+
+`RegionCard` is the server-info chip that floats over region visualizations: an uppercase kicker, the region name, and a mono line with the region id plus a color-coded `ping: x ms` (green under 80 ms, amber under 180, red past that — the same `pingTone` helper the whole region family shares). It ships unpositioned; anchor it with `className` over a [RegionSelect](/infrastructure/region-select) map, a [RegionGlobe](/infrastructure/region-globe), or the [CreateProject](/blocks/create-project) block — all three use this exact component.
+
+<RegionCardPreview />
+
+## Install
+
+```bash
+npx shadcn@latest add https://ui.neon.com/r/region-card.json
+```
+
+## Usage
+
+```tsx
+import { RegionCard } from "@/components/neon-ui/region-card";
+
+<RegionCard
+  className="absolute bottom-3 left-3"
+  title="AWS Europe Central 1 (Frankfurt)"
+  regionId="aws-eu-central-1"
+  ping={pings["aws-eu-central-1"]}
+/>;
+```
+
+## Props
+
+<TypeTable
+  type={{
+    title: {
+      type: "string",
+      description: 'Display name, e.g. "AWS Europe Central 1 (Frankfurt)".',
+    },
+    regionId: {
+      type: "string",
+      description: "Mono region id shown on the detail line.",
+    },
+    ping: {
+      type: "number | null",
+      description: "Round-trip in ms; renders color-coded when present.",
+    },
+    label: {
+      type: "string",
+      default: '"Region"',
+      description: "Uppercase kicker above the title.",
+    },
+    icon: {
+      type: "ReactNode",
+      description: "Leading icon; defaults to the CPU mark.",
+    },
+    children: {
+      type: "ReactNode",
+      description: "Trailing content, e.g. a status badge.",
+    },
+  }}
+/>
+
+## Notes
+
+- Exports `pingTone(ping)` — the shared green/amber/red class mapping — for readouts outside the card.
+- The entrance fade is `motion-reduce` guarded; pair with an `aria-live="polite"` wrapper when the card announces selection changes.
