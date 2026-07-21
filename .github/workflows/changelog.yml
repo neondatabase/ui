@@ -47,10 +47,10 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -b "$BRANCH"
           git add apps/docs/demos/changelog-entries.json
-          git commit -m "docs(changelog): record PR #${PR_NUMBER}"
+          git commit -m "docs: record changelog entry for PR #${PR_NUMBER}"
           git push -u origin "$BRANCH"
           gh pr create \
-            --title "docs(changelog): record PR #${PR_NUMBER}" \
+            --title "docs: record changelog entry for PR #${PR_NUMBER}" \
             --body "Automated changelog entry for #${PR_NUMBER}.
 
           ## Changelog

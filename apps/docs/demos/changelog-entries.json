@@ -24,25 +24,16 @@
   },
   {
     "date": "2026-07-20",
-    "title": "Blocks and brand shaders",
+    "title": "Create-project block",
     "author": "Justin Levine",
     "items": [
       {
         "text": "`CreateProject` block with the region picker family: `RegionSelect`, `RegionGlobe`, `RegionCard`",
         "href": "/blocks/create-project",
         "kind": "feat"
-      },
-      {
-        "text": "`DotMatrixWave` dot field with a stop-by-stop gradient editor and the neon.com green-to-blue `neonFade` preset",
-        "href": "/brand/dot-matrix-wave",
-        "kind": "feat"
-      },
-      {
-        "text": "`HalftoneBloom` halftone screen lit by a rig of drifting color lights, scenes sampled from the neon.com pattern art",
-        "href": "/brand/halftone-bloom",
-        "kind": "feat"
       }
-    ]
+    ],
+    "pr": 43
   },
   {
     "date": "2026-07-19",
