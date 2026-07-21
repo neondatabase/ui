@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@neon-ui/registry": "workspace:*",
-    "blume": "^1.1.1",
+    "blume": "^1.1.2",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "shadcn": "^4.13.0"

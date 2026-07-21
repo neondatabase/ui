@@ -10,7 +10,7 @@ export const AppCreatorDemo = () => {
   const [created, setCreated] = useState<string | null>(null);
 
   return (
-    <div className="flex w-full max-w-lg flex-col gap-3">
+    <div className="flex w-full max-w-2xl flex-col gap-3">
       <AppCreator
         isCreating={creating}
         placeholderPrompts={samplePrompts}
