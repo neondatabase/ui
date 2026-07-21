@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      pull-requests: write
     steps:
       - uses: actions/checkout@v4
         with:
@@ -30,14 +31,30 @@ jobs:
           PR_MERGED_AT: ${{ github.event.pull_request.merged_at }}
         run: node scripts/append-changelog.mjs
 
-      - name: Commit
+      # Main only takes changes through pull requests, so the entry
+      # ships as its own auto-merging PR.
+      - name: Open changelog PR
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           if git diff --quiet; then
             echo "No changelog entry to commit."
             exit 0
           fi
+          BRANCH="docs/changelog-pr-${PR_NUMBER}"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BRANCH"
           git add apps/docs/demos/changelog-entries.json
-          git commit -m "docs(changelog): record PR #${{ github.event.pull_request.number }}"
-          git push origin main
+          git commit -m "docs(changelog): record PR #${PR_NUMBER}"
+          git push -u origin "$BRANCH"
+          gh pr create \
+            --title "docs(changelog): record PR #${PR_NUMBER}" \
+            --body "Automated changelog entry for #${PR_NUMBER}.
+
+          ## Changelog
+
+          - None" \
+            --base main
+          gh pr merge "$BRANCH" --auto --squash --delete-branch

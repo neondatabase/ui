@@ -1,5 +1,28 @@
 [
   {
+    "author": "Justin Levine",
+    "date": "2026-07-21",
+    "items": [
+      {
+        "text": "`DotMatrixWave` dot field with a stop-by-stop gradient editor and the neon.com green-to-blue `neonFade` preset",
+        "kind": "feat",
+        "href": "/brand/dot-matrix-wave"
+      },
+      {
+        "text": "`HalftoneBloom` halftone screen lit by a rig of drifting color lights, scenes sampled from the neon.com pattern art",
+        "kind": "feat",
+        "href": "/brand/halftone-bloom"
+      },
+      {
+        "text": "The `/changelog` timeline: dated cards, author bylines, and live component links, fed automatically from merged PRs",
+        "kind": "feat",
+        "href": "/changelog"
+      }
+    ],
+    "pr": 45,
+    "title": "Brand shaders, CI-fed changelog, and header tabs"
+  },
+  {
     "date": "2026-07-20",
     "title": "Blocks and brand shaders",
     "author": "Justin Levine",
