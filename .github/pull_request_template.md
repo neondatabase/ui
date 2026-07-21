@@ -24,3 +24,11 @@ Closes #
 ## Screenshots
 
 <!-- Required for any UI or docs change. Show light and dark mode where relevant. -->
+
+## Changelog
+
+<!-- One bullet per user-facing change; it feeds the site's /changelog timeline
+     on merge (see CONTRIBUTING.md → Changelog). Optional live link: end a
+     bullet with -> /route. Write "- None" when nothing is user-facing. -->
+
+- None

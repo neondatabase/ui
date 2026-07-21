@@ -618,3 +618,25 @@ dialog > div:last-child > div:last-child > span:last-child {
     rotate: 360deg;
   }
 }
+
+/*
+ * House radius is none: square the header tab pills and the mobile
+ * drawer tab items (Blume hardcodes rounded-full/rounded-lg there).
+ */
+[data-blume-drawer] ul a,
+aside ul a.rounded-lg {
+  border-radius: 0;
+}
+
+/*
+ * Header tabs: no pill highlight anywhere (the stock Header still
+ * renders on PageLayout pages, e.g. the landing and /changelog).
+ * Hover and active states change the text color only.
+ */
+header nav a.rounded-full {
+  border-radius: 0;
+}
+
+header nav a.rounded-full:hover {
+  background-color: transparent;
+}

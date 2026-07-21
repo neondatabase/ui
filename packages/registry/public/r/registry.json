@@ -553,6 +553,40 @@
       ]
     },
     {
+      "name": "dot-matrix-wave",
+      "type": "registry:component",
+      "title": "DotMatrixWave",
+      "description": "Field of dots breathing in a drifting noise wave, colored by currentColor. The RegionSelect dot-map aesthetic as a background surface.",
+      "registryDependencies": ["utils"],
+      "files": [
+        {
+          "path": "src/components/dot-matrix-wave/dot-matrix-wave.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/dot-matrix-wave/dot-matrix-wave-shader.ts",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "halftone-bloom",
+      "type": "registry:component",
+      "title": "HalftoneBloom",
+      "description": "Halftone ring field revealed by soft drifting color blooms: teal and amber light behind a punched-metal screen.",
+      "registryDependencies": ["utils"],
+      "files": [
+        {
+          "path": "src/components/halftone-bloom/halftone-bloom.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/halftone-bloom/halftone-bloom-shader.ts",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
       "name": "preview-frame",
       "type": "registry:component",
       "title": "PreviewFrame",

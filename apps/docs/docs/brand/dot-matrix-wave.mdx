@@ -1,0 +1,67 @@
+---
+title: DotMatrixWave
+description: Field of dots breathing in a drifting noise wave, colored by currentColor.
+seo:
+  image: /og-cards/docs/brand/dot-matrix-wave.png
+---
+
+`DotMatrixWave` generalizes the [RegionSelect](/infrastructure/region-select) dot-map aesthetic into a background surface: a grid of dots whose size and brightness ride a drifting value-noise field, so broad swells roll across the grid instead of dots blinking in unison. It reads `currentColor` at mount (the same contract as [NeonLoader](/brand/neon-loader) and [AnimatedWash](/brand/animated-wash)), so a `text-primary` ancestor or the theme drives it with zero props. Pass a `colors` array instead for a left-to-right gradient fade; the `neonFade` preset is sampled from the neon.com green-to-blue type treatment. Edit the gradient stop by stop:
+
+<DotMatrixWavePlayground />
+
+## Install
+
+```bash
+npx shadcn@latest add https://ui.neon.com/r/dot-matrix-wave.json
+```
+
+## Usage
+
+```tsx
+import { DotMatrixWave } from "@/components/neon-ui/dot-matrix-wave";
+
+<section className="relative isolate overflow-hidden bg-black text-primary">
+  <DotMatrixWave className="absolute inset-0" />
+  // Or the neon.com green-to-blue fade:
+  <DotMatrixWave colors={["#68e2a0", "#63cfc6", "#63bbf3"]} />
+  <div className="relative">{content}</div>
+</section>;
+```
+
+## Props
+
+<TypeTable
+  type={{
+    speed: {
+      type: "number",
+      description: "Wave drift speed multiplier; 0 freezes the field.",
+      default: "1",
+    },
+    gap: {
+      type: "number",
+      description: "Dot pitch in CSS pixels.",
+      default: "14",
+    },
+    dotSize: {
+      type: "number",
+      description: "0-1 dot radius as a share of the pitch.",
+      default: "0.35",
+    },
+    amplitude: {
+      type: "number",
+      description: "0-1 how hard the wave swells the dots.",
+      default: "0.8",
+    },
+    floor: {
+      type: "number",
+      description: "0-1 minimum brightness of resting dots.",
+      default: "0.08",
+    },
+    colors: {
+      type: "string[]",
+      description:
+        "Gradient stops spread evenly left to right, up to 6. Omit to paint the whole field with currentColor.",
+      default: "currentColor",
+    },
+  }}
+/>

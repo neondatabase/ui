@@ -76,6 +76,27 @@ CI runs all of these plus a stale-registry check (the committed `public/r/` must
 - Keep PRs focused. Don't bundle unrelated changes.
 - Feature branches squash merge. Delete the branch after merge.
 
+## Changelog
+
+The site's [/changelog](https://ui.neon.com/changelog) timeline is fed automatically: when a PR merges to `main`, CI parses the PR's `## Changelog` section and prepends an entry to `apps/docs/demos/changelog-entries.json`.
+
+Write one bullet per user-facing change. End a bullet with `-> /route` to link it to the live docs page it ships on:
+
+```markdown
+## Changelog
+
+- `HalftoneBloom` halftone screen lit by drifting color lights -> /brand/halftone-bloom
+- Reduced-motion fixes across the shader components
+```
+
+Rules:
+
+- Wrap component names in backticks; they render as code in the timeline.
+- The entry's kind tag (`new`, `fix`, `docs`, ...) comes from your PR title's conventional-commit type.
+- The entry's title comes from the PR title summary, its date and author from the merge.
+- Omit the section (or write `- None`) for changes with nothing user-facing; no entry is recorded.
+- To curate history (merge days, reword, add links), edit `changelog-entries.json` directly.
+
 ## Brand
 
 This registry uses Neon's name and assets under their [brand guidelines](https://neon.com/brand). Don't edit, recolor, or reconstruct the logo. Use the vendored assets in `apps/docs/public/brand/` as-is. Neon-inspired visuals (backgrounds, themes) use the palette, not the mark.

@@ -1,0 +1,155 @@
+[
+  {
+    "date": "2026-07-20",
+    "title": "Blocks and brand shaders",
+    "author": "Justin Levine",
+    "items": [
+      {
+        "text": "`CreateProject` block with the region picker family: `RegionSelect`, `RegionGlobe`, `RegionCard`",
+        "href": "/blocks/create-project",
+        "kind": "feat"
+      },
+      {
+        "text": "`DotMatrixWave` dot field with a stop-by-stop gradient editor and the neon.com green-to-blue `neonFade` preset",
+        "href": "/brand/dot-matrix-wave",
+        "kind": "feat"
+      },
+      {
+        "text": "`HalftoneBloom` halftone screen lit by a rig of drifting color lights, scenes sampled from the neon.com pattern art",
+        "href": "/brand/halftone-bloom",
+        "kind": "feat"
+      }
+    ]
+  },
+  {
+    "date": "2026-07-19",
+    "title": "Docs polish",
+    "author": "Justin Levine",
+    "items": [
+      {
+        "text": "Landing page rebuilt on the live aurora, docs routes mounted at the root",
+        "href": "/",
+        "kind": "docs"
+      },
+      {
+        "text": "Sidebar taxonomy reorganized; code-glimpse preview cards",
+        "kind": "docs"
+      },
+      {
+        "text": "Shader lifecycle hardening and reduced-motion resize fixes",
+        "kind": "fix"
+      },
+      {
+        "text": "DST-safe date grid with a pure-logic test baseline",
+        "href": "/app/date-range-picker",
+        "kind": "fix"
+      },
+      {
+        "text": "Typography standards applied across components",
+        "kind": "refactor"
+      },
+      {
+        "text": "README redesigned with shieldcn badges",
+        "kind": "docs"
+      }
+    ]
+  },
+  {
+    "date": "2026-07-18",
+    "title": "The agent platform set",
+    "author": "Justin Levine",
+    "items": [
+      {
+        "text": "`NeonAurora`: the neon.com hero as a live WebGL surface",
+        "href": "/brand/neon-aurora",
+        "kind": "feat"
+      },
+      {
+        "text": "`AuthForm` with validation, strength meter, motion, and reset mode",
+        "href": "/app/auth-form",
+        "kind": "feat"
+      },
+      {
+        "text": "`PreviewFrame` sandbox lifecycle, including the sleeping state",
+        "href": "/platform/preview-frame",
+        "kind": "feat"
+      },
+      {
+        "text": "Model pickers sourced from models.dev with max thinking effort",
+        "href": "/agent/model-select",
+        "kind": "feat"
+      },
+      {
+        "text": "`WorkspaceTabs`, `ProvisioningStatus`, `CheckpointTimeline`, hold-to-confirm `ConfirmDialog`",
+        "href": "/platform/workspace-tabs",
+        "kind": "feat"
+      },
+      {
+        "text": "`UsagePanel`, hand-built `DateRangePicker`, `UpgradeDialog` pricing modal",
+        "href": "/platform/usage-panel",
+        "kind": "feat"
+      },
+      {
+        "text": "Hidden canvas loops pause to save GPU time",
+        "kind": "perf"
+      }
+    ]
+  },
+  {
+    "date": "2026-07-17",
+    "title": "First components",
+    "author": "Justin Levine",
+    "items": [
+      {
+        "text": "Base UI primitives: `Button`, `Card`, `Badge`, `Skeleton`, `Tabs`, `Label`, `Input`, `Select`, `Switch`",
+        "href": "/installation",
+        "kind": "feat"
+      },
+      {
+        "text": "`MetricCard` with Visx sparklines; `NeonLoader`, the noise-resolve loading mark",
+        "href": "/app/metric-card",
+        "kind": "feat"
+      },
+      {
+        "text": "`AgentChat`, `ToolCallChip`, and the theming playground",
+        "href": "/agent/agent-chat",
+        "kind": "feat"
+      },
+      {
+        "text": "`StatusBadge` and `PlanBadge` status vocabulary; `EmptyState`",
+        "href": "/platform/status-badge",
+        "kind": "feat"
+      },
+      {
+        "text": "`AppCard`, `AnimatedWash` (the first WebGL shader), `ColorPicker`",
+        "href": "/brand/animated-wash",
+        "kind": "feat"
+      },
+      {
+        "text": "`AppCreator` describe-an-app bar",
+        "href": "/platform/app-creator",
+        "kind": "feat"
+      }
+    ]
+  },
+  {
+    "date": "2026-07-16",
+    "title": "Foundation",
+    "author": "Justin Levine",
+    "items": [
+      {
+        "text": "Monorepo with the `@neon-ui/registry` package and Blume docs site",
+        "kind": "chore"
+      },
+      {
+        "text": "Neon palette and design tokens for Tailwind v4 (`neon-tokens`)",
+        "href": "/theming",
+        "kind": "feat"
+      },
+      {
+        "text": "Shared `utils` class-merge helper and registry plumbing",
+        "kind": "chore"
+      }
+    ]
+  }
+]

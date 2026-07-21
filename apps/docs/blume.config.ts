@@ -10,6 +10,8 @@ export default defineConfig({
   // domain — and flip to ui.neon.com automatically when that becomes
   // the production domain.
   description: "The UI Layer for building applications on Neon.",
+  // No "Was this helpful?" widget on docs pages.
+  feedback: false,
   // Header repository link, edit-on-GitHub, and feedback actions.
   github: {
     owner: "neonpostgres",
@@ -25,6 +27,15 @@ export default defineConfig({
       light: "/brand/neon-logo-color-dark.svg",
     },
     text: "",
+  },
+  navigation: {
+    // Header links to the docs and the custom /changelog page.
+    // Docs points at the root so the sidebar keeps the full tree
+    // (a tab path scopes the sidebar to its folder otherwise).
+    tabs: [
+      { label: "Docs", path: "/" },
+      { label: "Changelog", path: "/changelog" },
+    ],
   },
   seo: {
     // Generated cards for every page, branded to the house; the home

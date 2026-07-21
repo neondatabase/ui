@@ -4,7 +4,16 @@ import PageLayout from "blume/components/layout/PageLayout.astro";
 import { NeonAurora } from "@neon-ui/registry/components/neon-aurora/neon-aurora";
 import InstallPicker from "../demos/install-picker";
 
-const { config, navigation } = data;
+const { config, navigation: nav } = data;
+
+// The stock header in PageLayout honors tab.href: point the Docs tab
+// at the installation page (its path stays "/" for sidebar scoping).
+const navigation = {
+  ...nav,
+  tabs: nav.tabs.map((tab) =>
+    tab.path === "/" ? { ...tab, href: "/installation" } : tab
+  ),
+};
 ---
 
 <PageLayout

@@ -1,0 +1,43 @@
+name: Changelog
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [main]
+
+jobs:
+  append:
+    # Only merged PRs feed the changelog; skip the bot's own commits.
+    if: github.event.pull_request.merged == true && github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      - name: Append entry from PR
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+          PR_MERGED_AT: ${{ github.event.pull_request.merged_at }}
+        run: node scripts/append-changelog.mjs
+
+      - name: Commit
+        run: |
+          if git diff --quiet; then
+            echo "No changelog entry to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add apps/docs/demos/changelog-entries.json
+          git commit -m "docs(changelog): record PR #${{ github.event.pull_request.number }}"
+          git push origin main

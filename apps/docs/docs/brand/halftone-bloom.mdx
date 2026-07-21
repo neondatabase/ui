@@ -1,0 +1,83 @@
+---
+title: HalftoneBloom
+description: Halftone ring field revealed by soft drifting color blooms behind a punched-metal screen.
+seo:
+  image: /og-cards/docs/brand/halftone-bloom.png
+---
+
+`HalftoneBloom` is a punched-metal halftone screen lit from behind: every cell is a ring (a disc with a smaller hole punched off-center), and the only light in the scene is a configurable rig of blurred color lights drifting slowly behind it. Each ring samples the light field once at its cell center, so the gradient steps cell by cell like a print halftone. The canvas is transparent outside the lit rings, so it sits on dark and light surfaces alike. The `heritage` scene recreates the dark background reference; `sunrise`, `meadow`, and `spring` recreate the neon.com pattern strips with colors sampled from the source art:
+
+<HalftoneBloomPlayground />
+
+## Install
+
+```bash
+npx shadcn@latest add https://ui.neon.com/r/halftone-bloom.json
+```
+
+## Usage
+
+```tsx
+import { HalftoneBloom } from "@/components/neon-ui/halftone-bloom";
+
+<section className="relative isolate overflow-hidden bg-black">
+  <HalftoneBloom className="absolute inset-0" />
+  <div className="relative">{content}</div>
+</section>;
+
+// A custom rig: any set of up to six lights.
+import { bloomScenes } from "@/components/neon-ui/fixtures";
+
+<HalftoneBloom
+  highlight={bloomScenes.sunrise.highlight}
+  lights={bloomScenes.sunrise.lights}
+/>;
+```
+
+## Props
+
+<TypeTable
+  type={{
+    speed: {
+      type: "number",
+      description: "Bloom drift speed multiplier; 0 freezes the field.",
+      default: "1",
+    },
+    gap: {
+      type: "number",
+      description: "Cell pitch in CSS pixels.",
+      default: "12",
+    },
+    holeSize: {
+      type: "number",
+      description: "0-1 punched-hole radius as a share of the cell.",
+      default: "0.22",
+    },
+    intensity: {
+      type: "number",
+      description: "Overall bloom brightness multiplier.",
+      default: "1",
+    },
+    holeOffset: {
+      type: "[number, number]",
+      description: "Hole offset from the cell center, in cell units.",
+      default: "[-0.09, -0.09]",
+    },
+    drift: {
+      type: "number",
+      description: "0-1 how far lights wander from their anchors.",
+      default: "1",
+    },
+    highlight: {
+      type: "string",
+      description: "The overexposed highlight color.",
+      default: '"#ecdcae"',
+    },
+    lights: {
+      type: "BloomLight[]",
+      description:
+        "The light rig, up to 6 lights: { color, x, y, radius?, intensity?, overexpose? }. x/y are 0-1 anchors; radius is a share of the width.",
+      default: "heritage scene",
+    },
+  }}
+/>

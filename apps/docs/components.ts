@@ -1,5 +1,7 @@
 import { defineComponents } from "blume";
 
+import Header from "./components/blume/header.astro";
+
 export default defineComponents({
   islands: {
     AgentChatPreview: "./demos/agent-chat-preview.tsx",
@@ -10,6 +12,7 @@ export default defineComponents({
     AppCreatorPreview: "./demos/app-creator-preview.tsx",
     AuthFormCoverPreview: "./demos/auth-form-cover-preview.tsx",
     AuthFormPreview: "./demos/auth-form-preview.tsx",
+    ChangelogTimeline: "./demos/changelog-timeline.tsx",
     ChatInputPreview: "./demos/chat-input-preview.tsx",
     ChatMessagePreview: "./demos/chat-message-preview.tsx",
     ChatWorkingPreview: "./demos/chat-working-preview.tsx",
@@ -18,7 +21,9 @@ export default defineComponents({
     ConfirmDialogPreview: "./demos/confirm-dialog-preview.tsx",
     CreateProjectPreview: "./demos/create-project-preview.tsx",
     DateRangePickerPreview: "./demos/date-range-picker-preview.tsx",
+    DotMatrixWavePlayground: "./demos/dot-matrix-wave-playground.tsx",
     EmptyStatePreview: "./demos/empty-state-preview.tsx",
+    HalftoneBloomPlayground: "./demos/halftone-bloom-playground.tsx",
     MetricCardDeltaVariants: "./demos/metric-card-delta-variants.tsx",
     MetricCardFormatVariants: "./demos/metric-card-format-variants.tsx",
     MetricCardPreview: "./demos/metric-card-preview.tsx",
@@ -40,4 +45,5 @@ export default defineComponents({
     UsagePanelPreview: "./demos/usage-panel-preview.tsx",
     WorkspaceTabsPreview: "./demos/workspace-tabs-preview.tsx",
   },
+  layout: { Header },
 });
