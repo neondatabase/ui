@@ -1,6 +1,38 @@
 [
   {
     "author": "Justin Levine",
+    "date": "2026-07-22",
+    "items": [
+      {
+        "text": "agent-chat: tool-call runs now fold into a collapsible working group with a live status header",
+        "kind": "feat",
+        "href": "/docs/agent/agent-chat"
+      },
+      {
+        "text": "model-select: new `fallbackToFirst` prop keeps a controlled selection valid against the model list",
+        "kind": "feat",
+        "href": "/docs/agent/model-select"
+      },
+      {
+        "text": "preview-frame: new `working` prop shows a live agent-editing state in the header",
+        "kind": "feat",
+        "href": "/docs/agent/preview-frame"
+      },
+      {
+        "text": "New `use-gateway-models` hook: catalog-validated model selection behind a server proxy",
+        "kind": "feat",
+        "href": "/docs/agent/model-select"
+      },
+      {
+        "text": "All icons migrated from lucide to hugeicons",
+        "kind": "feat"
+      }
+    ],
+    "pr": 48,
+    "title": "Hugeicons migration and gateway model selection"
+  },
+  {
+    "author": "Justin Levine",
     "date": "2026-07-21",
     "items": [
       {
