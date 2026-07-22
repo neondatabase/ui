@@ -7,8 +7,9 @@ on:
 
 jobs:
   append:
-    # Only merged PRs feed the changelog; skip the bot's own commits.
-    if: github.event.pull_request.merged == true && github.actor != 'github-actions[bot]'
+    # Only merged PRs feed the changelog; skip the workflow's own
+    # changelog PRs so it can never feed itself.
+    if: github.event.pull_request.merged == true && !startsWith(github.event.pull_request.head.ref, 'docs/changelog-pr-')
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -17,6 +18,12 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: main
+          # Push with a PAT so the changelog PR triggers the required
+          # ci/commitlint checks — branches pushed with the default
+          # GITHUB_TOKEN never start workflows (recursion guard), which
+          # leaves the auto-merge blocked forever. Falls back to the
+          # default token if the secret is missing.
+          token: ${{ secrets.CHANGELOG_PUSH_TOKEN || github.token }}
 
       - uses: actions/setup-node@v4
         with:
@@ -35,7 +42,7 @@ jobs:
       # ships as its own auto-merging PR.
       - name: Open changelog PR
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.CHANGELOG_PUSH_TOKEN || github.token }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           if git diff --quiet; then
