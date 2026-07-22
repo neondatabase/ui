@@ -4,6 +4,48 @@
     "date": "2026-07-22",
     "items": [
       {
+        "text": "The registry moves to a 0.5rem radius scale — every component, chip, and docs surface comes off hard corners",
+        "kind": "feat",
+        "href": "/theming"
+      },
+      {
+        "text": "Brand shaders now glide between dial values and palettes instead of snapping; speed changes scale the flow smoothly",
+        "kind": "feat",
+        "href": "/brand/mesh-gradient"
+      },
+      {
+        "text": "Shader playgrounds: shared dial panel with animated reset, crafted sliders, and no more WebGL context churn",
+        "kind": "feat",
+        "href": "/brand/neon-aurora"
+      },
+      {
+        "text": "ConfirmDialog: new `shake` prop ramps a subtle tremble over the hold, and the hold button's focus ring is destructive now",
+        "kind": "feat",
+        "href": "/app/confirm-dialog"
+      },
+      {
+        "text": "InlineCitation pills and hover cards show source favicons",
+        "kind": "feat",
+        "href": "/agent/inline-citation"
+      },
+      {
+        "text": "AuthForm invalid fields tint the whole box instead of an underline",
+        "kind": "feat",
+        "href": "/app/auth-form"
+      },
+      {
+        "text": "Charged CTAs lose the neon glow across app-creator, auth-form, and upgrade-dialog",
+        "kind": "feat"
+      }
+    ],
+    "pr": 58,
+    "title": "Radius scale, dial glide, and interaction polish"
+  },
+  {
+    "author": "Justin Levine",
+    "date": "2026-07-22",
+    "items": [
+      {
         "text": "ConfirmDialog: the hold button's label now splits at the fill edge via clip-path instead of flipping color mid-hold",
         "kind": "fix",
         "href": "/docs/app/confirm-dialog"
