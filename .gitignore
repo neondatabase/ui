@@ -52,3 +52,6 @@ plans/
 # dated local dev notes
 *.local.md
 TODO.md
+
+# local time-tracking exports
+time-export.json
