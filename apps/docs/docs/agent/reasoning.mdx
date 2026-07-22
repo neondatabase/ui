@@ -1,0 +1,99 @@
+---
+title: Reasoning
+description: Collapsible extended-thinking fold with a timed receipt.
+seo:
+  image: /og-cards/docs/agent/reasoning.png
+---
+
+`Reasoning` shows the model's extended thinking in the same log-line vocabulary as [AgentChat](/agent/agent-chat)'s tool groups: a rail-indented fold that opens itself while the model streams, shimmers "Thinking…", and settles to a quiet "Thought for Ns" receipt when it stops. The reader's toggle always beats the automation — once they open or close it by hand, it stays put.
+
+Use it for one continuous thinking stream (DeepSeek R1, Claude extended thinking). For discrete, labeled steps, use [ChainOfThought](/agent/chain-of-thought) instead.
+
+Inspired by [Reasoning](https://elements.ai-sdk.dev/components/reasoning) from Vercel's AI SDK Elements, rebuilt on Base UI in the registry's own vocabulary.
+
+<ReasoningPreview />
+
+## Install
+
+```bash
+npx shadcn@latest add https://ui.neon.com/r/reasoning.json
+```
+
+## Usage
+
+```tsx
+import {
+  Reasoning,
+  ReasoningContent,
+  ReasoningTrigger,
+} from "@/components/neon-ui/reasoning";
+
+<Reasoning isStreaming={isStreaming}>
+  <ReasoningTrigger />
+  <ReasoningContent>{reasoningText}</ReasoningContent>
+</Reasoning>;
+```
+
+## Props
+
+### `<Reasoning />`
+
+<TypeTable
+  type={{
+    isStreaming: {
+      type: "boolean",
+      description:
+        "The reasoning is streaming: the panel auto-opens, the trigger shimmers, and the clock runs. When it flips off, the panel folds to a receipt unless the reader toggled it themselves.",
+      default: "false",
+    },
+    open: {
+      type: "boolean",
+      description: "Controlled open state.",
+    },
+    defaultOpen: {
+      type: "boolean",
+      description: "Initial open state when uncontrolled.",
+      default: "false",
+    },
+    onOpenChange: {
+      type: "(open: boolean) => void",
+      description: "Called when the open state changes.",
+    },
+    duration: {
+      type: "number",
+      description:
+        "Thinking time in seconds. Measured automatically from isStreaming when omitted.",
+    },
+  }}
+/>
+
+### `<ReasoningTrigger />`
+
+Extends the Base UI `Collapsible.Trigger`. Children replace the default label ("Thinking…" while streaming, "Thought for Ns" at rest); the chevron stays.
+
+### `<ReasoningContent />`
+
+<TypeTable
+  type={{
+    children: {
+      type: "string",
+      description: "The reasoning text, rendered as markdown via Streamdown.",
+      required: true,
+    },
+  }}
+/>
+
+### `useReasoning`
+
+Read the surrounding state from custom children: `{ isStreaming, open, setOpen, duration }`.
+
+## Wiring to Neon
+
+With AI SDK `useChat`, consolidate every `reasoning` part into one block — models with high reasoning effort emit several parts, and one fold beats a stack of "Thinking…" indicators. The typed example shows the full mapping, including live-stream detection from the message's last part. Reasoning-capable gateway models (pick one with [ModelSelect](/agent/model-select)) stream these parts when the route sets `sendReasoning: true`.
+
+## Accessibility
+
+- Built on Base UI Collapsible: the trigger is a real button with `aria-expanded` and `aria-controls`.
+- Streaming state is written to `data-streaming`, not conveyed by shimmer alone; the label text changes with it.
+- The fold animates height only; under `prefers-reduced-motion` it snaps.
+- Auto-close never fights the reader: a manual toggle pins their choice.

@@ -383,6 +383,67 @@
       ]
     },
     {
+      "name": "reasoning",
+      "type": "registry:component",
+      "title": "Reasoning",
+      "description": "Collapsible extended-thinking fold that opens itself while the model streams and settles to a timed receipt.",
+      "dependencies": [
+        "@base-ui/react",
+        "@hugeicons/react",
+        "@hugeicons/core-free-icons",
+        "streamdown"
+      ],
+      "registryDependencies": [
+        "utils",
+        "https://ui.neon.com/r/neon-tokens.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/reasoning/reasoning.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "chain-of-thought",
+      "type": "registry:component",
+      "title": "ChainOfThought",
+      "description": "Collapsible step-by-step reasoning rail with statuses, search-result chips, and images.",
+      "dependencies": [
+        "@base-ui/react",
+        "@hugeicons/react",
+        "@hugeicons/core-free-icons"
+      ],
+      "registryDependencies": [
+        "utils",
+        "https://ui.neon.com/r/neon-tokens.json",
+        "https://ui.neon.com/r/badge.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/chain-of-thought/chain-of-thought.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "inline-citation",
+      "type": "registry:component",
+      "title": "InlineCitation",
+      "description": "Inline source pill that previews stacked citations on hover and links to the source on click.",
+      "dependencies": ["@base-ui/react"],
+      "registryDependencies": [
+        "utils",
+        "https://ui.neon.com/r/neon-tokens.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/inline-citation/inline-citation.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
       "name": "metric-card",
       "type": "registry:component",
       "title": "MetricCard",

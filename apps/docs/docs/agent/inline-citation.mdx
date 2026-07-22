@@ -1,0 +1,118 @@
+---
+title: InlineCitation
+description: Inline source pill that previews citations on hover.
+seo:
+  image: /og-cards/docs/agent/inline-citation.png
+---
+
+`InlineCitation` marks a sourced claim without breaking the reading flow: the text reads normally, a small mono pill names the source's hostname, and hovering or focusing the pill previews the source — title, URL, description, and an optional quote — right in the paragraph. The pill is a real link, so a click goes to the source.
+
+Multiple sources stack in one readable list inside the preview. That's a deliberate departure from carousel-style citation cards: reading beats paging.
+
+Inspired by [Inline Citation](https://elements.ai-sdk.dev/components/inline-citation) from Vercel's AI SDK Elements, rebuilt on Base UI in the registry's own vocabulary.
+
+<InlineCitationPreview />
+
+## Install
+
+```bash
+npx shadcn@latest add https://ui.neon.com/r/inline-citation.json
+```
+
+## Usage
+
+```tsx
+import {
+  InlineCitationCard,
+  InlineCitationCardBody,
+  InlineCitationCardTrigger,
+  InlineCitationSource,
+} from "@/components/neon-ui/inline-citation";
+
+<InlineCitationCard>
+  <InlineCitationCardTrigger
+    sources={["https://neon.com/docs/introduction/branching"]}
+  />
+  <InlineCitationCardBody>
+    <InlineCitationSource
+      title="Branching — Neon Docs"
+      url="https://neon.com/docs/introduction/branching"
+      description="How branches share pages with their parent."
+    />
+  </InlineCitationCardBody>
+</InlineCitationCard>;
+```
+
+## Props
+
+### `<InlineCitation />` and `<InlineCitationText />`
+
+Plain spans. `InlineCitation` groups a cited span with its pill; `InlineCitationText` tints gently while the pill is hovered.
+
+### `<InlineCitationCard />`
+
+Extends the Base UI `PreviewCard.Root` — hover and focus open the preview; Esc closes it.
+
+### `<InlineCitationCardTrigger />`
+
+<TypeTable
+  type={{
+    sources: {
+      type: "string[]",
+      description:
+        "Source URLs. The first is the link target and names the pill; extras show as a +n tail.",
+      required: true,
+    },
+  }}
+/>
+
+### `<InlineCitationCardBody />`
+
+<TypeTable
+  type={{
+    align: {
+      type: '"start" | "center" | "end"',
+      description: "Popup alignment against the pill.",
+      default: '"start"',
+    },
+    sideOffset: {
+      type: "number",
+      description: "Gap between pill and popup.",
+      default: "6",
+    },
+  }}
+/>
+
+### `<InlineCitationSource />`
+
+<TypeTable
+  type={{
+    title: {
+      type: "string",
+      description: "The title of the source.",
+    },
+    url: {
+      type: "string",
+      description: "The URL of the source, shown in mono.",
+    },
+    description: {
+      type: "string",
+      description: "A brief dimmed description.",
+    },
+  }}
+/>
+
+### `<InlineCitationQuote />`
+
+A blockquote for a short excerpt, on the house rail.
+
+## Wiring to Neon
+
+Models don't emit citation markup natively, so generate structured output — a `{ content, citations }` schema via `experimental_useObject` — and split the content on `[n]` markers. The typed example shows the full parse-and-render pass; markers with a matching source become pills, everything else stays prose.
+
+## Accessibility
+
+- The pill is a real anchor: focusable, opens the preview on focus, and navigates on activation.
+- Built on Base UI PreviewCard: Esc dismisses, and the preview never traps focus.
+- The preview duplicates what hover shows, so keyboard users get the same information.
+- The popup's entrance is a fade only and is removed under `prefers-reduced-motion`.

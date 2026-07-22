@@ -1,0 +1,111 @@
+---
+title: ChainOfThought
+description: Step-by-step reasoning rail with statuses and search chips.
+seo:
+  image: /og-cards/docs/agent/chain-of-thought.png
+---
+
+`ChainOfThought` lays an agent's discrete reasoning steps on a connected vertical rail: each step gets a status dot, a label, and an optional description, with the active step shimmering while it runs and pending steps waiting dimmed. Steps can carry search-result chips and captioned images.
+
+Use it when the model emits labeled stages (searches, tool calls, drafts). For one continuous thinking stream, use [Reasoning](/agent/reasoning) instead.
+
+Inspired by [Chain of Thought](https://elements.ai-sdk.dev/components/chain-of-thought) from Vercel's AI SDK Elements, rebuilt on Base UI in the registry's own vocabulary.
+
+<ChainOfThoughtPreview />
+
+## Install
+
+```bash
+npx shadcn@latest add https://ui.neon.com/r/chain-of-thought.json
+```
+
+## Usage
+
+```tsx
+import {
+  ChainOfThought,
+  ChainOfThoughtContent,
+  ChainOfThoughtHeader,
+  ChainOfThoughtStep,
+} from "@/components/neon-ui/chain-of-thought";
+
+<ChainOfThought defaultOpen>
+  <ChainOfThoughtHeader />
+  <ChainOfThoughtContent>
+    <ChainOfThoughtStep label="Searching the docs" status="complete" />
+    <ChainOfThoughtStep label="Drafting the schema" status="active" />
+    <ChainOfThoughtStep label="Writing the migration" status="pending" />
+  </ChainOfThoughtContent>
+</ChainOfThought>;
+```
+
+## Props
+
+### `<ChainOfThought />`
+
+Extends the Base UI `Collapsible.Root`: `open`, `defaultOpen`, and `onOpenChange` work as usual.
+
+### `<ChainOfThoughtHeader />`
+
+Extends the Base UI `Collapsible.Trigger`. Children replace the default "Chain of thought" label; the chevron stays.
+
+### `<ChainOfThoughtStep />`
+
+<TypeTable
+  type={{
+    label: {
+      type: "ReactNode",
+      description: "The step headline, shimmering while active.",
+      required: true,
+    },
+    description: {
+      type: "ReactNode",
+      description: "Dimmed detail line under the label.",
+    },
+    status: {
+      type: '"complete" | "active" | "pending"',
+      description: "Visual status; exposed as data-status.",
+      default: '"complete"',
+    },
+    icon: {
+      type: "ReactNode",
+      description: "Replaces the default square status dot.",
+    },
+    children: {
+      type: "ReactNode",
+      description:
+        "Extra content under the step, e.g. ChainOfThoughtSearchResults or ChainOfThoughtImage.",
+    },
+  }}
+/>
+
+### `<ChainOfThoughtSearchResults />` and `<ChainOfThoughtSearchResult />`
+
+A wrapping row of quiet outline chips. `ChainOfThoughtSearchResult` extends [Badge](/components/badge); pass Base UI's `render` prop to make a chip a link.
+
+### `<ChainOfThoughtImage />`
+
+<TypeTable
+  type={{
+    children: {
+      type: "ReactNode",
+      description: "The visual itself, e.g. an img element.",
+      required: true,
+    },
+    caption: {
+      type: "string",
+      description: "Dimmed caption under the visual.",
+    },
+  }}
+/>
+
+## Wiring to Neon
+
+Map AI SDK tool parts onto steps — `output-available` and `output-error` are complete, anything still streaming is active. The typed example renders one step per tool call and opens the fold while the message streams so the reader watches steps land.
+
+## Accessibility
+
+- Steps render as an ordered list; the active step carries `aria-current="step"`.
+- Status is exposed as `data-status` and conveyed by label weight and text, never color alone.
+- The trigger is a real button with `aria-expanded`; the fold snaps under `prefers-reduced-motion`.
+- The active dot's breathing pauses under `prefers-reduced-motion`.
