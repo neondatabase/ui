@@ -4,6 +4,24 @@
     "date": "2026-07-22",
     "items": [
       {
+        "text": "New `MeshGradient` brand shader: the Neon deck gradient as a live WebGL surface with dialable warp, grain, and glow",
+        "kind": "feat",
+        "href": "/docs/brand/mesh-gradient"
+      },
+      {
+        "text": "New `BannerPattern` brand shader: the neon.com banner dot grid sampling a drifting color field, with dialable cell, dot size, haze, and jitter",
+        "kind": "feat",
+        "href": "/docs/brand/banner-pattern"
+      }
+    ],
+    "pr": 54,
+    "title": "Mesh-gradient and banner-pattern brand shaders"
+  },
+  {
+    "author": "Justin Levine",
+    "date": "2026-07-22",
+    "items": [
+      {
         "text": "New `Reasoning` component: extended-thinking fold that opens while the model streams and settles to a timed receipt",
         "kind": "feat",
         "href": "/docs/agent/reasoning"
