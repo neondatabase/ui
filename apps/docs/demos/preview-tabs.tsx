@@ -1,7 +1,13 @@
 "use client";
 
+import {
+  ArrowExpandIcon,
+  Cancel01Icon,
+  Copy01Icon,
+  Tick02Icon,
+} from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import { Button } from "@neon-ui/registry/components/ui/button";
-import { CheckIcon, CopyIcon, Maximize2Icon, XIcon } from "lucide-react";
 import type { ReactNode } from "react";
 import { useEffect, useId, useRef, useState } from "react";
 
@@ -118,7 +124,7 @@ export default function PreviewTabs({
             size="icon-sm"
             variant="ghost"
           >
-            <Maximize2Icon />
+            <HugeiconsIcon icon={ArrowExpandIcon} strokeWidth={2} />
           </Button>
         ) : null}
       </div>
@@ -139,7 +145,7 @@ export default function PreviewTabs({
             size="icon"
             variant="ghost"
           >
-            <XIcon />
+            <HugeiconsIcon icon={Cancel01Icon} strokeWidth={2} />
           </Button>
           <div className="not-prose flex h-full items-center overflow-auto p-6 md:p-10">
             <div className="mx-auto w-full max-w-4xl">{children}</div>
@@ -187,7 +193,11 @@ export default function PreviewTabs({
               size="icon-sm"
               variant="ghost"
             >
-              {copied ? <CheckIcon /> : <CopyIcon />}
+              {copied ? (
+                <HugeiconsIcon icon={Tick02Icon} strokeWidth={2} />
+              ) : (
+                <HugeiconsIcon icon={Copy01Icon} strokeWidth={2} />
+              )}
             </Button>
           ) : null}
         </div>

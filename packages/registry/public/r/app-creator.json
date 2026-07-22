@@ -4,7 +4,8 @@
   "title": "AppCreator",
   "description": "The describe-an-app bar: auto-growing prompt, free/paid plan segment, and a create action with an in-flight state.",
   "dependencies": [
-    "lucide-react"
+    "@hugeicons/react",
+    "@hugeicons/core-free-icons"
   ],
   "registryDependencies": [
     "utils",

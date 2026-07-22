@@ -45,6 +45,12 @@ export type PreviewFrameProps = Omit<ComponentProps<"div">, "title"> & {
   wakingLabel?: string;
   /** Extra actions rendered before the built-in header buttons. */
   actions?: ReactNode;
+  /**
+   * The agent is editing the app right now: the header dot breathes and a
+   * quiet "editing…" readout joins the URL. The app stays visible — it is
+   * still live and hot-reloading under the changes.
+   */
+  working?: boolean;
   /** The iframe sandbox policy. */
   sandbox?: string;
 };
@@ -152,6 +158,48 @@ const MoonIcon = () => (
   </svg>
 );
 
+/** The header's live vocabulary: state dot, URL, and the editing readout. */
+const HeaderStatus = ({
+  state,
+  url,
+  working,
+}: {
+  state: PreviewFrameState;
+  url: string;
+  working: boolean;
+}) => {
+  const editing = working && state === "ready";
+  return (
+    <>
+      <span
+        aria-hidden="true"
+        className={cn(
+          "size-1.5 shrink-0 transition-colors duration-300",
+          editing
+            ? "neon-status-breathe bg-primary text-primary"
+            : STATE_DOT[state]
+        )}
+        data-slot="preview-frame-dot"
+      />
+      <span
+        className="min-w-0 flex-1 truncate font-mono text-muted-foreground text-xs"
+        data-slot="preview-frame-url"
+        title={url}
+      >
+        {url}
+      </span>
+      {editing && (
+        <span
+          className="shimmer shimmer-duration-2400 shrink-0 font-mono text-muted-foreground text-xs"
+          data-slot="preview-frame-working"
+        >
+          agent editing…
+        </span>
+      )}
+    </>
+  );
+};
+
 export const PreviewFrame = ({
   actions,
   className,
@@ -167,6 +215,7 @@ export const PreviewFrame = ({
   state = "ready",
   title,
   wakingLabel = "Waking sandbox",
+  working = false,
   ...props
 }: PreviewFrameProps) => {
   const [refreshCount, setRefreshCount] = useState(0);
@@ -187,27 +236,18 @@ export const PreviewFrame = ({
       )}
       data-slot="preview-frame"
       data-state={state}
+      data-working={working || undefined}
       {...props}
     >
       <div
         className="flex items-center gap-2 border-border/40 border-b px-3 py-1.5"
         data-slot="preview-frame-header"
       >
-        <span
-          aria-hidden="true"
-          className={cn(
-            "size-1.5 shrink-0 transition-colors duration-300",
-            STATE_DOT[state]
-          )}
-          data-slot="preview-frame-dot"
+        <HeaderStatus
+          state={state}
+          url={displayUrl(displaySrc ?? src)}
+          working={working}
         />
-        <span
-          className="min-w-0 flex-1 truncate font-mono text-muted-foreground text-xs"
-          data-slot="preview-frame-url"
-          title={displayUrl(displaySrc ?? src)}
-        >
-          {displayUrl(displaySrc ?? src)}
-        </span>
         {actions}
         <Button
           aria-label="Refresh preview"

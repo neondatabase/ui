@@ -1,6 +1,7 @@
 "use client";
 
-import { CpuIcon } from "lucide-react";
+import { CpuIcon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import type { ComponentProps, ReactNode } from "react";
 
 import { cn } from "@/lib/utils";
@@ -57,8 +58,10 @@ export const RegionCard = ({
     {...props}
   >
     {icon ?? (
-      <CpuIcon
+      <HugeiconsIcon
         aria-hidden="true"
+        icon={CpuIcon}
+        strokeWidth={2}
         className="size-4 shrink-0 text-muted-foreground"
       />
     )}

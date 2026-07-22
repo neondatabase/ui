@@ -35,9 +35,13 @@ const providerOf = (family: string) =>
 
 /**
  * Client component: list the Neon AI Gateway catalog from models.dev
- * and let the user pick a model. To list only the models enabled for a
- * specific project, use the gateway's OpenAI-compatible `GET /v1/models`
- * with a bearer token instead.
+ * and let the user pick a model. `fallbackToFirst` keeps the selection
+ * inside the fetched catalog — never hardcode a default id, since a
+ * given gateway branch may not have it enabled. To list only the models
+ * enabled for a specific project, fetch the gateway's OpenAI-compatible
+ * `GET /v1/models` through a server proxy instead — the
+ * `use-gateway-models` hook wraps that pattern, including the
+ * catalog-validated selection.
  */
 export const ModelSelectExample = () => {
   const [models, setModels] = useState<AiModel[]>([]);
@@ -69,5 +73,12 @@ export const ModelSelectExample = () => {
     return () => controller.abort();
   }, []);
 
-  return <ModelSelect models={models} onValueChange={setModel} value={model} />;
+  return (
+    <ModelSelect
+      fallbackToFirst
+      models={models}
+      onValueChange={setModel}
+      value={model}
+    />
+  );
 };

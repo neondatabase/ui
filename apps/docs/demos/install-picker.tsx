@@ -1,11 +1,12 @@
 "use client";
 
+import { ArrowDown01Icon, Tick02Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@neon-ui/registry/components/ui/popover";
-import { CheckIcon, ChevronDownIcon } from "lucide-react";
 import { useState } from "react";
 
 /* ─────────────────────────────────────────────────────────
@@ -68,10 +69,17 @@ export default function InstallPicker() {
         <PopoverTrigger className="inline-flex items-center gap-1 text-white underline decoration-dotted decoration-white/40 underline-offset-4 transition-colors hover:decoration-primary">
           {name}
           {copied ? (
-            <CheckIcon aria-label="Copied" className="size-3 text-primary" />
+            <HugeiconsIcon
+              aria-label="Copied"
+              className="size-3 text-primary"
+              icon={Tick02Icon}
+              strokeWidth={2}
+            />
           ) : (
-            <ChevronDownIcon
+            <HugeiconsIcon
               className={`size-3 text-white/50 transition-transform duration-200 motion-reduce:transition-none ${open ? "rotate-180" : ""}`}
+              icon={ArrowDown01Icon}
+              strokeWidth={2}
             />
           )}
         </PopoverTrigger>

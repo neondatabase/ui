@@ -1,7 +1,8 @@
 "use client";
 
 import { Select as SelectPrimitive } from "@base-ui/react/select";
-import { SearchIcon } from "lucide-react";
+import { Search01Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import { domAnimation, LazyMotion, m } from "motion/react";
 import type { ComponentProps, KeyboardEvent, ReactNode } from "react";
 import { useEffect, useRef, useState } from "react";
@@ -51,6 +52,13 @@ export type ModelSelectProps = Omit<
   logos?: Record<string, ReactNode>;
   /** Model ids to hide from the list. */
   excludeModels?: string[];
+  /**
+   * Controlled usage only: when the current value is not in `models`
+   * (e.g. a hardcoded default this gateway has not enabled), call
+   * `onValueChange` with the first available model instead of sitting
+   * on a placeholder.
+   */
+  fallbackToFirst?: boolean;
   /** Extra content rendered after the model name in the trigger. */
   valueSuffix?: ReactNode;
   /** Pinned footer rendered below the scrolling list inside the popup. */
@@ -220,8 +228,10 @@ const SearchField = ({
 
   return (
     <div className="flex shrink-0 items-center gap-2 border-border/60 border-b bg-popover px-3 transition-colors focus-within:border-primary/50 [&:focus-within_svg]:text-foreground">
-      <SearchIcon
+      <HugeiconsIcon
         aria-hidden="true"
+        icon={Search01Icon}
+        strokeWidth={2}
         className="size-3.5 shrink-0 text-muted-foreground transition-colors"
       />
       <input
@@ -265,6 +275,7 @@ export const ModelSelect = ({
   className,
   defaultValue,
   excludeModels,
+  fallbackToFirst,
   footer,
   logos,
   models,
@@ -286,6 +297,16 @@ export const ModelSelect = ({
   const selected = visible.find(
     (model) => model.id === (value ?? defaultValue)
   );
+
+  // Opt-in guard: an unlisted selection snaps to the first available
+  // model, so the picker can never submit an id the gateway rejects.
+  useEffect(() => {
+    const [first] = visible;
+
+    if (fallbackToFirst && !selected && first) {
+      onValueChange?.(first.id);
+    }
+  });
   const filtered = query
     ? visible.filter((model) => matchesQuery(model, query))
     : visible;

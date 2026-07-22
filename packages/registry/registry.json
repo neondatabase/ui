@@ -340,7 +340,7 @@
       "type": "registry:component",
       "title": "ToolCallChip",
       "description": "Compact running/complete/error indicator for one agent tool invocation.",
-      "dependencies": ["lucide-react"],
+      "dependencies": ["@hugeicons/react", "@hugeicons/core-free-icons"],
       "registryDependencies": [
         "utils",
         "https://ui.neon.com/r/neon-tokens.json"
@@ -357,7 +357,13 @@
       "type": "registry:component",
       "title": "AgentChat",
       "description": "Full agent chat pane: streamed markdown turns, tool chips, reasoning, and a composer with a model-controls slot.",
-      "dependencies": ["ai", "@ai-sdk/react", "streamdown", "lucide-react"],
+      "dependencies": [
+        "ai",
+        "@ai-sdk/react",
+        "streamdown",
+        "@hugeicons/react",
+        "@hugeicons/core-free-icons"
+      ],
       "registryDependencies": [
         "utils",
         "https://ui.neon.com/r/message.json",
@@ -385,7 +391,8 @@
         "@visx/curve",
         "@visx/scale",
         "@visx/shape",
-        "lucide-react"
+        "@hugeicons/react",
+        "@hugeicons/core-free-icons"
       ],
       "registryDependencies": [
         "utils",
@@ -452,7 +459,7 @@
       "type": "registry:component",
       "title": "AppCard",
       "description": "Tenant dashboard grid card composing the status vocabulary: name, badges, timestamp, one-link hover.",
-      "dependencies": ["lucide-react"],
+      "dependencies": ["@hugeicons/react", "@hugeicons/core-free-icons"],
       "registryDependencies": [
         "utils",
         "https://ui.neon.com/r/neon-tokens.json",
@@ -504,7 +511,7 @@
       "type": "registry:component",
       "title": "AppCreator",
       "description": "The describe-an-app bar: auto-growing prompt, free/paid plan segment, and a create action with an in-flight state.",
-      "dependencies": ["lucide-react"],
+      "dependencies": ["@hugeicons/react", "@hugeicons/core-free-icons"],
       "registryDependencies": [
         "utils",
         "https://ui.neon.com/r/neon-tokens.json",
@@ -646,7 +653,7 @@
       "type": "registry:component",
       "title": "RegionCard",
       "description": "Floating server-info chip: region name, mono id, and a color-coded ping line.",
-      "dependencies": ["lucide-react"],
+      "dependencies": ["@hugeicons/react", "@hugeicons/core-free-icons"],
       "registryDependencies": [
         "utils",
         "https://ui.neon.com/r/neon-tokens.json"
@@ -696,6 +703,18 @@
         {
           "path": "src/components/region-globe/region-globe.tsx",
           "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "use-gateway-models",
+      "type": "registry:hook",
+      "title": "useGatewayModels",
+      "description": "Fetches a gateway model catalog and keeps the selection valid against it: explicit pick, then preferred default, then first available.",
+      "files": [
+        {
+          "path": "src/hooks/use-gateway-models.ts",
+          "type": "registry:hook"
         }
       ]
     },
@@ -837,7 +856,7 @@
       "type": "registry:block",
       "title": "CreateProject",
       "description": "Create-project onboarding panel: project form on the left, the interactive region map on the right.",
-      "dependencies": ["lucide-react"],
+      "dependencies": ["@hugeicons/react", "@hugeicons/core-free-icons"],
       "registryDependencies": [
         "utils",
         "https://ui.neon.com/r/neon-tokens.json",

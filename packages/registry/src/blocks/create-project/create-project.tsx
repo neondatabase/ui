@@ -1,6 +1,7 @@
 "use client";
 
-import { DicesIcon, XIcon, ZapIcon } from "lucide-react";
+import { Cancel01Icon, DicesIcon, ZapIcon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import type { ComponentProps, FormEvent, ReactNode } from "react";
 import { useId, useRef, useState } from "react";
 
@@ -197,7 +198,7 @@ const NameField = ({
         type="button"
         variant="ghost"
       >
-        <DicesIcon />
+        <HugeiconsIcon icon={DicesIcon} strokeWidth={2} />
       </Button>
     </div>
     <FieldError id={`${id}-name-error`}>{error}</FieldError>
@@ -234,7 +235,12 @@ const RegionField = ({
           type="button"
           variant="ghost"
         >
-          <ZapIcon aria-hidden="true" className="size-3" />
+          <HugeiconsIcon
+            aria-hidden="true"
+            className="size-3"
+            icon={ZapIcon}
+            strokeWidth={2}
+          />
           fastest · {fastest.ping} ms
         </Button>
       ) : null}
@@ -358,7 +364,7 @@ export const CreateProject = ({
             type="button"
             variant="outline"
           >
-            <XIcon />
+            <HugeiconsIcon icon={Cancel01Icon} strokeWidth={2} />
           </Button>
         ) : null}
       </div>

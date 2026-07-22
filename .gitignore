@@ -48,3 +48,7 @@ skills-lock.json
 
 # advisor plans (local, not part of the deliverable)
 plans/
+
+# dated local dev notes
+*.local.md
+TODO.md

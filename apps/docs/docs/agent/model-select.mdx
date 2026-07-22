@@ -84,6 +84,11 @@ import { ModelSelect } from "@/components/neon-ui/model-select";
       type: "string[]",
       description: "Model ids to hide from the list.",
     },
+    fallbackToFirst: {
+      type: "boolean",
+      description:
+        "Controlled usage only: when the current value is not in models, call onValueChange with the first available model instead of sitting on a placeholder.",
+    },
   }}
 />
 
@@ -105,7 +110,18 @@ const models = Object.values(neon.models).map((model) => ({
 
 The catalog itself is maintained as per-model TOML in the [models.dev repo](https://github.com/anomalyco/models.dev/tree/dev/providers/neon/models), so new gateway models land in the API as they ship.
 
-To list only the models enabled for a specific project, use the gateway's OpenAI-compatible `GET /v1/models` with a bearer token instead.
+To list only the models enabled for a specific project, use the gateway's OpenAI-compatible `GET /v1/models` with a bearer token instead — behind a server proxy, since the token must not ship to the browser. The [`use-gateway-models`](https://ui.neon.com/r/use-gateway-models.json) hook wraps that pattern: it fetches the catalog (either the raw `{ data }` shape or a pre-shaped `{ models }` proxy response) and keeps the selection valid against it — explicit pick first, then a preferred default, then the first available model.
+
+```tsx
+const { model, models, setModel } = useGatewayModels({
+  defaultModel: "claude-sonnet-4-6",
+  endpoint: "/api/models",
+});
+
+return <ModelSelect models={models} onValueChange={setModel} value={model} />;
+```
+
+Never hardcode a default id without one of these guards — a given gateway branch may not have that model enabled, and an unlisted id submits a request the gateway rejects. With plain `ModelSelect`, `fallbackToFirst` is the one-prop version of the same guard.
 
 ## Accessibility
 

@@ -1,6 +1,11 @@
 "use client";
 
-import { CheckIcon, Loader2Icon, XIcon } from "lucide-react";
+import {
+  Cancel01Icon,
+  Loading03Icon,
+  Tick02Icon,
+} from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import type { ComponentProps } from "react";
 
 import { cn } from "@/lib/utils";
@@ -23,10 +28,10 @@ export type ToolCallChipProps = Omit<ComponentProps<"span">, "children"> & {
  * spinner while running, a small green check when done, a
  * red cross on error. Color only ever touches the glyph.
  * ───────────────────────────────────────────────────────── */
-const STATE_ICON: Record<ToolCallState, typeof CheckIcon> = {
-  done: CheckIcon,
-  error: XIcon,
-  running: Loader2Icon,
+const STATE_ICON: Record<ToolCallState, typeof Tick02Icon> = {
+  done: Tick02Icon,
+  error: Cancel01Icon,
+  running: Loading03Icon,
 };
 
 export const ToolCallChip = ({
@@ -48,8 +53,10 @@ export const ToolCallChip = ({
       data-state={state}
       {...props}
     >
-      <Icon
+      <HugeiconsIcon
         aria-hidden="true"
+        icon={Icon}
+        strokeWidth={2}
         className={cn(
           "size-3 shrink-0",
           state === "running" && "animate-spin text-muted-foreground/70",

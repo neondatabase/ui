@@ -3,7 +3,12 @@
 /* oxlint-disable jsx-a11y/prefer-tag-over-role -- the 2D saturation/brightness plane and styled hue rail have no native input equivalent; both implement the full slider keyboard contract */
 
 import { Popover } from "@base-ui/react/popover";
-import { CheckIcon, CopyIcon, PipetteIcon } from "lucide-react";
+import {
+  ColorPickerIcon,
+  Copy01Icon,
+  Tick02Icon,
+} from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import type { CSSProperties, KeyboardEvent, PointerEvent } from "react";
 import { useState } from "react";
 
@@ -375,12 +380,19 @@ export const ColorPicker = ({
                 type="button"
               >
                 {copied ? (
-                  <CheckIcon
+                  <HugeiconsIcon
                     aria-hidden="true"
                     className="size-3 text-primary"
+                    icon={Tick02Icon}
+                    strokeWidth={2}
                   />
                 ) : (
-                  <CopyIcon aria-hidden="true" className="size-3" />
+                  <HugeiconsIcon
+                    aria-hidden="true"
+                    className="size-3"
+                    icon={Copy01Icon}
+                    strokeWidth={2}
+                  />
                 )}
               </button>
               {eyeDropper ? (
@@ -390,7 +402,12 @@ export const ColorPicker = ({
                   onClick={pickFromScreen}
                   type="button"
                 >
-                  <PipetteIcon aria-hidden="true" className="size-3" />
+                  <HugeiconsIcon
+                    aria-hidden="true"
+                    className="size-3"
+                    icon={ColorPickerIcon}
+                    strokeWidth={2}
+                  />
                 </button>
               ) : null}
             </div>

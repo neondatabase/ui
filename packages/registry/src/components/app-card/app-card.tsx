@@ -1,6 +1,7 @@
 "use client";
 
-import { ArrowUpRightIcon } from "lucide-react";
+import { ArrowUpRight01Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import type { ComponentProps, ReactNode } from "react";
 
 import { PlanBadge, StatusBadge } from "@/components/status-badge/status-badge";
@@ -92,8 +93,10 @@ export const AppCard = ({
       >
         {name}
       </p>
-      <ArrowUpRightIcon
+      <HugeiconsIcon
         aria-hidden="true"
+        icon={ArrowUpRight01Icon}
+        strokeWidth={2}
         className="size-3.5 shrink-0 text-muted-foreground/40 transition-colors group-hover:text-foreground"
       />
     </div>

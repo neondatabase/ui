@@ -1,7 +1,12 @@
 "use client";
 
+import {
+  ArrowRight01Icon,
+  Loading03Icon,
+  SentIcon,
+} from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import type { ChatStatus, UIMessage } from "ai";
-import { Loader2Icon, SendIcon } from "lucide-react";
 import { domAnimation, LazyMotion, m, useReducedMotion } from "motion/react";
 import type {
   ComponentProps,
@@ -132,7 +137,17 @@ const chipState = (state: string): ToolCallState => {
 
 type Part = UIMessage["parts"][number];
 
-interface ToolEntry {
+/**
+ * A finished turn has no running tools. History-hydrated parts don't carry
+ * the live stream's state strings, so anything still "running" in a settled
+ * message is actually done.
+ */
+const settleTools = (tools: ToolEntry[]): ToolEntry[] =>
+  tools.map((tool) =>
+    tool.state === "running" ? { ...tool, state: "done" } : tool
+  );
+
+export interface ToolEntry {
   detail?: string;
   name: string;
   state: ToolCallState;
@@ -199,6 +214,77 @@ const segmentParts = (parts: Part[]): Segment[] => {
   return segments;
 };
 
+/* ─────────────────────────────────────────────────────
+ * A run of tool calls folded into one working block: while any
+ * call is live the header shimmers ("Working…") and the log is
+ * open; when the run lands it collapses to a one-line receipt
+ * ("n steps") the reader can reopen. The chips inside stay the
+ * house log-line vocabulary.
+ * ─────────────────────────────────────────────────── */
+export const ToolGroup = ({
+  tools,
+  live = false,
+}: {
+  tools: ToolEntry[];
+  /** The turn is still streaming — hold open across gaps between calls. */
+  live?: boolean;
+}) => {
+  const running = tools.some((tool) => tool.state === "running");
+  // "Working" for the entire live turn: between tool calls every chip is
+  // momentarily settled, and folding in those gaps reads as a glitch.
+  const working = live || running;
+  const failed = tools.filter((tool) => tool.state === "error").length;
+  // User toggle wins; otherwise open while working, closed at rest.
+  const [userOpen, setUserOpen] = useState<boolean | null>(null);
+  const open = userOpen ?? working;
+
+  const summary = working
+    ? "Working…"
+    : `${tools.length} step${tools.length === 1 ? "" : "s"}${failed > 0 ? ` · ${failed} failed` : ""}`;
+
+  return (
+    <div
+      className="border-border/60 border-l-2 pl-2.5"
+      data-slot="tool-group"
+      data-state={working ? "working" : "done"}
+    >
+      <button
+        aria-expanded={open}
+        className="group inline-flex items-center gap-1 py-0.5 text-muted-foreground text-xs transition-colors hover:text-foreground"
+        onClick={() => setUserOpen(!open)}
+        type="button"
+      >
+        <HugeiconsIcon
+          aria-hidden
+          icon={ArrowRight01Icon}
+          strokeWidth={2}
+          className={cn(
+            "size-3 transition-transform duration-200 motion-reduce:transition-none",
+            open && "rotate-90"
+          )}
+        />
+        {working ? (
+          <span className="shimmer shimmer-duration-2400">{summary}</span>
+        ) : (
+          <span>{summary}</span>
+        )}
+      </button>
+      {open && (
+        <div className="mt-1 flex flex-col items-start gap-1 pb-0.5">
+          {tools.map((tool, toolIndex) => (
+            <ToolCallChip
+              detail={tool.detail}
+              key={`${tool.name}-${toolIndex.toString()}`}
+              name={tool.name}
+              state={tool.state}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
 /** Explicit markdown styling — no typography plugin required. */
 const MARKDOWN_CLASS = cn(
   "text-sm leading-relaxed",
@@ -216,12 +302,18 @@ const MARKDOWN_CLASS = cn(
 
 export type ChatMessageProps = Omit<ComponentProps<"div">, "children"> & {
   message: UIMessage;
+  /**
+   * The turn is still streaming: tool groups hold open for the whole run
+   * instead of folding in the gaps between calls.
+   */
+  isLive?: boolean;
 };
 
 /** One conversation turn: user bubble or agent markdown with tool chips. */
 export const ChatMessage = ({
   className,
   message,
+  isLive = false,
   ...props
 }: ChatMessageProps) => {
   if (message.role === "user") {
@@ -263,18 +355,20 @@ export const ChatMessage = ({
         }
 
         if (segment.kind === "tools") {
-          return (
-            <div className="flex flex-col items-start gap-1" key={key}>
-              {segment.tools.map((tool, toolIndex) => (
+          const tools = isLive ? segment.tools : settleTools(segment.tools);
+          // One call is a log line, not a folder.
+          if (tools.length === 1 && tools[0]) {
+            return (
+              <div className="border-border/60 border-l-2 pl-2.5" key={key}>
                 <ToolCallChip
-                  detail={tool.detail}
-                  key={`${tool.name}-${toolIndex.toString()}`}
-                  name={tool.name}
-                  state={tool.state}
+                  detail={tools[0].detail}
+                  name={tools[0].name}
+                  state={tools[0].state}
                 />
-              ))}
-            </div>
-          );
+              </div>
+            );
+          }
+          return <ToolGroup key={key} live={isLive} tools={tools} />;
         }
 
         return (
@@ -370,7 +464,15 @@ export const ChatInput = ({
           onClick={submit}
           size="icon-sm"
         >
-          {busy ? <Loader2Icon className="animate-spin" /> : <SendIcon />}
+          {busy ? (
+            <HugeiconsIcon
+              className="animate-spin"
+              icon={Loading03Icon}
+              strokeWidth={2}
+            />
+          ) : (
+            <HugeiconsIcon icon={SentIcon} strokeWidth={2} />
+          )}
         </Button>
       </div>
     </div>
@@ -505,7 +607,10 @@ export const AgentChat = ({
                             </MarkerContent>
                           </Marker>
                         ) : null}
-                        <ChatMessage message={message} />
+                        <ChatMessage
+                          isLive={busy && index === messages.length - 1}
+                          message={message}
+                        />
                       </TurnEntrance>
                     </MessageScrollerItem>
                   );

@@ -1,14 +1,15 @@
 "use client";
 
+import {
+  Alert02Icon,
+  MinusSignIcon,
+  TradeDownIcon,
+  TradeUpIcon,
+} from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import { curveMonotoneX } from "@visx/curve";
 import { scaleLinear } from "@visx/scale";
 import { AreaClosed, LinePath } from "@visx/shape";
-import {
-  MinusIcon,
-  TriangleAlertIcon,
-  TrendingDownIcon,
-  TrendingUpIcon,
-} from "lucide-react";
 import { useId, useRef, useState } from "react";
 import type {
   ComponentProps,
@@ -116,9 +117,15 @@ const DeltaBadge = ({ delta }: { delta: number }) => {
       )}
       variant="secondary"
     >
-      {direction === "up" ? <TrendingUpIcon /> : null}
-      {direction === "down" ? <TrendingDownIcon /> : null}
-      {direction === "flat" ? <MinusIcon /> : null}
+      {direction === "up" ? (
+        <HugeiconsIcon icon={TradeUpIcon} strokeWidth={2} />
+      ) : null}
+      {direction === "down" ? (
+        <HugeiconsIcon icon={TradeDownIcon} strokeWidth={2} />
+      ) : null}
+      {direction === "flat" ? (
+        <HugeiconsIcon icon={MinusSignIcon} strokeWidth={2} />
+      ) : null}
       {direction === "up" ? "+" : ""}
       {NUMBER_FORMAT.format(Math.abs(delta))}%
     </Badge>
@@ -500,7 +507,12 @@ export const MetricCard = ({
         <CardContent className="mt-auto px-4 pt-3 pb-3">
           <div className="border border-destructive/20 bg-destructive/[0.045] p-3">
             <div className="flex items-center gap-2 text-destructive">
-              <TriangleAlertIcon aria-hidden="true" className="size-3.5" />
+              <HugeiconsIcon
+                aria-hidden="true"
+                className="size-3.5"
+                icon={Alert02Icon}
+                strokeWidth={2}
+              />
               <p className="font-medium text-xs">Data unavailable</p>
             </div>
             <p className="mt-2 text-pretty text-muted-foreground text-xs leading-relaxed">
@@ -567,7 +579,12 @@ export const MetricCard = ({
               />
             ) : (
               <div className="flex h-[72px] items-center justify-center gap-2 text-muted-foreground">
-                <MinusIcon aria-hidden="true" className="size-3.5" />
+                <HugeiconsIcon
+                  aria-hidden="true"
+                  className="size-3.5"
+                  icon={MinusSignIcon}
+                  strokeWidth={2}
+                />
                 <span className="text-[11px]">No trend data</span>
               </div>
             )}
