@@ -375,7 +375,7 @@ export const ColorPicker = ({
               />
               <button
                 aria-label={copied ? "Copied" : "Copy hex"}
-                className="flex size-7 shrink-0 cursor-pointer items-center justify-center border border-border/60 text-muted-foreground transition-colors hover:border-border hover:text-foreground focus-visible:border-primary focus-visible:outline-none"
+                className="flex size-7 shrink-0 cursor-pointer items-center justify-center rounded-sm border border-border/60 text-muted-foreground transition-colors hover:border-border hover:text-foreground focus-visible:border-primary focus-visible:outline-none"
                 onClick={copyHex}
                 type="button"
               >
@@ -398,7 +398,7 @@ export const ColorPicker = ({
               {eyeDropper ? (
                 <button
                   aria-label="Pick a color from the screen"
-                  className="flex size-7 shrink-0 cursor-pointer items-center justify-center border border-border/60 text-muted-foreground transition-colors hover:border-border hover:text-foreground focus-visible:border-primary focus-visible:outline-none"
+                  className="flex size-7 shrink-0 cursor-pointer items-center justify-center rounded-sm border border-border/60 text-muted-foreground transition-colors hover:border-border hover:text-foreground focus-visible:border-primary focus-visible:outline-none"
                   onClick={pickFromScreen}
                   type="button"
                 >
@@ -419,7 +419,7 @@ export const ColorPicker = ({
                     aria-label={`Use ${swatch}`}
                     aria-pressed={swatch.toLowerCase() === hex}
                     className={cn(
-                      "size-5 cursor-pointer border transition-[border-color,transform] duration-150 hover:scale-110 hover:border-foreground focus-visible:border-primary focus-visible:outline-none motion-reduce:transition-none motion-reduce:hover:scale-100",
+                      "size-5 cursor-pointer rounded-[2px] border transition-[border-color,transform] duration-150 hover:scale-110 hover:border-foreground focus-visible:border-primary focus-visible:outline-none motion-reduce:transition-none motion-reduce:hover:scale-100",
                       swatch.toLowerCase() === hex
                         ? "border-foreground shadow-[0_0_0_1px_var(--background)_inset]"
                         : "border-border/60"

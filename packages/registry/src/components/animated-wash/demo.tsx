@@ -8,7 +8,7 @@ export const AnimatedWashDemo = () => (
     {washTints.map((wash) => (
       <div
         className={cn(
-          "relative isolate h-32 overflow-hidden border border-border/60 bg-card transition-colors hover:border-border",
+          "relative isolate h-32 overflow-hidden rounded-lg border border-border/60 bg-card transition-colors hover:border-border",
           wash.tint
         )}
         data-wash-hover

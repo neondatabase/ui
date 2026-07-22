@@ -4,153 +4,73 @@ import { auroraPalettes } from "@neon-ui/registry/components/neon-aurora/fixture
 import { NeonAurora } from "@neon-ui/registry/components/neon-aurora/neon-aurora";
 import { useState } from "react";
 
-const Slider = ({
-  label,
-  max,
-  min,
-  onChange,
-  step,
-  value,
-}: {
-  label: string;
-  max: number;
-  min: number;
-  onChange: (value: number) => void;
-  step: number;
-  value: number;
-}) => (
-  <label className="flex items-center gap-3 font-mono text-muted-foreground text-xs">
-    <span className="w-16 shrink-0">{label}</span>
-    <input
-      className="h-1 min-w-0 flex-1 cursor-pointer appearance-none bg-border accent-[var(--primary)]"
-      max={max}
-      min={min}
-      onChange={(event) => onChange(Number(event.target.value))}
-      step={step}
-      type="range"
-      value={value}
-    />
-    <span className="w-10 shrink-0 text-right tabular-nums">
-      {value.toFixed(2)}
-    </span>
-  </label>
-);
+import { OptionButton, OptionRow, ShaderDials, useDials } from "./shader-dials";
+
+const DIALS = [
+  { defaultValue: 0.7, key: "speed", max: 3, min: 0, step: 0.1 },
+  { defaultValue: 0.2, key: "density", max: 1, min: 0, step: 0.05 },
+  { defaultValue: 2, key: "intensity", max: 2, min: 0, step: 0.1 },
+  { defaultValue: 1, key: "blur", max: 1, min: 0, step: 0.05 },
+  { defaultValue: 0.2, key: "glare", max: 1, min: 0, step: 0.05 },
+  { defaultValue: 0.75, key: "flare", max: 1, min: 0, step: 0.05 },
+  { defaultValue: 0, key: "thickness", max: 1, min: 0, step: 0.05 },
+  {
+    defaultValue: 0.6,
+    key: "whiteFlare",
+    label: "white flare",
+    max: 1,
+    min: 0,
+    step: 0.05,
+  },
+] as const;
+
+const DEFAULT_PALETTE = "neon" as const;
 
 export default function NeonAuroraPlayground() {
-  const [speed, setSpeed] = useState(0.7);
-  const [density, setDensity] = useState(0.2);
-  const [intensity, setIntensity] = useState(2);
-  const [blur, setBlur] = useState(1);
-  const [glare, setGlare] = useState(0.2);
-  const [flare, setFlare] = useState(0.75);
-  const [thickness, setThickness] = useState(0);
-  const [whiteFlare, setWhiteFlare] = useState(0.6);
-  const [palette, setPalette] = useState<keyof typeof auroraPalettes>("neon");
+  const { dirty, reset, set, values } = useDials(DIALS);
+  const [palette, setPalette] =
+    useState<keyof typeof auroraPalettes>(DEFAULT_PALETTE);
 
   return (
     <div className="not-prose flex flex-col gap-3">
-      <div className="relative isolate h-56 overflow-hidden border border-border/60 bg-black">
+      <div className="relative isolate h-56 overflow-hidden rounded-lg border border-border/60 bg-black">
         <NeonAurora
-          blur={blur}
+          blur={values.blur}
           className="absolute inset-0"
           colors={auroraPalettes[palette]}
-          density={density}
-          flare={flare}
-          glare={glare}
-          thickness={thickness}
-          whiteFlare={whiteFlare}
-          intensity={intensity}
-          key={`${speed}-${density}-${intensity}-${blur}-${glare}-${flare}-${thickness}-${whiteFlare}-${palette}`}
-          speed={speed}
+          density={values.density}
+          flare={values.flare}
+          glare={values.glare}
+          intensity={values.intensity}
+          speed={values.speed}
+          thickness={values.thickness}
+          whiteFlare={values.whiteFlare}
         />
       </div>
-      <div className="flex flex-col gap-2 border border-border/60 p-4">
-        <Slider
-          label="speed"
-          max={3}
-          min={0}
-          onChange={setSpeed}
-          step={0.1}
-          value={speed}
-        />
-        <Slider
-          label="density"
-          max={1}
-          min={0}
-          onChange={setDensity}
-          step={0.05}
-          value={density}
-        />
-        <Slider
-          label="intensity"
-          max={2}
-          min={0}
-          onChange={setIntensity}
-          step={0.1}
-          value={intensity}
-        />
-        <Slider
-          label="blur"
-          max={1}
-          min={0}
-          onChange={setBlur}
-          step={0.05}
-          value={blur}
-        />
-        <Slider
-          label="glare"
-          max={1}
-          min={0}
-          onChange={setGlare}
-          step={0.05}
-          value={glare}
-        />
-        <Slider
-          label="flare"
-          max={1}
-          min={0}
-          onChange={setFlare}
-          step={0.05}
-          value={flare}
-        />
-        <Slider
-          label="thickness"
-          max={1}
-          min={0}
-          onChange={setThickness}
-          step={0.05}
-          value={thickness}
-        />
-        <Slider
-          label="white flare"
-          max={1}
-          min={0}
-          onChange={setWhiteFlare}
-          step={0.05}
-          value={whiteFlare}
-        />
-        <div className="mt-1 flex items-center gap-1.5">
-          <span className="w-16 shrink-0 font-mono text-muted-foreground text-xs">
-            palette
-          </span>
+      <ShaderDials
+        config={DIALS}
+        dirty={dirty || palette !== DEFAULT_PALETTE}
+        onChange={set}
+        onReset={() => {
+          reset();
+          setPalette(DEFAULT_PALETTE);
+        }}
+        values={values}
+      >
+        <OptionRow label="palette">
           {(Object.keys(auroraPalettes) as (keyof typeof auroraPalettes)[]).map(
             (option) => (
-              <button
-                className={`border px-2 py-1 font-mono text-xs transition-colors ${
-                  palette === option
-                    ? "border-primary/50 text-foreground"
-                    : "border-border/60 text-muted-foreground hover:border-border hover:text-foreground"
-                }`}
+              <OptionButton
+                active={palette === option}
                 key={option}
                 onClick={() => setPalette(option)}
-                type="button"
               >
                 {option}
-              </button>
+              </OptionButton>
             )
           )}
-        </div>
-      </div>
+        </OptionRow>
+      </ShaderDials>
     </div>
   );
 }

@@ -36,6 +36,13 @@ export type NeonAuroraProps = Omit<ComponentProps<"canvas">, "children"> & {
   colors?: [string, string, string];
 };
 
+/**
+ * Seconds for a dial change to close ~63% of its gap — uniforms ease
+ * toward their targets each frame, so a dragged slider glides
+ * instead of snapping.
+ */
+const SMOOTH_TAU = 0.12;
+
 const DEFAULT_COLORS: [string, string, string] = [
   "#0e5f45",
   "#00e599",
@@ -103,6 +110,12 @@ export const NeonAurora = ({
   ...props
 }: NeonAuroraProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  // Shader time, accumulated frame by frame so a speed change scales
+  // the flow from here instead of teleporting the whole field.
+  const phaseRef = useRef(0);
+  const lastFrameRef = useRef<number | null>(null);
+  // Smoothed dial values, persisting across prop-driven re-inits.
+  const smoothedRef = useRef<Record<string, number> | null>(null);
   const [deep, primary, accent] = colors;
 
   useEffect(() => {
@@ -165,13 +178,35 @@ export const NeonAurora = ({
     const uThickness = gl.getUniformLocation(program, "u_thickness");
     const uWhiteFlare = gl.getUniformLocation(program, "u_white_flare");
 
-    gl.uniform1f(uWhiteFlare, whiteFlare);
-    gl.uniform1f(uThickness, thickness);
-    gl.uniform1f(uFlare, flare);
-    gl.uniform1f(uDensity, density);
-    gl.uniform1f(uIntensity, intensity);
-    gl.uniform1f(uBlur, blur);
-    gl.uniform1f(uGlare, glare);
+    const targets: Record<string, number> = {
+      blur,
+      density,
+      flare,
+      glare,
+      intensity,
+      speed,
+      thickness,
+      whiteFlare,
+    };
+
+    smoothedRef.current ??= { ...targets };
+    const smoothed = smoothedRef.current;
+
+    /** Ease every dial toward its target and upload; k=1 snaps. */
+    const applyUniforms = (k: number) => {
+      for (const key of Object.keys(targets)) {
+        const current = smoothed[key] ?? targets[key] ?? 0;
+        smoothed[key] = current + ((targets[key] ?? 0) - current) * k;
+      }
+
+      gl.uniform1f(uWhiteFlare, smoothed.whiteFlare ?? whiteFlare);
+      gl.uniform1f(uThickness, smoothed.thickness ?? thickness);
+      gl.uniform1f(uFlare, smoothed.flare ?? flare);
+      gl.uniform1f(uDensity, smoothed.density ?? density);
+      gl.uniform1f(uIntensity, smoothed.intensity ?? intensity);
+      gl.uniform1f(uBlur, smoothed.blur ?? blur);
+      gl.uniform1f(uGlare, smoothed.glare ?? glare);
+    };
 
     for (const [name, css] of [
       ["u_color1", deep],
@@ -187,6 +222,7 @@ export const NeonAurora = ({
     let staticFrame = false;
 
     const renderStatic = () => {
+      applyUniforms(1);
       gl.uniform1f(uTime, 7);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
     };
@@ -223,6 +259,8 @@ export const NeonAurora = ({
     };
 
     const draw = (now: number) => {
+      const last = lastFrameRef.current ?? now;
+      lastFrameRef.current = now;
       // Skip GL work while hidden (e.g. behind a docs Code overlay's
       // visibility:hidden panel) — keep the loop alive, drop the cost.
       if (!(canvas.checkVisibility?.() ?? true)) {
@@ -230,7 +268,10 @@ export const NeonAurora = ({
         return;
       }
 
-      gl.uniform1f(uTime, (now / 1000) * speed);
+      const dt = (now - last) / 1000;
+      applyUniforms(1 - Math.exp(-dt / SMOOTH_TAU));
+      phaseRef.current += dt * (smoothed.speed ?? speed);
+      gl.uniform1f(uTime, phaseRef.current);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
       frame = requestAnimationFrame(draw);
     };

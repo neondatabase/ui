@@ -38,6 +38,13 @@ export type DotMatrixWaveProps = Omit<ComponentProps<"canvas">, "children"> & {
 
 const MAX_STOPS = 6;
 
+/**
+ * Seconds for a dial change to close ~63% of its gap — uniforms ease
+ * toward their targets each frame, so a dragged slider glides
+ * instead of snapping.
+ */
+const SMOOTH_TAU = 0.12;
+
 const parseColor = (css: string): [number, number, number] => {
   const probe = document.createElement("canvas");
   probe.width = 1;
@@ -96,6 +103,12 @@ export const DotMatrixWave = ({
   ...props
 }: DotMatrixWaveProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  // Shader time, accumulated frame by frame so a speed change scales
+  // the flow from here instead of teleporting the whole field.
+  const phaseRef = useRef(0);
+  const lastFrameRef = useRef<number | null>(null);
+  // Smoothed dial values, persisting across prop-driven re-inits.
+  const smoothedRef = useRef<Record<string, number> | null>(null);
   const stopsKey = useMemo(() => colors?.join("|") ?? "", [colors]);
 
   useEffect(() => {
@@ -175,15 +188,35 @@ export const DotMatrixWave = ({
 
     gl.uniform1i(gl.getUniformLocation(program, "u_stop_count"), stops.length);
     gl.uniform3fv(gl.getUniformLocation(program, "u_stops"), stopData);
-    gl.uniform1f(uGap, gap * dpr);
-    gl.uniform1f(uDot, dotSize);
-    gl.uniform1f(uAmplitude, amplitude);
-    gl.uniform1f(uFloor, floor);
+    const targets: Record<string, number> = {
+      amplitude,
+      dotSize,
+      floor,
+      gap,
+      speed,
+    };
+
+    smoothedRef.current ??= { ...targets };
+    const smoothed = smoothedRef.current;
+
+    /** Ease every dial toward its target and upload; k=1 snaps. */
+    const applyUniforms = (k: number) => {
+      for (const key of Object.keys(targets)) {
+        const current = smoothed[key] ?? targets[key] ?? 0;
+        smoothed[key] = current + ((targets[key] ?? 0) - current) * k;
+      }
+
+      gl.uniform1f(uGap, (smoothed.gap ?? gap) * dpr);
+      gl.uniform1f(uDot, smoothed.dotSize ?? dotSize);
+      gl.uniform1f(uAmplitude, smoothed.amplitude ?? amplitude);
+      gl.uniform1f(uFloor, smoothed.floor ?? floor);
+    };
 
     let frame = 0;
     let staticFrame = false;
 
     const renderStatic = () => {
+      applyUniforms(1);
       gl.uniform1f(uTime, 3);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
     };
@@ -220,13 +253,18 @@ export const DotMatrixWave = ({
     };
 
     const draw = (now: number) => {
+      const last = lastFrameRef.current ?? now;
+      lastFrameRef.current = now;
       // Skip GL work while hidden: keep the loop alive, drop the cost.
       if (!(canvas.checkVisibility?.() ?? true)) {
         frame = requestAnimationFrame(draw);
         return;
       }
 
-      gl.uniform1f(uTime, (now / 1000) * speed);
+      const dt = (now - last) / 1000;
+      applyUniforms(1 - Math.exp(-dt / SMOOTH_TAU));
+      phaseRef.current += dt * (smoothed.speed ?? speed);
+      gl.uniform1f(uTime, phaseRef.current);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
       frame = requestAnimationFrame(draw);
     };

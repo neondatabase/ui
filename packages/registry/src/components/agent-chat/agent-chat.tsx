@@ -633,7 +633,7 @@ export const AgentChat = ({
                 ) : null}
                 {status === "error" && (
                   <div
-                    className="mt-3 flex items-center justify-between gap-3 border border-destructive/20 bg-destructive/[0.045] px-3 py-2"
+                    className="mt-3 flex items-center justify-between gap-3 rounded-md border border-destructive/20 bg-destructive/[0.045] px-3 py-2"
                     role="alert"
                   >
                     <p className="text-destructive text-xs">
@@ -641,7 +641,7 @@ export const AgentChat = ({
                     </p>
                     {onRetry ? (
                       <button
-                        className="shrink-0 border border-border/60 px-2 py-1 text-foreground text-xs transition-colors hover:border-border"
+                        className="shrink-0 rounded-sm border border-border/60 px-2 py-1 text-foreground text-xs transition-colors hover:border-border"
                         onClick={onRetry}
                         type="button"
                       >

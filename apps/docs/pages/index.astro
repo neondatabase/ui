@@ -114,18 +114,17 @@ const navigation = {
     align-items: center;
     height: 2.5rem;
     padding-inline: 1.25rem;
-    border-radius: 999px;
+    border-radius: var(--radius-lg);
     background: var(--primary);
     color: var(--primary-foreground);
     font-weight: 500;
     font-size: 0.9375rem;
     text-decoration: none;
-    box-shadow: 0 0 24px -6px var(--primary);
-    transition: box-shadow 0.2s ease;
+    transition: background-color 0.2s ease;
   }
 
   .btn-primary:hover {
-    box-shadow: 0 0 36px -6px var(--primary);
+    background: color-mix(in oklch, var(--primary) 88%, white);
   }
 
   /* The install command is a desktop affordance: on a phone it wraps

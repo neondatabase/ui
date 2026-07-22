@@ -36,6 +36,13 @@ export type MeshGradientProps = Omit<ComponentProps<"canvas">, "children"> & {
   colors?: MeshGradientPalette;
 };
 
+/**
+ * Seconds for a dial or palette change to close ~63% of its gap —
+ * uniforms ease toward their targets each frame, so a dragged slider
+ * or a palette switch glides instead of snapping.
+ */
+const SMOOTH_TAU = 0.12;
+
 const DEFAULT_COLORS: MeshGradientPalette = [
   "#0b0b08",
   "#2c4a33",
@@ -101,6 +108,12 @@ export const MeshGradient = ({
   ...props
 }: MeshGradientProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  // Shader time, accumulated frame by frame so a speed change scales
+  // the flow from here instead of teleporting the whole field.
+  const phaseRef = useRef(0);
+  const lastFrameRef = useRef<number | null>(null);
+  // Smoothed uniform values, persisting across prop-driven re-inits.
+  const smoothedRef = useRef<Record<string, number> | null>(null);
   const [base, moss, ember, gold, bloom] = colors;
 
   useEffect(() => {
@@ -159,26 +172,56 @@ export const MeshGradient = ({
     const uGrain = gl.getUniformLocation(program, "u_grain");
     const uGlow = gl.getUniformLocation(program, "u_glow");
 
-    gl.uniform1f(uWarp, warp);
-    gl.uniform1f(uGrain, grain);
-    gl.uniform1f(uGlow, glow);
-
-    for (const [name, css] of [
+    const palette = [
       ["u_base", base],
       ["u_moss", moss],
       ["u_ember", ember],
       ["u_gold", gold],
       ["u_bloom", bloom],
-    ] as const) {
+    ] as const;
+
+    const targets: Record<string, number> = { glow, grain, speed, warp };
+
+    for (const [name, css] of palette) {
       const [r, g, b] = parseColor(css);
-      gl.uniform3f(gl.getUniformLocation(program, name), r, g, b);
+      targets[`${name}_r`] = r;
+      targets[`${name}_g`] = g;
+      targets[`${name}_b`] = b;
     }
+
+    smoothedRef.current ??= { ...targets };
+    const smoothed = smoothedRef.current;
+    const colorLocations = palette.map(([name]) =>
+      gl.getUniformLocation(program, name)
+    );
+
+    /** Ease every uniform toward its target and upload; k=1 snaps. */
+    const applyUniforms = (k: number) => {
+      for (const key of Object.keys(targets)) {
+        const current = smoothed[key] ?? targets[key] ?? 0;
+        smoothed[key] = current + ((targets[key] ?? 0) - current) * k;
+      }
+
+      gl.uniform1f(uWarp, smoothed.warp ?? warp);
+      gl.uniform1f(uGrain, smoothed.grain ?? grain);
+      gl.uniform1f(uGlow, smoothed.glow ?? glow);
+
+      for (const [index, [name]] of palette.entries()) {
+        gl.uniform3f(
+          colorLocations[index] ?? null,
+          smoothed[`${name}_r`] ?? 0,
+          smoothed[`${name}_g`] ?? 0,
+          smoothed[`${name}_b`] ?? 0
+        );
+      }
+    };
 
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     let frame = 0;
     let staticFrame = false;
 
     const renderStatic = () => {
+      applyUniforms(1);
       gl.uniform1f(uTime, 11);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
     };
@@ -215,6 +258,8 @@ export const MeshGradient = ({
     };
 
     const draw = (now: number) => {
+      const last = lastFrameRef.current ?? now;
+      lastFrameRef.current = now;
       // Skip GL work while hidden (e.g. behind a docs Code overlay's
       // visibility:hidden panel) — keep the loop alive, drop the cost.
       if (!(canvas.checkVisibility?.() ?? true)) {
@@ -222,7 +267,10 @@ export const MeshGradient = ({
         return;
       }
 
-      gl.uniform1f(uTime, (now / 1000) * speed);
+      const dt = (now - last) / 1000;
+      applyUniforms(1 - Math.exp(-dt / SMOOTH_TAU));
+      phaseRef.current += dt * (smoothed.speed ?? speed);
+      gl.uniform1f(uTime, phaseRef.current);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
       frame = requestAnimationFrame(draw);
     };

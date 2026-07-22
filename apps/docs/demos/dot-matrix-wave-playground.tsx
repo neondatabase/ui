@@ -5,46 +5,27 @@ import { DotMatrixWave } from "@neon-ui/registry/components/dot-matrix-wave/dot-
 import { waveGradients } from "@neon-ui/registry/components/dot-matrix-wave/fixtures";
 import { useState } from "react";
 
+import { OptionButton, OptionRow, ShaderDials, useDials } from "./shader-dials";
+
 const MAX_STOPS = 6;
 
-const Slider = ({
-  label,
-  max,
-  min,
-  onChange,
-  step,
-  value,
-}: {
-  label: string;
-  max: number;
-  min: number;
-  onChange: (value: number) => void;
-  step: number;
-  value: number;
-}) => (
-  <label className="flex items-center gap-3 font-mono text-muted-foreground text-xs">
-    <span className="w-16 shrink-0">{label}</span>
-    <input
-      className="h-1 min-w-0 flex-1 cursor-pointer appearance-none bg-border accent-[var(--primary)]"
-      max={max}
-      min={min}
-      onChange={(event) => onChange(Number(event.target.value))}
-      step={step}
-      type="range"
-      value={value}
-    />
-    <span className="w-10 shrink-0 text-right tabular-nums">
-      {value.toFixed(2)}
-    </span>
-  </label>
-);
+const DIALS = [
+  { defaultValue: 1, key: "speed", max: 4, min: 0, step: 0.1 },
+  { defaultValue: 14, key: "gap", max: 32, min: 6, step: 1 },
+  {
+    defaultValue: 0.35,
+    key: "dotSize",
+    label: "dot",
+    max: 1,
+    min: 0.1,
+    step: 0.05,
+  },
+  { defaultValue: 0.8, key: "amplitude", max: 1, min: 0, step: 0.05 },
+  { defaultValue: 0.08, key: "floor", max: 0.5, min: 0, step: 0.01 },
+] as const;
 
 export default function DotMatrixWavePlayground() {
-  const [speed, setSpeed] = useState(1);
-  const [gap, setGap] = useState(14);
-  const [dotSize, setDotSize] = useState(0.35);
-  const [amplitude, setAmplitude] = useState(0.8);
-  const [floor, setFloor] = useState(0.08);
+  const { dirty, reset, set, values } = useDials(DIALS);
   const [stops, setStops] = useState<string[]>(waveGradients.neonFade);
 
   const setStop = (index: number, color: string) => {
@@ -53,86 +34,45 @@ export default function DotMatrixWavePlayground() {
     );
   };
 
+  const stopsDirty = stops.join("|") !== waveGradients.neonFade.join("|");
+
   return (
     <div className="not-prose flex flex-col gap-3">
-      <div className="relative isolate h-56 overflow-hidden border border-border/60 bg-black">
+      <div className="relative isolate h-56 overflow-hidden rounded-lg border border-border/60 bg-black">
         <DotMatrixWave
-          amplitude={amplitude}
+          amplitude={values.amplitude}
           className="absolute inset-0"
           colors={stops}
-          dotSize={dotSize}
-          floor={floor}
-          gap={gap}
-          key={`${speed}-${gap}-${dotSize}-${amplitude}-${floor}-${stops.join("|")}`}
-          speed={speed}
+          dotSize={values.dotSize}
+          floor={values.floor}
+          gap={values.gap}
+          speed={values.speed}
         />
       </div>
-      <div className="flex flex-col gap-2 border border-border/60 p-4">
-        <Slider
-          label="speed"
-          max={4}
-          min={0}
-          onChange={setSpeed}
-          step={0.1}
-          value={speed}
-        />
-        <Slider
-          label="gap"
-          max={32}
-          min={6}
-          onChange={setGap}
-          step={1}
-          value={gap}
-        />
-        <Slider
-          label="dot"
-          max={1}
-          min={0.1}
-          onChange={setDotSize}
-          step={0.05}
-          value={dotSize}
-        />
-        <Slider
-          label="amplitude"
-          max={1}
-          min={0}
-          onChange={setAmplitude}
-          step={0.05}
-          value={amplitude}
-        />
-        <Slider
-          label="floor"
-          max={0.5}
-          min={0}
-          onChange={setFloor}
-          step={0.01}
-          value={floor}
-        />
-        <div className="mt-1 flex items-center gap-1.5">
-          <span className="w-16 shrink-0 font-mono text-muted-foreground text-xs">
-            preset
-          </span>
+      <ShaderDials
+        config={DIALS}
+        dirty={dirty || stopsDirty}
+        onChange={set}
+        onReset={() => {
+          reset();
+          setStops(waveGradients.neonFade);
+        }}
+        values={values}
+      >
+        <OptionRow label="preset">
           {(Object.keys(waveGradients) as (keyof typeof waveGradients)[]).map(
             (option) => (
-              <button
-                className={`border px-2 py-1 font-mono text-xs transition-colors ${
-                  stops.join("|") === waveGradients[option].join("|")
-                    ? "border-primary/50 text-foreground"
-                    : "border-border/60 text-muted-foreground hover:border-border hover:text-foreground"
-                }`}
+              <OptionButton
+                active={stops.join("|") === waveGradients[option].join("|")}
                 key={option}
                 onClick={() => setStops(waveGradients[option])}
-                type="button"
               >
                 {option}
-              </button>
+              </OptionButton>
             )
           )}
-        </div>
-        <div className="flex flex-wrap items-center gap-1.5">
-          <span className="w-16 shrink-0 font-mono text-muted-foreground text-xs">
-            gradient
-          </span>
+        </OptionRow>
+        <OptionRow label="gradient">
           {stops.map((stop, index) => (
             <span
               className="flex items-center gap-0.5"
@@ -149,7 +89,7 @@ export default function DotMatrixWavePlayground() {
               {stops.length > 1 && (
                 <button
                   aria-label={`Remove stop ${index + 1}`}
-                  className="border border-border/60 px-1.5 py-1 font-mono text-muted-foreground text-xs transition-colors hover:border-border hover:text-foreground"
+                  className="rounded-sm border border-border/60 px-1.5 py-1 font-mono text-muted-foreground text-xs transition-colors hover:border-border hover:text-foreground"
                   onClick={() =>
                     setStops((current) => current.filter((_, i) => i !== index))
                   }
@@ -163,7 +103,7 @@ export default function DotMatrixWavePlayground() {
           {stops.length < MAX_STOPS && (
             <button
               aria-label="Add gradient stop"
-              className="border border-border/60 px-2 py-1 font-mono text-muted-foreground text-xs transition-colors hover:border-border hover:text-foreground"
+              className="rounded-sm border border-border/60 px-2 py-1 font-mono text-muted-foreground text-xs transition-colors hover:border-border hover:text-foreground"
               onClick={() =>
                 setStops((current) => [...current, current.at(-1) ?? "#00e599"])
               }
@@ -172,8 +112,8 @@ export default function DotMatrixWavePlayground() {
               +
             </button>
           )}
-        </div>
-      </div>
+        </OptionRow>
+      </ShaderDials>
     </div>
   );
 }

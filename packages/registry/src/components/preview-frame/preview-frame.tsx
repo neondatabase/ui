@@ -319,7 +319,12 @@ export const PreviewFrame = ({
               {sleepingDetail}
             </p>
             {onWake ? (
-              <span className="mt-1 inline-flex h-6 items-center rounded-full border border-border/60 px-2.5 text-muted-foreground text-xs transition-colors group-hover/wake:border-primary/60 group-hover/wake:text-primary">
+              <span
+                className={cn(
+                  buttonVariants({ size: "sm", variant: "outline" }),
+                  "mt-2 transition-colors group-hover/wake:border-primary/60 group-hover/wake:text-primary"
+                )}
+              >
                 Wake sandbox
               </span>
             ) : null}

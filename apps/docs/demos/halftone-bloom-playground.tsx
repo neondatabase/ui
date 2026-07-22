@@ -4,136 +4,81 @@ import { bloomScenes } from "@neon-ui/registry/components/halftone-bloom/fixture
 import { HalftoneBloom } from "@neon-ui/registry/components/halftone-bloom/halftone-bloom";
 import { useState } from "react";
 
-const Slider = ({
-  label,
-  max,
-  min,
-  onChange,
-  step,
-  value,
-}: {
-  label: string;
-  max: number;
-  min: number;
-  onChange: (value: number) => void;
-  step: number;
-  value: number;
-}) => (
-  <label className="flex items-center gap-3 font-mono text-muted-foreground text-xs">
-    <span className="w-16 shrink-0">{label}</span>
-    <input
-      className="h-1 min-w-0 flex-1 cursor-pointer appearance-none bg-border accent-[var(--primary)]"
-      max={max}
-      min={min}
-      onChange={(event) => onChange(Number(event.target.value))}
-      step={step}
-      type="range"
-      value={value}
-    />
-    <span className="w-10 shrink-0 text-right tabular-nums">
-      {value.toFixed(2)}
-    </span>
-  </label>
-);
+import { OptionButton, OptionRow, ShaderDials, useDials } from "./shader-dials";
+
+const DIALS = [
+  { defaultValue: 1, key: "speed", max: 4, min: 0, step: 0.1 },
+  { defaultValue: 12, key: "gap", max: 28, min: 6, step: 1 },
+  {
+    defaultValue: 0.22,
+    key: "holeSize",
+    label: "hole",
+    max: 0.4,
+    min: 0,
+    step: 0.02,
+  },
+  { defaultValue: 1, key: "intensity", max: 2, min: 0, step: 0.05 },
+] as const;
+
+const DEFAULT_SCENE = "heritage" as const;
+const DEFAULT_SURFACE = "black" as const;
 
 export default function HalftoneBloomPlayground() {
-  const [speed, setSpeed] = useState(1);
-  const [gap, setGap] = useState(12);
-  const [holeSize, setHoleSize] = useState(0.22);
-  const [intensity, setIntensity] = useState(1);
-  const [scene, setScene] = useState<keyof typeof bloomScenes>("heritage");
-  const [surface, setSurface] = useState<"black" | "white">("black");
+  const { dirty, reset, set, values } = useDials(DIALS);
+  const [scene, setScene] = useState<keyof typeof bloomScenes>(DEFAULT_SCENE);
+  const [surface, setSurface] = useState<"black" | "white">(DEFAULT_SURFACE);
 
   return (
     <div className="not-prose flex flex-col gap-3">
       <div
-        className={`relative isolate h-56 overflow-hidden border border-border/60 ${surface === "black" ? "bg-black" : "bg-white"}`}
+        className={`relative isolate h-56 overflow-hidden rounded-lg border border-border/60 ${surface === "black" ? "bg-black" : "bg-white"}`}
       >
         <HalftoneBloom
           className="absolute inset-0"
-          gap={gap}
+          gap={values.gap}
           highlight={bloomScenes[scene].highlight}
-          holeSize={holeSize}
-          intensity={intensity}
-          key={`${speed}-${gap}-${holeSize}-${intensity}-${scene}`}
+          holeSize={values.holeSize}
+          intensity={values.intensity}
           lights={bloomScenes[scene].lights}
-          speed={speed}
+          speed={values.speed}
         />
       </div>
-      <div className="flex flex-col gap-2 border border-border/60 p-4">
-        <Slider
-          label="speed"
-          max={4}
-          min={0}
-          onChange={setSpeed}
-          step={0.1}
-          value={speed}
-        />
-        <Slider
-          label="gap"
-          max={28}
-          min={6}
-          onChange={setGap}
-          step={1}
-          value={gap}
-        />
-        <Slider
-          label="hole"
-          max={0.4}
-          min={0}
-          onChange={setHoleSize}
-          step={0.02}
-          value={holeSize}
-        />
-        <Slider
-          label="intensity"
-          max={2}
-          min={0}
-          onChange={setIntensity}
-          step={0.05}
-          value={intensity}
-        />
-        <div className="mt-1 flex items-center gap-1.5">
-          <span className="w-16 shrink-0 font-mono text-muted-foreground text-xs">
-            scene
-          </span>
+      <ShaderDials
+        config={DIALS}
+        dirty={dirty || scene !== DEFAULT_SCENE || surface !== DEFAULT_SURFACE}
+        onChange={set}
+        onReset={() => {
+          reset();
+          setScene(DEFAULT_SCENE);
+          setSurface(DEFAULT_SURFACE);
+        }}
+        values={values}
+      >
+        <OptionRow label="scene">
           {(Object.keys(bloomScenes) as (keyof typeof bloomScenes)[]).map(
             (option) => (
-              <button
-                className={`border px-2 py-1 font-mono text-xs transition-colors ${
-                  scene === option
-                    ? "border-primary/50 text-foreground"
-                    : "border-border/60 text-muted-foreground hover:border-border hover:text-foreground"
-                }`}
+              <OptionButton
+                active={scene === option}
                 key={option}
                 onClick={() => setScene(option)}
-                type="button"
               >
                 {option}
-              </button>
+              </OptionButton>
             )
           )}
-        </div>
-        <div className="flex items-center gap-1.5">
-          <span className="w-16 shrink-0 font-mono text-muted-foreground text-xs">
-            surface
-          </span>
+        </OptionRow>
+        <OptionRow label="surface">
           {(["black", "white"] as const).map((option) => (
-            <button
-              className={`border px-2 py-1 font-mono text-xs transition-colors ${
-                surface === option
-                  ? "border-primary/50 text-foreground"
-                  : "border-border/60 text-muted-foreground hover:border-border hover:text-foreground"
-              }`}
+            <OptionButton
+              active={surface === option}
               key={option}
               onClick={() => setSurface(option)}
-              type="button"
             >
               {option}
-            </button>
+            </OptionButton>
           ))}
-        </div>
-      </div>
+        </OptionRow>
+      </ShaderDials>
     </div>
   );
 }

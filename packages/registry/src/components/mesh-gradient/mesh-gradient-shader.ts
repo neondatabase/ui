@@ -70,9 +70,10 @@ float blob(vec2 p, vec2 center, float radius, vec2 stretch) {
   return exp(-dot(d, d) / (radius * radius));
 }
 
-/* A slow elliptical orbit unique to each blob. */
+/* A slow elliptical orbit unique to each blob — fast enough that the
+   field visibly breathes at speed 1 and clearly flows at speed 3. */
 vec2 orbit(float t, float phase, float amount) {
-  return vec2(cos(t * 0.11 + phase), sin(t * 0.07 + phase * 1.7)) * amount;
+  return vec2(cos(t * 0.34 + phase), sin(t * 0.23 + phase * 1.7)) * amount;
 }
 
 void main() {
@@ -83,8 +84,8 @@ void main() {
 
   // Organic edges: push the sample point around with slow value noise.
   vec2 warp = vec2(
-    vnoise(p * 1.4 + vec2(t * 0.03, 0.0)),
-    vnoise(p * 1.4 + vec2(7.3, t * 0.025))
+    vnoise(p * 1.4 + vec2(t * 0.1, 0.0)),
+    vnoise(p * 1.4 + vec2(7.3, t * 0.085))
   );
   p += (warp - 0.5) * u_warp * 0.55;
 
@@ -93,19 +94,19 @@ void main() {
   vec3 color = u_base;
 
   float gold = blob(
-    p, vec2(1.02 * aspect, 1.0) + orbit(t, 4.2, 0.04), 0.62, vec2(1.15, 1.0));
+    p, vec2(1.02 * aspect, 1.0) + orbit(t, 4.2, 0.07), 0.62, vec2(1.15, 1.0));
   color = mix(color, u_gold, min(gold * 1.1, 1.0));
 
   float bloom = blob(
-    p, vec2(0.36 * aspect, 0.64) + orbit(t, 5.6, 0.06), 0.55, vec2(1.3, 1.0));
+    p, vec2(0.36 * aspect, 0.64) + orbit(t, 5.6, 0.11), 0.55, vec2(1.3, 1.0));
   color = mix(color, u_bloom * u_glow, min(bloom * 1.25, 1.0));
 
   float ember = blob(
-    p, vec2(0.78 * aspect, 0.46) + orbit(t, 2.1, 0.05), 0.55, vec2(1.2, 1.0));
+    p, vec2(0.78 * aspect, 0.46) + orbit(t, 2.1, 0.09), 0.55, vec2(1.2, 1.0));
   color = mix(color, u_ember, min(ember * 0.9, 1.0));
 
   float moss = blob(
-    p, vec2(0.0, 1.06) + orbit(t, 0.0, 0.03), 0.42, vec2(1.0, 1.25));
+    p, vec2(0.0, 1.06) + orbit(t, 0.0, 0.05), 0.42, vec2(1.0, 1.25));
   color = mix(color, u_moss, min(moss * 0.95, 1.0));
 
   // Fine dither so the soft falloffs don't band on 8-bit displays.

@@ -2,6 +2,7 @@
 
 import { PreviewCard } from "@base-ui/react/preview-card";
 import type { ComponentProps } from "react";
+import { useState } from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -12,6 +13,48 @@ const hostnameOf = (url: string): string => {
   } catch {
     return url;
   }
+};
+
+const faviconOf = (url: string): string | null => {
+  try {
+    const host = new URL(url).hostname;
+    return `https://www.google.com/s2/favicons?domain=${host}&sz=64`;
+  } catch {
+    return null;
+  }
+};
+
+/**
+ * The source site's favicon, resolved through Google's favicon
+ * service. Decorative — vanishes silently if it fails to load, so
+ * the pill never shows a broken-image glyph.
+ */
+const SourceFavicon = ({
+  className,
+  url,
+}: {
+  url: string;
+  className?: string;
+}) => {
+  const [failed, setFailed] = useState(false);
+  const src = faviconOf(url);
+
+  if (!src || failed) {
+    return null;
+  }
+
+  return (
+    // oxlint-disable-next-line react/no-unknown-property -- plain img: registry components stay framework-agnostic
+    <img
+      alt=""
+      aria-hidden="true"
+      className={cn("size-3 shrink-0 select-none rounded-[2px]", className)}
+      data-slot="inline-citation-favicon"
+      loading="lazy"
+      onError={() => setFailed(true)}
+      src={src}
+    />
+  );
 };
 
 export type InlineCitationProps = ComponentProps<"span">;
@@ -83,7 +126,7 @@ export const InlineCitationCardTrigger = ({
   return (
     <PreviewCard.Trigger
       className={cn(
-        "ml-1 inline-flex max-w-40 items-baseline gap-1 border border-border/60 bg-muted/50 px-1 font-mono text-[10px] text-muted-foreground leading-4 no-underline transition-colors hover:border-border hover:text-foreground focus-visible:border-primary focus-visible:outline-none",
+        "ml-1 inline-flex max-w-40 items-center gap-1 rounded-sm border border-border/60 bg-muted/50 px-1 align-text-bottom font-mono text-[10px] text-muted-foreground leading-4 no-underline transition-colors hover:border-border hover:text-foreground focus-visible:border-primary focus-visible:outline-none",
         className
       )}
       data-slot="inline-citation-card-trigger"
@@ -92,6 +135,7 @@ export const InlineCitationCardTrigger = ({
       target="_blank"
       {...props}
     >
+      {first ? <SourceFavicon url={first} /> : null}
       <span className="truncate">{first ? hostnameOf(first) : "source"}</span>
       {sources.length > 1 ? (
         <span className="shrink-0 text-muted-foreground/60">
@@ -149,8 +193,9 @@ export const InlineCitationSource = ({
     {...props}
   >
     {title ? (
-      <div className="font-medium text-foreground text-sm leading-snug">
-        {title}
+      <div className="flex items-center gap-1.5 font-medium text-foreground text-sm leading-snug">
+        {url ? <SourceFavicon className="size-3.5" url={url} /> : null}
+        <span className="min-w-0 truncate">{title}</span>
       </div>
     ) : null}
     {url ? (

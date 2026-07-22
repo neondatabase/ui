@@ -76,6 +76,13 @@ const DEFAULT_LIGHTS: BloomLight[] = [
   },
 ];
 
+/**
+ * Seconds for a dial change to close ~63% of its gap — uniforms ease
+ * toward their targets each frame, so a dragged slider glides
+ * instead of snapping.
+ */
+const SMOOTH_TAU = 0.12;
+
 const parseColor = (css: string): [number, number, number] => {
   const probe = document.createElement("canvas");
   probe.width = 1;
@@ -136,6 +143,12 @@ export const HalftoneBloom = ({
   ...props
 }: HalftoneBloomProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  // Shader time, accumulated frame by frame so a speed change scales
+  // the flow from here instead of teleporting the whole field.
+  const phaseRef = useRef(0);
+  const lastFrameRef = useRef<number | null>(null);
+  // Smoothed dial values, persisting across prop-driven re-inits.
+  const smoothedRef = useRef<Record<string, number> | null>(null);
   const [holeX, holeY] = holeOffset;
   const rigKey = useMemo(
     () =>
@@ -212,8 +225,27 @@ export const HalftoneBloom = ({
     const uCount = gl.getUniformLocation(program, "u_count");
 
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    gl.uniform1f(uGap, gap * dpr);
-    gl.uniform1f(uHole, holeSize);
+    const targets: Record<string, number> = {
+      gap,
+      holeSize,
+      intensity,
+      speed,
+    };
+
+    smoothedRef.current ??= { ...targets };
+    const smoothed = smoothedRef.current;
+
+    /** Ease every dial toward its target and upload; k=1 snaps. */
+    const applyUniforms = (k: number) => {
+      for (const key of Object.keys(targets)) {
+        const current = smoothed[key] ?? targets[key] ?? 0;
+        smoothed[key] = current + ((targets[key] ?? 0) - current) * k;
+      }
+
+      gl.uniform1f(uGap, (smoothed.gap ?? gap) * dpr);
+      gl.uniform1f(uHole, smoothed.holeSize ?? holeSize);
+      gl.uniform1f(uIntensity, smoothed.intensity ?? intensity);
+    };
     gl.uniform2f(uHoleOffset, holeX, holeY);
     gl.uniform1f(uIntensity, intensity);
     gl.uniform1f(uDrift, drift);
@@ -251,6 +283,7 @@ export const HalftoneBloom = ({
     let staticFrame = false;
 
     const renderStatic = () => {
+      applyUniforms(1);
       gl.uniform1f(uTime, 5);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
     };
@@ -287,13 +320,18 @@ export const HalftoneBloom = ({
     };
 
     const draw = (now: number) => {
+      const last = lastFrameRef.current ?? now;
+      lastFrameRef.current = now;
       // Skip GL work while hidden: keep the loop alive, drop the cost.
       if (!(canvas.checkVisibility?.() ?? true)) {
         frame = requestAnimationFrame(draw);
         return;
       }
 
-      gl.uniform1f(uTime, (now / 1000) * speed);
+      const dt = (now - last) / 1000;
+      applyUniforms(1 - Math.exp(-dt / SMOOTH_TAU));
+      phaseRef.current += dt * (smoothed.speed ?? speed);
+      gl.uniform1f(uTime, phaseRef.current);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
       frame = requestAnimationFrame(draw);
     };

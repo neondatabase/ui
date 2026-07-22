@@ -58,8 +58,8 @@ const FEATURE_STAGGER_MS = 50;
 const RISE =
   "fill-mode-backwards fade-in-0 slide-in-from-bottom-2 animate-in duration-500 motion-reduce:animate-none";
 
-const CTA_GLOW =
-  "shadow-[0_0_20px_-6px_var(--primary)] hover:shadow-[0_0_30px_-6px_var(--primary)]";
+/* The charged CTA speaks through color and the sweep alone — no glow. */
+const CTA_GLOW = "";
 
 const FeatureRow = ({ feature, index }: { feature: string; index: number }) => (
   <li

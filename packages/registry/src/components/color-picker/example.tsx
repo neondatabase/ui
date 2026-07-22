@@ -22,7 +22,7 @@ export const ColorPickerExample = () => {
         value={color}
       />
       <div
-        className="relative isolate h-32 overflow-hidden border border-border/60 bg-card"
+        className="relative isolate h-32 overflow-hidden rounded-lg border border-border/60 bg-card"
         data-wash-hover
         style={{ color }}
       >

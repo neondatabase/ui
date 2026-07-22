@@ -1,6 +1,6 @@
 "use client";
 
-import type { KeyboardEvent, ReactNode } from "react";
+import type { CSSProperties, KeyboardEvent, ReactNode } from "react";
 import { useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { cn } from "@/lib/utils";
 
 export interface ConfirmDialogProps {
   open: boolean;
@@ -27,6 +28,11 @@ export interface ConfirmDialogProps {
   cancelLabel?: string;
   /** How long the hold takes to arm, in milliseconds. */
   holdMs?: number;
+  /**
+   * The hold trembles as it approaches commitment — barely a shiver
+   * at the start, unmistakable by the end. Off under reduced motion.
+   */
+  shake?: boolean;
 }
 
 /* ─────────────────────────────────────────────────────────
@@ -44,7 +50,11 @@ export interface ConfirmDialogProps {
  *            own destructive-foreground copy of the label,
  *            revealed by the same clip-path, so the sweep
  *            edge crosses the letterforms — white behind
- *            it, destructive ahead of it, never a flip
+ *            it, destructive ahead of it, never a flip.
+ *            With shake on, the button trembles harder as
+ *            the fill closes in — amplitude eases from 0
+ *            to 2.5px over the hold (ease-in: dread builds
+ *            late), mixing axes so it reads as strain
  *  release   let go early and the fill springs back
  *            (180ms ease-out) — no harm done
  *  arm       the fill lands, onConfirm fires once, the
@@ -57,6 +67,13 @@ export interface ConfirmDialogProps {
  * ───────────────────────────────────────────────────────── */
 const DEFAULT_HOLD_MS = 1200;
 const RELEASE_MS = 180;
+/** Peak tremble at the moment the hold arms — a shiver, not a quake. */
+const SHAKE_MAX = "0.75px";
+/**
+ * The amplitude's ramp: flat for most of the hold, then it surges —
+ * gradually, then suddenly.
+ */
+const SHAKE_EASE = "cubic-bezier(0.8, 0, 1, 1)";
 
 export const ConfirmDialog = ({
   cancelLabel = "Cancel",
@@ -66,6 +83,7 @@ export const ConfirmDialog = ({
   onConfirm,
   onOpenChange,
   open,
+  shake = true,
   title,
 }: ConfirmDialogProps) => {
   const [holding, setHolding] = useState(false);
@@ -127,9 +145,22 @@ export const ConfirmDialog = ({
             {cancelLabel}
           </Button>
           <Button
-            className="relative select-none overflow-hidden border border-destructive/50 bg-destructive/10 text-destructive hover:bg-destructive/15 hover:text-destructive"
+            className={cn(
+              "relative select-none overflow-hidden rounded-md border border-destructive/50 bg-destructive/10 text-destructive hover:bg-destructive/15 hover:text-destructive focus-visible:border-destructive/60 focus-visible:ring-destructive/25 dark:focus-visible:ring-destructive/40",
+              shake && holding && "neon-hold-shake"
+            )}
             data-holding={holding || undefined}
             data-slot="confirm-dialog-hold"
+            style={
+              shake
+                ? ({
+                    "--neon-shake-amp": holding ? SHAKE_MAX : "0px",
+                    transition: `--neon-shake-amp ${
+                      holding ? holdMs : RELEASE_MS
+                    }ms ${holding ? SHAKE_EASE : "ease-out"}`,
+                  } as CSSProperties)
+                : undefined
+            }
             onKeyDown={handleKeyDown}
             onKeyUp={cancelHold}
             onPointerCancel={cancelHold}

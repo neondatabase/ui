@@ -132,7 +132,7 @@ export default function ThemePaster() {
         <div className="flex flex-wrap gap-1.5">
           {PRESETS.map((preset) => (
             <button
-              className="border border-border/60 px-2 py-1 font-mono text-muted-foreground text-xs transition-colors hover:border-border hover:text-foreground"
+              className="rounded-sm border border-border/60 px-2 py-1 font-mono text-muted-foreground text-xs transition-colors hover:border-border hover:text-foreground"
               key={preset.label}
               onClick={() => setInput(preset.value)}
               type="button"
@@ -141,7 +141,7 @@ export default function ThemePaster() {
             </button>
           ))}
           <button
-            className="border border-border/60 px-2 py-1 font-mono text-muted-foreground text-xs transition-colors hover:border-border hover:text-foreground disabled:opacity-50"
+            className="rounded-sm border border-border/60 px-2 py-1 font-mono text-muted-foreground text-xs transition-colors hover:border-border hover:text-foreground disabled:opacity-50"
             disabled={loadingPreset}
             onClick={loadCaffeine}
             type="button"

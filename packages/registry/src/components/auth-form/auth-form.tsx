@@ -116,8 +116,9 @@ const RISE =
  *           leave — never while you're still typing, and
  *           never for a field you merely tabbed past
  *           (required verdicts wait for submit)
- *  invalid  the beam relights in destructive and stays lit,
- *           the message takes over the label slot in place
+ *  invalid  the whole box takes the verdict — destructive
+ *           border and a whisper of destructive fill — the
+ *           message takes over the label slot in place
  *           (crossfade, no layout shift — the frame never
  *           moves), and an X draws itself into the field
  *           edge
@@ -205,8 +206,8 @@ const COPY: Record<
  *  press    scale 0.98, 160ms — the interface is listening
  *  busy     the working label shimmers under lock
  * ───────────────────────────────────────────────────────── */
-const CTA_GLOW =
-  "shadow-[0_0_20px_-6px_var(--primary)] hover:shadow-[0_0_30px_-6px_var(--primary)]";
+/* The charged CTA speaks through color and the sweep alone — no glow. */
+const CTA_GLOW = "";
 
 const AuthFormHeader = ({
   description,
@@ -478,8 +479,10 @@ const beamTone = (
   error: string | null | undefined,
   meter: StrengthMeter | null | undefined
 ) => {
+  // Invalid verdicts paint the whole box (see FIELD_INPUT usage);
+  // the beam stands down instead of doubling the signal.
   if (error) {
-    return "scale-x-100 bg-destructive";
+    return "scale-x-0 bg-destructive";
   }
   if (meter) {
     return METER_TONE[meter.tone];
@@ -494,7 +497,7 @@ const beamTone = (
  * Portaled to the body and pinned to the input's rect (fixed
  * position, re-measured on scroll and resize), so it floats
  * above every sibling — no stacking context, not even the
- * charged CTA's glow, can paint over it. Each rule flips
+ * charged CTA, can paint over it. Each rule flips
  * from a muted dot to a drawn primary check as the password
  * satisfies it. Floating, so nothing in the form shifts.
  * ───────────────────────────────────────────────────────── */
@@ -669,7 +672,14 @@ const AuthField = ({
           aria-describedby={error ? messageId : undefined}
           aria-invalid={error ? true : undefined}
           autoComplete={autoComplete}
-          className={cn(FIELD_INPUT, (valid || error) && "pr-9")}
+          className={cn(
+            FIELD_INPUT,
+            (valid || error) && "pr-9",
+            // An invalid verdict tints the whole box, not just an
+            // underline — border and a whisper of fill.
+            error &&
+              "border-destructive/60 bg-destructive/[0.04] hover:border-destructive/70 focus:border-destructive/70"
+          )}
           disabled={disabled}
           name={name}
           onBlur={(event: FocusEvent<HTMLInputElement>) => {

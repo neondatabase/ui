@@ -130,10 +130,10 @@ const useTypewriter = (prompts: string[] | undefined, active: boolean) => {
  *             (the platform's working language); all
  *             motion stops under reduced motion.
  * ───────────────────────────────────────────────────────── */
-const CTA_GLOW =
-  "shadow-[0_0_20px_-6px_var(--primary)] hover:shadow-[0_0_30px_-6px_var(--primary)]";
+/* The charged CTA speaks through color and the sweep alone — no glow. */
+const CTA_GLOW = "";
 
-/** The ignition CTA: ghost until earned, neon + glow + sweep after. */
+/** The ignition CTA: ghost until earned, neon + sweep after. */
 const CreateAction = ({
   actionLabel,
   isCreating,
@@ -245,7 +245,7 @@ export const AppCreator = ({
       />
       <div className="flex items-center gap-1.5 border-border/40 border-t p-2">
         <fieldset
-          className="relative isolate grid grid-cols-2 border border-border/60 p-0.5"
+          className="relative isolate grid grid-cols-2 rounded-sm border border-border/60 p-0.5"
           data-slot="app-creator-plans"
           disabled={locked}
         >
@@ -253,7 +253,8 @@ export const AppCreator = ({
           <span
             aria-hidden="true"
             className={cn(
-              "-z-10 absolute inset-y-0.5 left-0.5 w-[calc(50%-2px)] transition-[translate,background-color,border-color] duration-300 ease-[cubic-bezier(0.34,1.3,0.64,1)] motion-reduce:transition-none",
+              // Nested radius: container 4px minus the 2px gap.
+              "-z-10 absolute inset-y-0.5 left-0.5 w-[calc(50%-2px)] rounded-[2px] transition-[translate,background-color,border-color] duration-300 ease-[cubic-bezier(0.34,1.3,0.64,1)] motion-reduce:transition-none",
               plan === "paid"
                 ? "translate-x-full border border-primary/40 bg-primary/10"
                 : "border border-transparent bg-muted/40"

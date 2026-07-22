@@ -63,7 +63,7 @@ export default function InstallPicker() {
   };
 
   return (
-    <code className="inline-flex h-10 items-center rounded-full border border-white/20 bg-black/50 px-4 font-mono text-white/75 text-xs backdrop-blur">
+    <code className="inline-flex h-10 items-center rounded-lg border border-white/20 bg-black/50 px-4 font-mono text-white/75 text-xs backdrop-blur">
       npx shadcn@latest add https://ui.neon.com/r/
       <Popover onOpenChange={setOpen} open={open}>
         <PopoverTrigger className="inline-flex items-center gap-1 text-white underline decoration-dotted decoration-white/40 underline-offset-4 transition-colors hover:decoration-primary">

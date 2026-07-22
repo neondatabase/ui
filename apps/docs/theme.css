@@ -28,11 +28,11 @@
   --blume-accent: #00e599;
   --blume-accent-foreground: #0c0d0d;
   --blume-code-background: #131414;
-  --blume-radius: 0;
+  --blume-radius: 0.5rem;
 }
 
 :root {
-  --blume-radius: 0;
+  --blume-radius: 0.5rem;
 }
 
 /*
@@ -45,7 +45,7 @@
  * inherits the site radius (0), so radius vars are restored explicitly.
  */
 :root {
-  --radius: 0rem;
+  --radius: 0.5rem;
   --radius-sm: max(0px, calc(var(--radius) - 4px));
   --radius-md: max(0px, calc(var(--radius) - 2px));
   --radius-lg: var(--radius);
@@ -157,7 +157,7 @@ details[class*="group/tt"] code.text-accent {
 /* Align fenced code blocks with the Preview/Code component shell. */
 .prose pre.astro-code {
   border-color: color-mix(in srgb, var(--border) 60%, transparent);
-  border-radius: 0;
+  border-radius: var(--radius-lg);
   background:
     linear-gradient(
       to bottom,
@@ -174,7 +174,7 @@ details[class*="group/tt"] code.text-accent {
 }
 
 .prose pre.astro-code > button {
-  border-radius: 0;
+  border-radius: var(--radius-md);
 }
 
 /* Scroll-aware edge fade + thin scrollbar for scrolling panels.
@@ -620,12 +620,12 @@ dialog > div:last-child > div:last-child > span:last-child {
 }
 
 /*
- * House radius is none: square the header tab pills and the mobile
- * drawer tab items (Blume hardcodes rounded-full/rounded-lg there).
+ * House radius: sidebar and drawer items take the token scale
+ * (Blume hardcodes rounded-lg there; keep it on our scale instead).
  */
 [data-blume-drawer] ul a,
 aside ul a.rounded-lg {
-  border-radius: 0;
+  border-radius: var(--radius-md);
 }
 
 /*
@@ -633,10 +633,64 @@ aside ul a.rounded-lg {
  * renders on PageLayout pages, e.g. the landing and /changelog).
  * Hover and active states change the text color only.
  */
-header nav a.rounded-full {
-  border-radius: 0;
-}
-
 header nav a.rounded-full:hover {
   background-color: transparent;
+}
+
+/*
+ * Hold shake: the destructive hold trembles, and the tremble grows as
+ * the fill approaches commitment. Amplitude rides a registered custom
+ * property so it can transition smoothly from 0 over the whole hold —
+ * barely a shiver at the start, unmistakable by the end. The jitter
+ * mixes axes and never repeats a direction twice, so it reads as
+ * strain rather than a metronome. Off entirely under reduced motion.
+ */
+@property --neon-shake-amp {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+
+@keyframes neon-hold-shake {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  12% {
+    translate: calc(var(--neon-shake-amp) * -1)
+      calc(var(--neon-shake-amp) * 0.4);
+  }
+  25% {
+    translate: var(--neon-shake-amp) calc(var(--neon-shake-amp) * -0.3);
+  }
+  38% {
+    translate: calc(var(--neon-shake-amp) * -0.7)
+      calc(var(--neon-shake-amp) * -0.5);
+  }
+  50% {
+    translate: calc(var(--neon-shake-amp) * 0.9)
+      calc(var(--neon-shake-amp) * 0.3);
+  }
+  62% {
+    translate: calc(var(--neon-shake-amp) * -1)
+      calc(var(--neon-shake-amp) * -0.2);
+  }
+  75% {
+    translate: calc(var(--neon-shake-amp) * 0.6)
+      calc(var(--neon-shake-amp) * 0.5);
+  }
+  88% {
+    translate: calc(var(--neon-shake-amp) * -0.4)
+      calc(var(--neon-shake-amp) * -0.4);
+  }
+}
+
+.neon-hold-shake {
+  animation: neon-hold-shake 260ms linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .neon-hold-shake {
+    animation: none;
+  }
 }

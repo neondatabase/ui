@@ -39,6 +39,13 @@ export type BannerPatternProps = Omit<ComponentProps<"canvas">, "children"> & {
   colors?: BannerPatternPalette;
 };
 
+/**
+ * Seconds for a dial or palette change to close ~63% of its gap —
+ * uniforms ease toward their targets each frame, so a dragged slider
+ * or a palette switch glides instead of snapping.
+ */
+const SMOOTH_TAU = 0.12;
+
 const DEFAULT_COLORS: BannerPatternPalette = [
   "#0a0b09",
   "#34d59a",
@@ -106,6 +113,12 @@ export const BannerPattern = ({
   ...props
 }: BannerPatternProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  // Shader time, accumulated frame by frame so a speed change scales
+  // the flow from here instead of teleporting the whole field.
+  const phaseRef = useRef(0);
+  const lastFrameRef = useRef<number | null>(null);
+  // Smoothed uniform values, persisting across prop-driven re-inits.
+  const smoothedRef = useRef<Record<string, number> | null>(null);
   const [base, green, sage, amber, cream, rust] = colors;
 
   useEffect(() => {
@@ -167,27 +180,63 @@ export const BannerPattern = ({
     const uHaze = gl.getUniformLocation(program, "u_haze");
     const uJitter = gl.getUniformLocation(program, "u_jitter");
 
-    gl.uniform1f(uCell, cell * dpr);
-    gl.uniform1f(uDot, dotSize);
-    gl.uniform1f(uHaze, haze);
-    gl.uniform1f(uJitter, jitter);
-
-    for (const [name, css] of [
+    const palette = [
       ["u_base", base],
       ["u_green", green],
       ["u_sage", sage],
       ["u_amber", amber],
       ["u_cream", cream],
       ["u_rust", rust],
-    ] as const) {
+    ] as const;
+
+    const targets: Record<string, number> = {
+      cell,
+      dotSize,
+      haze,
+      jitter,
+      speed,
+    };
+
+    for (const [name, css] of palette) {
       const [r, g, b] = parseColor(css);
-      gl.uniform3f(gl.getUniformLocation(program, name), r, g, b);
+      targets[`${name}_r`] = r;
+      targets[`${name}_g`] = g;
+      targets[`${name}_b`] = b;
     }
+
+    smoothedRef.current ??= { ...targets };
+    const smoothed = smoothedRef.current;
+    const colorLocations = palette.map(([name]) =>
+      gl.getUniformLocation(program, name)
+    );
+
+    /** Ease every uniform toward its target and upload; k=1 snaps. */
+    const applyUniforms = (k: number) => {
+      for (const key of Object.keys(targets)) {
+        const current = smoothed[key] ?? targets[key] ?? 0;
+        smoothed[key] = current + ((targets[key] ?? 0) - current) * k;
+      }
+
+      gl.uniform1f(uCell, (smoothed.cell ?? cell) * dpr);
+      gl.uniform1f(uDot, smoothed.dotSize ?? dotSize);
+      gl.uniform1f(uHaze, smoothed.haze ?? haze);
+      gl.uniform1f(uJitter, smoothed.jitter ?? jitter);
+
+      for (const [index, [name]] of palette.entries()) {
+        gl.uniform3f(
+          colorLocations[index] ?? null,
+          smoothed[`${name}_r`] ?? 0,
+          smoothed[`${name}_g`] ?? 0,
+          smoothed[`${name}_b`] ?? 0
+        );
+      }
+    };
 
     let frame = 0;
     let staticFrame = false;
 
     const renderStatic = () => {
+      applyUniforms(1);
       gl.uniform1f(uTime, 5);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
     };
@@ -224,6 +273,8 @@ export const BannerPattern = ({
     };
 
     const draw = (now: number) => {
+      const last = lastFrameRef.current ?? now;
+      lastFrameRef.current = now;
       // Skip GL work while hidden (e.g. behind a docs Code overlay's
       // visibility:hidden panel) — keep the loop alive, drop the cost.
       if (!(canvas.checkVisibility?.() ?? true)) {
@@ -231,7 +282,10 @@ export const BannerPattern = ({
         return;
       }
 
-      gl.uniform1f(uTime, (now / 1000) * speed);
+      const dt = (now - last) / 1000;
+      applyUniforms(1 - Math.exp(-dt / SMOOTH_TAU));
+      phaseRef.current += dt * (smoothed.speed ?? speed);
+      gl.uniform1f(uTime, phaseRef.current);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
       frame = requestAnimationFrame(draw);
     };

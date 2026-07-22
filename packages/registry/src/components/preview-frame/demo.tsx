@@ -33,8 +33,8 @@ export const PreviewFrameDemo = () => {
           <button
             className={
               option === state
-                ? "border border-primary/60 px-2.5 py-1 font-mono text-foreground text-xs"
-                : "border border-border/60 px-2.5 py-1 font-mono text-muted-foreground text-xs transition-colors hover:border-border hover:text-foreground"
+                ? "rounded-sm border border-primary/60 px-2.5 py-1 font-mono text-foreground text-xs"
+                : "rounded-sm border border-border/60 px-2.5 py-1 font-mono text-muted-foreground text-xs transition-colors hover:border-border hover:text-foreground"
             }
             key={option}
             onClick={() => setState(option)}

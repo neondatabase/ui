@@ -505,7 +505,7 @@ export const MetricCard = ({
           </CardTitle>
         </CardHeader>
         <CardContent className="mt-auto px-4 pt-3 pb-3">
-          <div className="border border-destructive/20 bg-destructive/[0.045] p-3">
+          <div className="rounded-md border border-destructive/20 bg-destructive/[0.045] p-3">
             <div className="flex items-center gap-2 text-destructive">
               <HugeiconsIcon
                 aria-hidden="true"

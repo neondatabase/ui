@@ -58,9 +58,10 @@ float blob(vec2 p, vec2 center, float radius, vec2 stretch) {
   return exp(-dot(d, d) / (radius * radius));
 }
 
-/* A slow elliptical orbit unique to each blob. */
+/* A slow elliptical orbit unique to each blob — fast enough that the
+   dots visibly change color at speed 1 and clearly flow at speed 3. */
 vec2 orbit(float t, float phase, float amount) {
-  return vec2(cos(t * 0.09 + phase), sin(t * 0.06 + phase * 1.7)) * amount;
+  return vec2(cos(t * 0.3 + phase), sin(t * 0.2 + phase * 1.7)) * amount;
 }
 
 /* The color field the dots sample — blobs painted back to front. */
@@ -68,23 +69,23 @@ vec3 field(vec2 p, float aspect, float t) {
   vec3 color = u_base;
 
   float green = blob(
-    p, vec2(0.22 * aspect, 0.98) + orbit(t, 0.0, 0.05), 0.55, vec2(1.2, 1.0));
+    p, vec2(0.22 * aspect, 0.98) + orbit(t, 0.0, 0.09), 0.55, vec2(1.2, 1.0));
   color = mix(color, u_green, min(green * 0.85, 1.0));
 
   float sage = blob(
-    p, vec2(0.52 * aspect, 0.72) + orbit(t, 1.9, 0.05), 0.45, vec2(1.2, 1.0));
+    p, vec2(0.52 * aspect, 0.72) + orbit(t, 1.9, 0.1), 0.45, vec2(1.2, 1.0));
   color = mix(color, u_sage, min(sage * 0.6, 1.0));
 
   float amber = blob(
-    p, vec2(0.86 * aspect, 0.78) + orbit(t, 3.4, 0.05), 0.5, vec2(1.1, 1.1));
+    p, vec2(0.86 * aspect, 0.78) + orbit(t, 3.4, 0.09), 0.5, vec2(1.1, 1.1));
   color = mix(color, u_amber, min(amber * 0.9, 1.0));
 
   float cream = blob(
-    p, vec2(1.03 * aspect, 1.02) + orbit(t, 4.8, 0.03), 0.24, vec2(1.0, 1.0));
+    p, vec2(1.03 * aspect, 1.02) + orbit(t, 4.8, 0.06), 0.24, vec2(1.0, 1.0));
   color = mix(color, u_cream, min(cream * 0.9, 1.0));
 
   float rust = blob(
-    p, vec2(0.92 * aspect, 0.12) + orbit(t, 5.9, 0.05), 0.45, vec2(1.35, 1.0));
+    p, vec2(0.92 * aspect, 0.12) + orbit(t, 5.9, 0.09), 0.45, vec2(1.35, 1.0));
   color = mix(color, u_rust, min(rust * 0.6, 1.0));
 
   return color;
