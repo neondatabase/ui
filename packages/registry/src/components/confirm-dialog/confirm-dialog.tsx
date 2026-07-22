@@ -12,7 +12,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { cn } from "@/lib/utils";
 
 export interface ConfirmDialogProps {
   open: boolean;
@@ -41,15 +40,20 @@ export interface ConfirmDialogProps {
  *            text — armed, not fired
  *  hold      press and hold: a destructive fill sweeps
  *            left to right for exactly holdMs (linear —
- *            progress, not easing) while the label steps
- *            to destructive-foreground as the fill takes
- *            the button
+ *            progress, not easing). The fill carries its
+ *            own destructive-foreground copy of the label,
+ *            revealed by the same clip-path, so the sweep
+ *            edge crosses the letterforms — white behind
+ *            it, destructive ahead of it, never a flip
  *  release   let go early and the fill springs back
  *            (180ms ease-out) — no harm done
  *  arm       the fill lands, onConfirm fires once, the
  *            dialog closes
  *  keyboard  holding Space or Enter works the same way;
  *            key repeat is ignored
+ *
+ * The clip-path label split was suggested by Gurbinder
+ * (x.com/legionsdev).
  * ───────────────────────────────────────────────────────── */
 const DEFAULT_HOLD_MS = 1200;
 const RELEASE_MS = 180;
@@ -134,24 +138,19 @@ export const ConfirmDialog = ({
             onPointerUp={cancelHold}
             variant="ghost"
           >
-            {/* The progress fill: linear for exactly holdMs. */}
+            <span className="relative">{confirmLabel}</span>
+            {/* The progress fill and its own white copy of the label,
+                revealed together by one clip-path — the sweep edge
+                crosses the letterforms instead of flipping the text. */}
             <span
               aria-hidden="true"
-              className="absolute inset-0 origin-left bg-destructive"
+              className="absolute inset-0 flex items-center justify-center bg-destructive text-destructive-foreground"
+              data-slot="confirm-dialog-hold-fill"
               style={{
-                scale: holding ? "1 1" : "0 1",
-                transition: `scale ${holding ? holdMs : RELEASE_MS}ms ${
+                clipPath: holding ? "inset(0 0% 0 0)" : "inset(0 100% 0 0)",
+                transition: `clip-path ${holding ? holdMs : RELEASE_MS}ms ${
                   holding ? "linear" : "ease-out"
                 }`,
-              }}
-            />
-            <span
-              className={cn(
-                "relative z-10 transition-colors",
-                holding && "text-destructive-foreground"
-              )}
-              style={{
-                transitionDelay: holding ? `${holdMs / 2}ms` : "0ms",
               }}
             >
               {confirmLabel}
