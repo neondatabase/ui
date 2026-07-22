@@ -4,6 +4,19 @@
     "date": "2026-07-22",
     "items": [
       {
+        "text": "ConfirmDialog: the hold button's label now splits at the fill edge via clip-path instead of flipping color mid-hold",
+        "kind": "fix",
+        "href": "/docs/app/confirm-dialog"
+      }
+    ],
+    "pr": 56,
+    "title": "Split the hold label with a clip-path, not a color flip"
+  },
+  {
+    "author": "Justin Levine",
+    "date": "2026-07-22",
+    "items": [
+      {
         "text": "New `MeshGradient` brand shader: the Neon deck gradient as a live WebGL surface with dialable warp, grain, and glow",
         "kind": "feat",
         "href": "/docs/brand/mesh-gradient"
