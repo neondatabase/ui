@@ -1,0 +1,77 @@
+---
+title: BannerPattern
+description: The neon.com banner dot pattern as a live WebGL surface.
+seo:
+  image: /og-cards/docs/brand/banner-pattern.png
+---
+
+`BannerPattern` recreates neon.com's banner dot pattern as a shader. The construction mirrors the source SVG: a square-dot grid masks a drifting color field — Neon green upper-left, sage bridging the middle, amber strengthening right, a cream hot spot in the corner, rust pooling low — so every dot samples whatever color sits behind it. Per-dot brightness jitter stands in for the source's fractal-noise grain, and a dim haze of the same field glows behind the grid. Drag the dials — `cell` and `dot size` reshape the grid, `haze` lifts the glow, and the palettes re-tint the field:
+
+<BannerPatternPlayground />
+
+## Install
+
+```bash
+npx shadcn@latest add https://ui.neon.com/r/banner-pattern.json
+```
+
+## Usage
+
+```tsx
+import { BannerPattern } from "@/components/neon-ui/banner-pattern";
+
+<div className="relative isolate overflow-hidden bg-black">
+  <BannerPattern className="absolute inset-0" />
+  <div className="relative">{content}</div>
+</div>;
+```
+
+## Props
+
+<TypeTable
+  type={{
+    speed: {
+      type: "number",
+      description: "Animation speed multiplier; 0 freezes the field.",
+      default: "0.5",
+    },
+    cell: {
+      type: "number",
+      description: "Grid cell size in CSS pixels.",
+      default: "8",
+    },
+    dotSize: {
+      type: "number",
+      description: "0-0.5 dot half-width as a fraction of the cell.",
+      default: "0.14",
+    },
+    haze: {
+      type: "number",
+      description: "0-1 unmasked ambient glow behind the dots.",
+      default: "0.5",
+    },
+    jitter: {
+      type: "number",
+      description: "0-1 per-dot brightness variance.",
+      default: "0.35",
+    },
+    colors: {
+      type: "BannerPatternPalette",
+      description:
+        "The field, painted back to front: [base, green, sage, amber, cream, rust].",
+      default:
+        '["#0a0b09", "#34d59a", "#97b47d", "#feaa2c", "#ffeacc", "#b03323"]',
+    },
+  }}
+/>
+
+## How the dots get their color
+
+The dots are never colored directly. The source SVG repeats an 8px tile as an alpha mask over blurred gradient ellipses; this shader does the same in one pass — build the color field, cut it with the grid, let each dot inherit the field at its position. Recoloring the whole surface is therefore just swapping the field palette; the grid never changes.
+
+## Accessibility
+
+- The canvas is `aria-hidden` decoration; content stacks above it in the DOM.
+- Renders one static frame under `prefers-reduced-motion` (and when `speed` is 0).
+- Foreground text needs its own contrast — add a scrim overlay (the demo shows a bottom `bg-gradient-to-t from-black/80` layer).
+- Skips GL work entirely while the canvas is hidden, so it costs nothing behind overlays.

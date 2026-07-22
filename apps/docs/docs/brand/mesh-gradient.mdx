@@ -1,0 +1,71 @@
+---
+title: MeshGradient
+description: The Neon brand-deck gradient as a live WebGL surface.
+seo:
+  image: /og-cards/docs/brand/mesh-gradient.png
+---
+
+`MeshGradient` recreates the Neon brand-deck gradient as a shader: a defocused color field on warm near-black — deep moss in one corner, burnt ember through the middle, gold pinned top-right, and a bright yellow-green bloom left of center. Each region drifts on its own slow orbit, a gentle noise warp keeps the edges organic, and a fine dither keeps the soft falloffs from banding. Use it behind heroes, covers, and marketing moments. Drag the dials — `warp` loosens the blob edges, `glow` runs the bloom hotter, and the palettes re-tint the whole field:
+
+<MeshGradientPlayground />
+
+## Install
+
+```bash
+npx shadcn@latest add https://ui.neon.com/r/mesh-gradient.json
+```
+
+## Usage
+
+```tsx
+import { MeshGradient } from "@/components/neon-ui/mesh-gradient";
+
+<section className="relative isolate overflow-hidden bg-black">
+  <MeshGradient className="absolute inset-0" />
+  <div className="relative">{content}</div>
+</section>;
+```
+
+## Props
+
+<TypeTable
+  type={{
+    speed: {
+      type: "number",
+      description: "Animation speed multiplier; 0 freezes the field.",
+      default: "0.6",
+    },
+    warp: {
+      type: "number",
+      description: "0-1 domain warp — how organic the blob edges get.",
+      default: "0.4",
+    },
+    grain: {
+      type: "number",
+      description: "0-1 dither strength; keeps soft falloffs from banding.",
+      default: "0.5",
+    },
+    glow: {
+      type: "number",
+      description: "Brightness multiplier on the bloom blob.",
+      default: "1",
+    },
+    colors: {
+      type: "MeshGradientPalette",
+      description:
+        "The field, painted back to front: [base, moss, ember, gold, bloom].",
+      default: '["#0b0b08", "#2c4a33", "#a85f1b", "#edbf4e", "#eef2a0"]',
+    },
+  }}
+/>
+
+## Palettes
+
+The typed fixtures ship three: `brand` (the deck gradient), `neon` (the green family), and `dusk` (indigo through pink). Any five CSS colors work — the geometry never changes, so palettes stay swappable.
+
+## Accessibility
+
+- The canvas is `aria-hidden` decoration; content stacks above it in the DOM.
+- Renders one static frame under `prefers-reduced-motion` (and when `speed` is 0).
+- Foreground text needs its own contrast against the field — add a scrim overlay (the demo shows a bottom `bg-gradient-to-t from-black/70` layer). The source slide's dark bottom band is exactly such a scrim, deliberately not baked into the gradient.
+- Skips GL work entirely while the canvas is hidden, so it costs nothing behind overlays.

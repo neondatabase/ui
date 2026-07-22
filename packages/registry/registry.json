@@ -621,6 +621,40 @@
       ]
     },
     {
+      "name": "mesh-gradient",
+      "type": "registry:component",
+      "title": "MeshGradient",
+      "description": "The Neon brand-deck gradient as a live WebGL surface: a defocused warm color field drifting over near-black.",
+      "registryDependencies": ["utils"],
+      "files": [
+        {
+          "path": "src/components/mesh-gradient/mesh-gradient.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/mesh-gradient/mesh-gradient-shader.ts",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "banner-pattern",
+      "type": "registry:component",
+      "title": "BannerPattern",
+      "description": "The neon.com banner dot pattern as a live WebGL surface: a square-dot grid sampling a drifting green-to-amber field.",
+      "registryDependencies": ["utils"],
+      "files": [
+        {
+          "path": "src/components/banner-pattern/banner-pattern.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/banner-pattern/banner-pattern-shader.ts",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
       "name": "dot-matrix-wave",
       "type": "registry:component",
       "title": "DotMatrixWave",
