@@ -4,6 +4,29 @@
     "date": "2026-07-22",
     "items": [
       {
+        "text": "New `Reasoning` component: extended-thinking fold that opens while the model streams and settles to a timed receipt",
+        "kind": "feat",
+        "href": "/docs/agent/reasoning"
+      },
+      {
+        "text": "New `ChainOfThought` component: step-by-step reasoning rail with statuses, search chips, and images",
+        "kind": "feat",
+        "href": "/docs/agent/chain-of-thought"
+      },
+      {
+        "text": "New `InlineCitation` component: inline source pill with hover previews and stacked sources",
+        "kind": "feat",
+        "href": "/docs/agent/inline-citation"
+      }
+    ],
+    "pr": 50,
+    "title": "Reasoning, chain-of-thought, and inline-citation"
+  },
+  {
+    "author": "Justin Levine",
+    "date": "2026-07-22",
+    "items": [
+      {
         "text": "agent-chat: tool-call runs now fold into a collapsible working group with a live status header",
         "kind": "feat",
         "href": "/docs/agent/agent-chat"
