@@ -1,0 +1,93 @@
+---
+title: ComputeStatus
+description: A compact compute readout — lifecycle state, autoscaling CU size, and scale-to-zero — in the house status vocabulary.
+seo:
+  image: /og-cards/docs/infrastructure/compute-status.png
+---
+
+`ComputeStatus` is the one-line readout for a Neon compute: a square status dot, the state word, the autoscaling size, and the scale-to-zero setting, each fenced off by a hairline. Color lives only in the dot, from the house status vocabulary — active green, scaling amber, sleeping gray. The two alive states breathe on the shared 2.6s cadence and hold steady under reduced motion; suspended dims the whole line, because the compute is off. It drops into a workspace header, a connection panel, or a settings row.
+
+<ComputeStatusPreview />
+
+## States
+
+`active` and `scaling` are alive and breathe; `idle` sits up but quiet; `suspended` has scaled to zero and holds still.
+
+<ComputeStatusStateVariants />
+
+## Install
+
+```bash
+npx shadcn@latest add https://ui.neon.com/r/compute-status.json
+```
+
+## Usage
+
+```tsx
+import { ComputeStatus } from "@/components/neon-ui/compute-status";
+
+<ComputeStatus
+  state="active"
+  cu={[0.25, 2]}
+  scaleToZero="scales to zero after 5m"
+/>;
+```
+
+Pass `variant="panel"` to wrap the row in the house card surface; the default `inline` renders it naked for a header or toolbar.
+
+## Props
+
+<TypeTable
+  type={{
+    state: {
+      type: '"active" | "idle" | "scaling" | "suspended"',
+      description:
+        "Compute lifecycle. active and scaling breathe; idle and suspended hold steady.",
+      required: true,
+    },
+    cu: {
+      type: "number | [number, number]",
+      description:
+        'Compute size in CU: a single value or an autoscaling range, e.g. [0.25, 2] renders "0.25–2 CU".',
+    },
+    scaleToZero: {
+      type: "string",
+      description:
+        'Scale-to-zero readout, already phrased, e.g. "scales to zero after 5m" or "suspended 2h ago". Omit to hide.',
+    },
+    label: {
+      type: "string",
+      description: "Override the state's default word.",
+    },
+    variant: {
+      type: '"inline" | "panel"',
+      description:
+        "inline is a naked row; panel wraps it in the house surface.",
+      default: '"inline"',
+    },
+    isLoading: {
+      type: "boolean",
+      description: "Render the skeleton row.",
+      default: "false",
+    },
+  }}
+/>
+
+## Wiring to Neon
+
+A server component reads the branch's read-write endpoint and maps Neon's `init`/`active`/`idle` states onto the readout, with the autoscaling range and suspend timeout alongside:
+
+```tsx
+import { EndpointState } from "@neondatabase/api-client";
+import { createNeonClient } from "@/lib/neon-client";
+
+const client = createNeonClient(process.env.NEON_API_KEY);
+const { data } = await client.listProjectBranchEndpoints(projectId, branchId);
+const endpoint = data.endpoints.find((item) => item.type === "read_write");
+```
+
+`init` (or a pending `active`) reads as `scaling`, `idle` as `suspended`, everything else as `active`.
+
+## Accessibility
+
+Color never stands alone: the dot pairs with the state word, and the size and scale-to-zero stay as text, so the readout survives without it. The breathing dot honors reduced-motion, settling to a steady fill. Wrap it in your own live region when a state change must be announced.

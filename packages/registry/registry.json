@@ -863,6 +863,23 @@
       ]
     },
     {
+      "name": "compute-status",
+      "type": "registry:component",
+      "title": "ComputeStatus",
+      "description": "Compact compute readout: lifecycle state (active/idle/scaling/suspended), autoscaling CU size, and scale-to-zero, in the house status vocabulary.",
+      "registryDependencies": [
+        "utils",
+        "https://ui.neon.com/r/skeleton.json",
+        "https://ui.neon.com/r/neon-tokens.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/compute-status/compute-status.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
       "name": "dialog",
       "type": "registry:ui",
       "title": "Dialog",

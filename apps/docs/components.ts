@@ -20,6 +20,8 @@ export default defineComponents({
     ChatWorkingPreview: "./demos/chat-working-preview.tsx",
     CheckpointTimelinePreview: "./demos/checkpoint-timeline-preview.tsx",
     ColorPickerPreview: "./demos/color-picker-preview.tsx",
+    ComputeStatusPreview: "./demos/compute-status-preview.tsx",
+    ComputeStatusStateVariants: "./demos/compute-status-state-variants.tsx",
     ConfirmDialogPreview: "./demos/confirm-dialog-preview.tsx",
     CreateProjectPreview: "./demos/create-project-preview.tsx",
     DateRangePickerPreview: "./demos/date-range-picker-preview.tsx",
