@@ -26,6 +26,8 @@ export default defineComponents({
     DotMatrixWavePlayground: "./demos/dot-matrix-wave-playground.tsx",
     EmptyStatePreview: "./demos/empty-state-preview.tsx",
     HalftoneBloomPlayground: "./demos/halftone-bloom-playground.tsx",
+    HealthCardPreview: "./demos/health-card-preview.tsx",
+    HealthCardStatusVariants: "./demos/health-card-status-variants.tsx",
     InlineCitationPreview: "./demos/inline-citation-preview.tsx",
     MeshGradientPlayground: "./demos/mesh-gradient-playground.tsx",
     MetricCardDeltaVariants: "./demos/metric-card-delta-variants.tsx",

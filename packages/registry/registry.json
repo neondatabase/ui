@@ -471,6 +471,25 @@
       ]
     },
     {
+      "name": "health-card",
+      "type": "registry:component",
+      "title": "HealthCard",
+      "description": "Project health rollup on the MetricCard shell: an overall status pill and tint over a mono grid of supporting signals (latency, errors, uptime).",
+      "dependencies": ["@hugeicons/react", "@hugeicons/core-free-icons"],
+      "registryDependencies": [
+        "utils",
+        "https://ui.neon.com/r/skeleton.json",
+        "https://ui.neon.com/r/neon-loader.json",
+        "https://ui.neon.com/r/neon-tokens.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/health-card/health-card.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
       "name": "neon-client",
       "type": "registry:lib",
       "title": "Neon Client",

@@ -1,0 +1,112 @@
+---
+title: HealthCard
+description: A project health rollup on the MetricCard shell, naming an overall status over a quiet grid of supporting signals.
+seo:
+  image: /og-cards/docs/base-components/health-card.png
+---
+
+`HealthCard` rolls a surface's health into one card on the MetricCard shell. The overall status is the light: a faint status-tinted grain wash rises from the bottom edge and a mono pill names it, both drawn from the house status vocabulary — active green, scaling amber, sleeping gray, destructive red. Beneath, the supporting signals (latency, error rate, uptime) read as a calm mono grid, and a signal only takes color when it is the reason the rollup is not green. It is presentational: the numbers come from your monitoring or the Neon API — see the example.
+
+<HealthCardPreview />
+
+## Status
+
+Worst-first: `down` outranks `degraded`, which outranks `maintenance`, which outranks `healthy`. The status drives the pill and the wash; a signal's own `status` tints only its dot.
+
+<HealthCardStatusVariants />
+
+## Install
+
+```bash
+npx shadcn@latest add https://ui.neon.com/r/health-card.json
+```
+
+## Usage
+
+```tsx
+import { HealthCard } from "@/components/neon-ui/health-card";
+
+<HealthCard
+  label="Production"
+  status="degraded"
+  summary="Elevated latency in aws-us-east-2."
+  signals={[
+    { label: "Latency p99", value: "318 ms", status: "degraded" },
+    { label: "Error rate", value: "0.4%" },
+    { label: "Uptime 30d", value: "99.94%" },
+  ]}
+  updatedAt="checked 8s ago"
+/>;
+```
+
+## Props
+
+<TypeTable
+  type={{
+    label: {
+      type: "string",
+      description: "Rollup title, e.g. a project name.",
+      required: true,
+    },
+    status: {
+      type: '"healthy" | "degraded" | "maintenance" | "down"',
+      description: "Overall status, driving the pill and the top wash.",
+      required: true,
+    },
+    summary: {
+      type: "string",
+      description: 'One-line human summary, e.g. "All systems operational".',
+    },
+    signals: {
+      type: "HealthSignal[]",
+      description:
+        "Supporting figures. Each has a label, a preformatted value, and an optional status that tints its dot.",
+    },
+    updatedAt: {
+      type: "string",
+      description: 'Last check, already formatted, e.g. "checked 30s ago".',
+    },
+    isLoading: {
+      type: "boolean",
+      description: "Render the skeleton state.",
+      default: "false",
+    },
+    error: {
+      type: "Error | string | null",
+      description: "Render the error state with the message.",
+      default: "null",
+    },
+  }}
+/>
+
+## Colors are the light
+
+Every color comes from the status vocabulary, never from ad-hoc values:
+
+- `healthy` — `--status-active` (green)
+- `degraded` — `--status-scaling` (amber)
+- `maintenance` — `--status-sleeping` (gray)
+- `down` — `--destructive` (red)
+
+Signal text stays muted so a grid of cards reads calm; a signal earns color only by carrying its own `status`. There is no motion.
+
+## Wiring to Neon
+
+A server component derives health from a project's recent operations: failures pull the rollup down, in-flight work reads as maintenance, an all-clear history is healthy.
+
+```tsx
+import { OperationStatus } from "@neondatabase/api-client";
+import { createNeonClient } from "@/lib/neon-client";
+
+const client = createNeonClient(process.env.NEON_API_KEY);
+const { data } = await client.listProjectOperations({ projectId });
+
+const failed = data.operations.filter(
+  (op) =>
+    op.status === OperationStatus.Failed || op.status === OperationStatus.Error
+).length;
+```
+
+## Accessibility
+
+Status never rests on color alone: the pill pairs its dot with the status word, and each colored signal keeps its figure and caption. Loading sets `aria-busy`; the error state is a `role="alert"` with the message in text.
