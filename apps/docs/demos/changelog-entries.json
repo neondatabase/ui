@@ -1,6 +1,19 @@
 [
   {
     "author": "Justin Levine",
+    "date": "2026-07-23",
+    "items": [
+      {
+        "text": "Reorganized the docs sidebar: commodity components now live under a collapsed **Base Components** section",
+        "kind": "docs",
+        "href": "/base-components/auth-form"
+      }
+    ],
+    "pr": 60,
+    "title": "Add collapsed Base Components section for commodity components"
+  },
+  {
+    "author": "Justin Levine",
     "date": "2026-07-22",
     "items": [
       {
