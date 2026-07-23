@@ -4,6 +4,23 @@
     "date": "2026-07-23",
     "items": [
       {
+        "text": "`DBConnectionCard` renders a Neon database connection with URI / psql / parameters / agent-prompt views, a pooled/direct toggle, role and database selectors, one shared reveal, and copy that always carries the real string",
+        "kind": "feat",
+        "href": "/platform/db-connection-card"
+      },
+      {
+        "text": "`tooltip` UI primitive (Base UI, house chrome)",
+        "kind": "feat"
+      }
+    ],
+    "pr": 69,
+    "title": "Add DBConnectionCard and a tooltip primitive"
+  },
+  {
+    "author": "Justin Levine",
+    "date": "2026-07-23",
+    "items": [
+      {
         "text": "`ComputeStatus` reads out a Neon compute's state, autoscaling CU size, and scale-to-zero in the house status vocabulary",
         "kind": "feat",
         "href": "/infrastructure/compute-status"
