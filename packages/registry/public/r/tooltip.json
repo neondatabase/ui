@@ -1,0 +1,18 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "tooltip",
+  "title": "Tooltip",
+  "description": "Base UI tooltip in the house chrome.",
+  "registryDependencies": [
+    "utils",
+    "https://ui.neon.com/r/neon-tokens.json"
+  ],
+  "files": [
+    {
+      "path": "src/components/ui/tooltip.tsx",
+      "content": "\"use client\";\n\nimport { Tooltip as TooltipPrimitive } from \"@base-ui/react/tooltip\";\n\nimport { cn } from \"@/lib/utils\";\n\nfunction TooltipProvider(props: TooltipPrimitive.Provider.Props) {\n  return <TooltipPrimitive.Provider delay={300} {...props} />;\n}\n\nfunction Tooltip(props: TooltipPrimitive.Root.Props) {\n  return <TooltipPrimitive.Root {...props} />;\n}\n\nfunction TooltipTrigger(props: TooltipPrimitive.Trigger.Props) {\n  return <TooltipPrimitive.Trigger data-slot=\"tooltip-trigger\" {...props} />;\n}\n\nfunction TooltipContent({\n  className,\n  sideOffset = 6,\n  ...props\n}: TooltipPrimitive.Popup.Props & {\n  sideOffset?: TooltipPrimitive.Positioner.Props[\"sideOffset\"];\n}) {\n  return (\n    <TooltipPrimitive.Portal>\n      <TooltipPrimitive.Positioner sideOffset={sideOffset}>\n        <TooltipPrimitive.Popup\n          className={cn(\n            \"fade-in-0 zoom-in-95 z-50 animate-in rounded-md border border-border/60 bg-popover px-2 py-1 font-mono text-[10px] text-popover-foreground shadow-md duration-150 motion-reduce:animate-none\",\n            className\n          )}\n          data-slot=\"tooltip-content\"\n          {...props}\n        />\n      </TooltipPrimitive.Positioner>\n    </TooltipPrimitive.Portal>\n  );\n}\n\nexport { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger };\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

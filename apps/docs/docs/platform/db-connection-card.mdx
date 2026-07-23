@@ -1,0 +1,118 @@
+---
+title: DB Connection Card
+description: A Neon database connection card with a pooled/direct toggle, role and database selectors, URI, psql, parameters, and agent-prompt views, one shared reveal, and copy that always carries the real string.
+seo:
+  image: /og-cards/docs/platform/db-connection-card.png
+---
+
+`DBConnectionCard` is the connection panel for a Neon database. Pick a role, a database, and pooled or direct; switch between the connection URI, a ready-to-run `psql` command, the broken-out parameters, and an agent prompt. The scheme, role, host, and database stay readable so the string is scannable, while the password hides behind one reveal that applies to every view. Copy always carries the real value, whatever is shown. It is presentational: the URIs come from the server as plain data, one per combination, so no secret is ever built in the browser.
+
+<DBConnectionCardPreview />
+
+## Four views, one secret
+
+- **URI** the full connection string, password masked.
+- **psql** the same string wrapped as `psql '…'`, ready to paste.
+- **Parameters** host, port, database, user, and password broken out, each with its own copy.
+- **Agent** a paste-ready prompt for an AI agent, with no password: it points the agent at the `DATABASE_URL` environment variable instead.
+
+The reveal control next to the tabs governs the password across every view that shows one (the agent prompt carries no secret, so it hides the reveal). Roles, databases, and the pooled/direct toggle are derived from `connections`; a single role or database collapses its selector to static text, and the toggle hides unless both pooled and direct strings are present. Hovering `pooled` or `direct` explains each mode.
+
+## Install
+
+```bash
+npx shadcn@latest add https://ui.neon.com/r/db-connection-card.json
+```
+
+## Usage
+
+```tsx
+import { DBConnectionCard } from "@/components/neon-ui/db-connection-card";
+
+<DBConnectionCard
+  connections={[
+    { role: "neondb_owner", database: "neondb", pooled: false, uri: directUri },
+    { role: "neondb_owner", database: "neondb", pooled: true, uri: pooledUri },
+    // ...one per role/database/pooled combination
+  ]}
+/>;
+```
+
+## Props
+
+<TypeTable
+  type={{
+    connections: {
+      type: "ConnectionEntry[]",
+      description:
+        "Every connection string, one per role/database/pooled combination. Each entry is { role, database, pooled, uri }. Selectors, the toggle, and the parameters view are all derived from this.",
+      required: true,
+    },
+    label: {
+      type: "string",
+      description: "Card title.",
+      default: '"Database connection"',
+    },
+    roles: {
+      type: "string[]",
+      description:
+        "Order or limit the role options; defaults to those found in connections.",
+    },
+    databases: {
+      type: "string[]",
+      description:
+        "Order or limit the database options; defaults to those found in connections.",
+    },
+    defaultRole: {
+      type: "string",
+      description: "Initial role; defaults to the first available.",
+    },
+    defaultDatabase: {
+      type: "string",
+      description: "Initial database; defaults to the first available.",
+    },
+    defaultPooled: {
+      type: "boolean",
+      description: "Start on the pooled connection.",
+      default: "false",
+    },
+    poolable: {
+      type: "boolean",
+      description:
+        "Force the pooled/direct toggle; defaults to on when both kinds exist.",
+    },
+    onSelectionChange: {
+      type: "(selection: ConnectionSelection) => void",
+      description: "Notified when the role, database, or mode changes.",
+    },
+    isLoading: {
+      type: "boolean",
+      description: "Render the skeleton state.",
+      default: "false",
+    },
+  }}
+/>
+
+## Secrets stay server-side
+
+The card never builds a connection string. A server component prefetches the URIs for each combination and passes them as plain data:
+
+```tsx
+import { createNeonClient } from "@/lib/neon-client";
+
+const client = createNeonClient(process.env.NEON_API_KEY);
+const { data } = await client.getConnectionUri({
+  projectId,
+  branch_id: branchId,
+  role_name: role,
+  database_name: database,
+  pooled,
+});
+// { role, database, pooled, uri: data.uri }
+```
+
+Reveal only toggles what is shown; copy always writes the real string to the clipboard. The parameters view parses the selected URI in place. A value that is not URL-shaped masks whole rather than leak.
+
+## Accessibility
+
+The format switcher is a real tablist; the reveal is a toggle (`aria-pressed`); the pooled/direct control is a labeled `fieldset` of pressed buttons, each with a tooltip; and every copy announces through a polite live region. Selectors are the accessible house `Select`, and a focus ring shows on every control. The panel height animates between views and honors reduced motion.

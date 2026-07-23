@@ -112,6 +112,22 @@
       ]
     },
     {
+      "name": "tooltip",
+      "type": "registry:ui",
+      "title": "Tooltip",
+      "description": "Base UI tooltip in the house chrome.",
+      "registryDependencies": [
+        "utils",
+        "https://ui.neon.com/r/neon-tokens.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/tooltip.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "neon-loader",
       "type": "registry:component",
       "title": "NeonLoader",
@@ -858,6 +874,28 @@
       "files": [
         {
           "path": "src/components/checkpoint-timeline/checkpoint-timeline.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "db-connection-card",
+      "type": "registry:component",
+      "title": "DB Connection Card",
+      "description": "Neon database connection card: pooled/direct toggle, role and database selectors, URI / psql / parameters views, one shared secret reveal, and copy that always carries the real string.",
+      "dependencies": ["@hugeicons/react", "@hugeicons/core-free-icons"],
+      "registryDependencies": [
+        "utils",
+        "https://ui.neon.com/r/button.json",
+        "https://ui.neon.com/r/select.json",
+        "https://ui.neon.com/r/tabs.json",
+        "https://ui.neon.com/r/skeleton.json",
+        "https://ui.neon.com/r/neon-tokens.json",
+        "https://ui.neon.com/r/tooltip.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/db-connection-card/db-connection-card.tsx",
           "type": "registry:component"
         }
       ]

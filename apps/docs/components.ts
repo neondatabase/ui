@@ -24,6 +24,7 @@ export default defineComponents({
     ComputeStatusStateVariants: "./demos/compute-status-state-variants.tsx",
     ConfirmDialogPreview: "./demos/confirm-dialog-preview.tsx",
     CreateProjectPreview: "./demos/create-project-preview.tsx",
+    DBConnectionCardPreview: "./demos/db-connection-card-preview.tsx",
     DateRangePickerPreview: "./demos/date-range-picker-preview.tsx",
     DotMatrixWavePlayground: "./demos/dot-matrix-wave-playground.tsx",
     EmptyStatePreview: "./demos/empty-state-preview.tsx",
