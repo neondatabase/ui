@@ -4,6 +4,19 @@
     "date": "2026-07-23",
     "items": [
       {
+        "text": "`ComputeStatus` reads out a Neon compute's state, autoscaling CU size, and scale-to-zero in the house status vocabulary",
+        "kind": "feat",
+        "href": "/infrastructure/compute-status"
+      }
+    ],
+    "pr": 67,
+    "title": "Add ComputeStatus readout"
+  },
+  {
+    "author": "Justin Levine",
+    "date": "2026-07-23",
+    "items": [
+      {
         "text": "`HealthCard` rolls a surface's health into one card on the MetricCard shell: an overall status pill and grain wash over a mono grid of signals",
         "kind": "feat",
         "href": "/base-components/health-card"
