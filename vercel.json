@@ -6,12 +6,12 @@
   "redirects": [
     {
       "source": "/agent/app-card",
-      "destination": "/platform/app-card",
+      "destination": "/base-components/app-card",
       "permanent": true
     },
     {
       "source": "/agent/app-creator",
-      "destination": "/platform/app-creator",
+      "destination": "/base-components/app-creator",
       "permanent": true
     },
     {
@@ -21,62 +21,132 @@
     },
     {
       "source": "/agent/empty-state",
-      "destination": "/app/empty-state",
+      "destination": "/base-components/empty-state",
       "permanent": true
     },
     {
       "source": "/agent/preview-frame",
-      "destination": "/platform/preview-frame",
+      "destination": "/base-components/preview-frame",
       "permanent": true
     },
     {
       "source": "/agent/provisioning-status",
-      "destination": "/platform/provisioning-status",
+      "destination": "/base-components/provisioning-status",
       "permanent": true
     },
     {
       "source": "/agent/status-badge",
-      "destination": "/platform/status-badge",
+      "destination": "/base-components/status-badge",
       "permanent": true
     },
     {
       "source": "/agent/upgrade-dialog",
-      "destination": "/platform/upgrade-dialog",
+      "destination": "/base-components/upgrade-dialog",
       "permanent": true
     },
     {
       "source": "/agent/usage-panel",
-      "destination": "/platform/usage-panel",
+      "destination": "/base-components/usage-panel",
       "permanent": true
     },
     {
       "source": "/agent/workspace-tabs",
-      "destination": "/platform/workspace-tabs",
+      "destination": "/base-components/workspace-tabs",
       "permanent": true
     },
     {
       "source": "/misc/color-picker",
-      "destination": "/app/color-picker",
+      "destination": "/base-components/color-picker",
+      "permanent": true
+    },
+    {
+      "source": "/app/auth-form",
+      "destination": "/base-components/auth-form",
+      "permanent": true
+    },
+    {
+      "source": "/app/color-picker",
+      "destination": "/base-components/color-picker",
+      "permanent": true
+    },
+    {
+      "source": "/app/confirm-dialog",
+      "destination": "/base-components/confirm-dialog",
+      "permanent": true
+    },
+    {
+      "source": "/app/date-range-picker",
+      "destination": "/base-components/date-range-picker",
+      "permanent": true
+    },
+    {
+      "source": "/app/empty-state",
+      "destination": "/base-components/empty-state",
+      "permanent": true
+    },
+    {
+      "source": "/app/metric-card",
+      "destination": "/base-components/metric-card",
+      "permanent": true
+    },
+    {
+      "source": "/platform/app-card",
+      "destination": "/base-components/app-card",
+      "permanent": true
+    },
+    {
+      "source": "/platform/app-creator",
+      "destination": "/base-components/app-creator",
       "permanent": true
     },
     {
       "source": "/platform/auth-form",
-      "destination": "/app/auth-form",
+      "destination": "/base-components/auth-form",
       "permanent": true
     },
     {
       "source": "/platform/confirm-dialog",
-      "destination": "/app/confirm-dialog",
+      "destination": "/base-components/confirm-dialog",
       "permanent": true
     },
     {
       "source": "/platform/date-range-picker",
-      "destination": "/app/date-range-picker",
+      "destination": "/base-components/date-range-picker",
       "permanent": true
     },
     {
       "source": "/platform/metric-card",
-      "destination": "/app/metric-card",
+      "destination": "/base-components/metric-card",
+      "permanent": true
+    },
+    {
+      "source": "/platform/preview-frame",
+      "destination": "/base-components/preview-frame",
+      "permanent": true
+    },
+    {
+      "source": "/platform/provisioning-status",
+      "destination": "/base-components/provisioning-status",
+      "permanent": true
+    },
+    {
+      "source": "/platform/status-badge",
+      "destination": "/base-components/status-badge",
+      "permanent": true
+    },
+    {
+      "source": "/platform/upgrade-dialog",
+      "destination": "/base-components/upgrade-dialog",
+      "permanent": true
+    },
+    {
+      "source": "/platform/usage-panel",
+      "destination": "/base-components/usage-panel",
+      "permanent": true
+    },
+    {
+      "source": "/platform/workspace-tabs",
+      "destination": "/base-components/workspace-tabs",
       "permanent": true
     },
     {
