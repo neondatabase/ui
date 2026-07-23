@@ -4,6 +4,19 @@
     "date": "2026-07-23",
     "items": [
       {
+        "text": "`UsageCard` renders a single Neon consumption metric on the MetricCard shell, deriving total, sparkline, and delta from raw per-project samples",
+        "kind": "feat",
+        "href": "/base-components/usage-card"
+      }
+    ],
+    "pr": 63,
+    "title": "Add UsageCard on the MetricCard shell"
+  },
+  {
+    "author": "Justin Levine",
+    "date": "2026-07-23",
+    "items": [
+      {
         "text": "Reorganized the docs sidebar: commodity components now live under a collapsed **Base Components** section",
         "kind": "docs",
         "href": "/base-components/auth-form"
