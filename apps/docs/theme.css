@@ -694,3 +694,12 @@ header nav a.rounded-full:hover {
     animation: none;
   }
 }
+
+/*
+ * Sidebar: bold the top-level category headers (collapsible section
+ * summaries like Agent, Platform, Base Components) so they read as
+ * sections above their child pages.
+ */
+nav details > summary .truncate {
+  font-weight: 600;
+}

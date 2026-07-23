@@ -1,6 +1,7 @@
 import { defineMeta } from "blume";
 
 export default defineMeta({
-  order: 3,
-  title: "App",
+  collapsed: true,
+  order: 7,
+  title: "Base Components",
 });

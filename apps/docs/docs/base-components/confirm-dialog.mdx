@@ -2,7 +2,7 @@
 title: ConfirmDialog
 description: Destructive confirmation armed by press-and-hold.
 seo:
-  image: /og-cards/docs/app/confirm-dialog.png
+  image: /og-cards/docs/base-components/confirm-dialog.png
 ---
 
 `ConfirmDialog` makes destructive actions deliberate: a modal that asks in plain language, and a confirm action you have to **hold**. Press and a destructive fill sweeps across the button for exactly `holdMs` — linear, because it's progress, not decoration — while the button itself trembles harder as the fill closes in (`shake`) — flat for most of the hold, then surging near the end. The fill carries its own light copy of the label behind a clip-path, so the sweep edge crosses the letterforms — light behind it, destructive ahead of it — instead of the whole label flipping color mid-hold. Release early and it springs back, no harm done; hold to the end and the action arms once and the dialog closes. Holding Space or Enter works the same way. [CheckpointTimeline](/platform/checkpoint-timeline) pops it before every restore.

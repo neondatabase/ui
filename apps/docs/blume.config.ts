@@ -29,6 +29,10 @@ export default defineConfig({
     text: "",
   },
   navigation: {
+    // Render every sidebar section as a collapsible `<details>` disclosure so
+    // folder meta `collapsed: true` takes effect (e.g. Base Components starts
+    // closed). Sections without `collapsed` render open.
+    sidebar: { display: "group" },
     // Header links to the docs and the custom /changelog page.
     // Docs points at the root so the sidebar keeps the full tree
     // (a tab path scopes the sidebar to its folder otherwise).
