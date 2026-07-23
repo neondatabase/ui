@@ -4,6 +4,19 @@
     "date": "2026-07-23",
     "items": [
       {
+        "text": "`HealthCard` rolls a surface's health into one card on the MetricCard shell: an overall status pill and grain wash over a mono grid of signals",
+        "kind": "feat",
+        "href": "/base-components/health-card"
+      }
+    ],
+    "pr": 65,
+    "title": "Add HealthCard on the MetricCard shell"
+  },
+  {
+    "author": "Justin Levine",
+    "date": "2026-07-23",
+    "items": [
+      {
         "text": "`UsageCard` renders a single Neon consumption metric on the MetricCard shell, deriving total, sparkline, and delta from raw per-project samples",
         "kind": "feat",
         "href": "/base-components/usage-card"
