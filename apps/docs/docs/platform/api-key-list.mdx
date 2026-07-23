@@ -1,0 +1,99 @@
+---
+title: ApiKeyList
+description: Create, reveal-once, and revoke Neon API keys (personal or organization), with an inline create flow, a one-time secret reveal, a scope filter, and hold-to-revoke.
+seo:
+  image: /og-cards/docs/platform/api-key-list.png
+---
+
+`ApiKeyList` manages a set of Neon API keys, personal or organization, in a table of rows: each shows a scope icon, the name, its scope, and when it was created and last used. Create a key inline, copy the token the one time it is shown, filter by scope, and revoke any key. It is presentational and honest about secrets: the token only ever exists at creation. The list holds names, scopes, and timestamps, never the key.
+
+<ApiKeyListPreview />
+
+## The reveal-once flow
+
+1. **New key** opens an inline name field with a personal/organization scope toggle.
+2. On create, `onCreate` returns the full token, shown once in a highlighted panel with a copy and a plain warning: you will not see it again.
+3. **Done** dismisses the panel; the key joins the list with only its name, scope, and timestamps.
+
+Revoke is a **hold-to-confirm**: the row's trash icon opens a `Cancel` and a `Hold to revoke` that slide in over the timestamps; a destructive fill sweeps as you press and hold, and releasing early rewinds it. When keys of both scopes are present, a scope filter appears in the header. The panel height animates as the form, reveal, and rows change.
+
+## Install
+
+```bash
+npx shadcn@latest add https://ui.neon.com/r/api-key-list.json
+```
+
+## Usage
+
+```tsx
+import { ApiKeyList } from "@/components/neon-ui/api-key-list";
+
+<ApiKeyList
+  keys={keys}
+  onCreate={async (name, scope) => {
+    const token = await createKey(name, scope); // full token, once
+    return token;
+  }}
+  onRevoke={(key) => revokeKey(key)}
+/>;
+```
+
+## Props
+
+<TypeTable
+  type={{
+    keys: {
+      type: "ApiKey[]",
+      description:
+        "The keys to list, in display order. Each is { id, name, scope, createdAt, lastUsedAt? } — no token.",
+      required: true,
+    },
+    onCreate: {
+      type: "(name: string, scope: ApiKeyScope) => Promise<string> | string",
+      description:
+        "Create a key of the chosen scope and return the full token to reveal once. The create UI hides when omitted.",
+    },
+    onRevoke: {
+      type: "(key: ApiKey) => Promise<void> | void",
+      description:
+        "Revoke a key after the hold-to-confirm. Receives the whole key so the scope is known.",
+    },
+    label: {
+      type: "string",
+      description: "Card title.",
+      default: '"API keys"',
+    },
+    isLoading: {
+      type: "boolean",
+      description: "Render the skeleton state.",
+      default: "false",
+    },
+    error: {
+      type: "Error | string | null",
+      description: "Render the error state with the message.",
+      default: "null",
+    },
+  }}
+/>
+
+## Wiring to Neon
+
+A server component lists the account's keys and wires create and revoke as server actions, so the token is minted and returned without ever touching the client as stored state:
+
+```tsx
+import { createNeonClient } from "@/lib/neon-client";
+
+const createKey = async (name: string, scope: ApiKeyScope) => {
+  "use server";
+  const client = createNeonClient(process.env.NEON_API_KEY);
+  const { data } =
+    scope === "organization"
+      ? await client.createOrgApiKey(orgId, { key_name: name })
+      : await client.createApiKey({ key_name: name });
+  return data.key; // shown once
+};
+```
+
+## Accessibility
+
+The create field is a real `form`; revoke is a hold-to-confirm (pointer or keyboard) that fires only after the hold completes; every icon action carries a tooltip and an `aria-label`; and copy announces through a polite live region. Motion honors reduced-motion. Loading sets `aria-busy`; the error state is a `role="alert"`.

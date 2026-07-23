@@ -901,6 +901,28 @@
       ]
     },
     {
+      "name": "api-key-list",
+      "type": "registry:component",
+      "title": "ApiKeyList",
+      "description": "Create, reveal-once, and revoke Neon API keys (personal and organization), with an inline create flow, a one-time secret reveal, and per-row revoke confirmation.",
+      "dependencies": ["@hugeicons/react", "@hugeicons/core-free-icons"],
+      "registryDependencies": [
+        "utils",
+        "https://ui.neon.com/r/button.json",
+        "https://ui.neon.com/r/input.json",
+        "https://ui.neon.com/r/tooltip.json",
+        "https://ui.neon.com/r/skeleton.json",
+        "https://ui.neon.com/r/neon-tokens.json",
+        "https://ui.neon.com/r/select.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/api-key-list/api-key-list.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
       "name": "compute-status",
       "type": "registry:component",
       "title": "ComputeStatus",

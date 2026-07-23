@@ -7,6 +7,7 @@ export default defineComponents({
     AgentChatPreview: "./demos/agent-chat-preview.tsx",
     AnimatedWashPlayground: "./demos/animated-wash-playground.tsx",
     AnimatedWashPreview: "./demos/animated-wash-preview.tsx",
+    ApiKeyListPreview: "./demos/api-key-list-preview.tsx",
     AppCardPreview: "./demos/app-card-preview.tsx",
     AppCardShaderPreview: "./demos/app-card-shader-preview.tsx",
     AppCreatorPreview: "./demos/app-creator-preview.tsx",
