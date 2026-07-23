@@ -4,6 +4,19 @@
     "date": "2026-07-23",
     "items": [
       {
+        "text": "`ApiKeyList` creates, reveals-once, and revokes Neon API keys (personal or organization) with a scope filter and hold-to-revoke",
+        "kind": "feat",
+        "href": "/platform/api-key-list"
+      }
+    ],
+    "pr": 71,
+    "title": "Add ApiKeyList"
+  },
+  {
+    "author": "Justin Levine",
+    "date": "2026-07-23",
+    "items": [
+      {
         "text": "`DBConnectionCard` renders a Neon database connection with URI / psql / parameters / agent-prompt views, a pooled/direct toggle, role and database selectors, one shared reveal, and copy that always carries the real string",
         "kind": "feat",
         "href": "/platform/db-connection-card"
