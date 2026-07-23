@@ -1,0 +1,119 @@
+---
+title: UsageCard
+description: A single Neon consumption metric on the MetricCard shell, deriving label, format, unit, total, sparkline, and delta from raw per-project samples.
+seo:
+  image: /og-cards/docs/base-components/usage-card.png
+---
+
+`UsageCard` is the single-metric building block `UsagePanel` composes from. Hand it the raw per-project consumption samples in their native units — seconds for compute, bytes for storage — and the metric kind; it knows the rest. Compute and writes sum across the window, storage reads the latest level, seconds render as hours, bytes format themselves, and a `previousTotal` turns into a signed delta. It is presentational: the samples come from a server component or the Data API, never a key in the browser.
+
+<UsageCardPreview />
+
+## Metrics
+
+Each metric carries its own label, format, unit, and aggregation, so the same card reads compute, storage, or bytes written without per-call bookkeeping.
+
+<UsageCardMetricVariants />
+
+## Install
+
+```bash
+npx shadcn@latest add https://ui.neon.com/r/usage-card.json
+```
+
+## Usage
+
+```tsx
+import { UsageCard } from "@/components/neon-ui/usage-card";
+
+<UsageCard
+  metric="compute"
+  windowLabel="14d"
+  data={[
+    { label: "Jul 3", value: 11_160 },
+    { label: "Jul 4", value: 9_360 },
+    // ...native seconds per day
+  ]}
+  previousTotal={129_600}
+  comparisonLabel="vs previous 14 days"
+/>;
+```
+
+## Props
+
+`UsageCard` forwards every prop the [MetricCard](/base-components/metric-card) shell accepts — `isLoading`, `error`, `className`, and the rest — while owning the metric semantics below.
+
+<TypeTable
+  type={{
+    metric: {
+      type: '"compute" | "active-time" | "storage" | "written-data"',
+      description: "Which consumption metric this card reads.",
+      required: true,
+    },
+    data: {
+      type: "UsagePoint[]",
+      description:
+        "The window's samples, newest last, in native units (seconds for time metrics, bytes for data metrics).",
+      required: true,
+    },
+    previousTotal: {
+      type: "number",
+      description:
+        "Previous-window total in native units. When set, drives the signed delta.",
+    },
+    label: {
+      type: "string",
+      description: "Overrides the metric's default label.",
+    },
+    windowLabel: {
+      type: "string",
+      description: 'Appended to the label as quiet context, e.g. "14d".',
+    },
+    comparisonLabel: {
+      type: "string",
+      description:
+        'Context shown with the delta, such as "vs previous 14 days".',
+    },
+    isLoading: {
+      type: "boolean",
+      description: "Render the MetricCard skeleton.",
+      default: "false",
+    },
+    error: {
+      type: "Error | string | null",
+      description: "Render the MetricCard error state with the message.",
+      default: "null",
+    },
+  }}
+/>
+
+## How values are derived
+
+- **compute**, **active-time** — native seconds summed across the window, shown in hours (`hrs`).
+- **written-data** — native bytes summed across the window, formatted as a size.
+- **storage** — a level, not a total: the card reads the latest sample and formats it as a size.
+- **delta** — only when `previousTotal` is set: the signed percentage change of the current window against it. No comparison base, no delta — the card never invents one.
+- **sparkline** — every sample maps to a trend point in the displayed unit; an empty `data` array drops the chart rather than faking one.
+
+## Wiring to Neon
+
+A server component pulls two windows of daily consumption, keeps the current one as samples and sums the prior one for the delta:
+
+```tsx
+import { ConsumptionHistoryGranularity } from "@neondatabase/api-client";
+import { createNeonClient } from "@/lib/neon-client";
+
+const client = createNeonClient(process.env.NEON_API_KEY);
+const { data } = await client.getConsumptionHistoryPerProject({
+  from: from.toISOString(),
+  to: now.toISOString(),
+  granularity: ConsumptionHistoryGranularity.Daily,
+  project_ids: [projectId],
+});
+```
+
+Read `compute_time_seconds` (or `synthetic_storage_size_bytes`, `written_data_bytes`, `active_time_seconds`) off each timeframe into `UsagePoint`s and pass them straight through.
+
+## Accessibility
+
+`UsageCard` inherits the MetricCard shell: the sparkline is keyboard accessible (focus it, then Left/Right, Home, End to inspect points), values are announced through a polite live region, and the signed delta pairs an icon with text so meaning never rests on color alone.

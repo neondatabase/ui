@@ -878,6 +878,23 @@
       ]
     },
     {
+      "name": "usage-card",
+      "type": "registry:component",
+      "title": "UsageCard",
+      "description": "Single Neon consumption metric on the MetricCard shell: derives label, format, unit, total, sparkline, and delta from raw per-project samples.",
+      "registryDependencies": [
+        "utils",
+        "https://ui.neon.com/r/neon-tokens.json",
+        "https://ui.neon.com/r/metric-card.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/usage-card/usage-card.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
       "name": "usage-panel",
       "type": "registry:component",
       "title": "UsagePanel",

@@ -47,6 +47,8 @@ export default defineComponents({
     ThinkingSelectPreview: "./demos/thinking-select-preview.tsx",
     ToolCallChipPreview: "./demos/tool-call-chip-preview.tsx",
     UpgradeDialogPreview: "./demos/upgrade-dialog-preview.tsx",
+    UsageCardMetricVariants: "./demos/usage-card-metric-variants.tsx",
+    UsageCardPreview: "./demos/usage-card-preview.tsx",
     UsagePanelPreview: "./demos/usage-panel-preview.tsx",
     WorkspaceTabsPreview: "./demos/workspace-tabs-preview.tsx",
   },
