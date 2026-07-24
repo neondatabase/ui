@@ -1,0 +1,86 @@
+---
+title: AutoscaleChart
+description: Autoscaling compute units over time against the min and max bounds, with a scrubable readout.
+seo:
+  image: /og-cards/docs/infrastructure/autoscale-chart.png
+---
+
+`AutoscaleChart` plots a compute's used compute units (CU) over time inside its autoscaling envelope: the band between the `min` and `max` bounds is shaded, the bounds sit on dashed hairlines, and the usage line rides between them. Scrub with a pointer or the arrow keys to read the CU at any moment; the marker turns amber at the ceiling and gray at the floor. It is presentational: the bounds come from Neon, the series from your metrics.
+
+<AutoscaleChartPreview />
+
+## Behavior
+
+- **Envelope** the shaded band spans `min` to `max`; the usage line and its area fill sit inside it, so pinning the ceiling or resting at the floor is obvious.
+- **Scrub** move a pointer across the chart, or focus it and use the left and right arrow keys, to inspect a reading. The dot is amber at the ceiling, gray at the floor, green while scaling.
+- **Readout** the header shows the latest CU and the `min`–`max` range; the tooltip shows the scrubbed point.
+
+## Install
+
+```bash
+npx shadcn@latest add https://ui.neon.com/r/autoscale-chart.json
+```
+
+## Usage
+
+```tsx
+import { AutoscaleChart } from "@/components/neon-ui/autoscale-chart";
+
+<AutoscaleChart data={usage} min={0.25} max={4} />;
+```
+
+`data` is an array of `{ label, cu }` readings, oldest first. `min` and `max` are the autoscaling bounds in CU.
+
+## Props
+
+<TypeTable
+  type={{
+    data: {
+      type: "AutoscalePoint[]",
+      description:
+        "Compute-unit readings over time, oldest first. Each is { label, cu }.",
+      required: true,
+    },
+    min: {
+      type: "number",
+      description:
+        "Autoscale lower bound (CU); the compute never scales below it.",
+      required: true,
+    },
+    max: {
+      type: "number",
+      description:
+        "Autoscale upper bound (CU); the compute never scales above it.",
+      required: true,
+    },
+    title: {
+      type: "string",
+      description: "Panel heading.",
+      default: '"Autoscaling"',
+    },
+    isLoading: {
+      type: "boolean",
+      description: "Render the skeleton state.",
+      default: "false",
+    },
+  }}
+/>
+
+## Wiring to Neon
+
+A server component reads the endpoint's autoscaling bounds, then plots a CU series from your metrics store:
+
+```tsx
+import { createNeonClient } from "@/lib/neon-client";
+
+const client = createNeonClient(process.env.NEON_API_KEY);
+const { data } = await client.listProjectBranchEndpoints(projectId, branchId);
+const endpoint = data.endpoints[0];
+// <AutoscaleChart data={metrics} min={endpoint.autoscaling_limit_min_cu} max={endpoint.autoscaling_limit_max_cu} />
+```
+
+The control plane exposes the bounds; the per-interval CU timeseries comes from your own monitoring (Datadog, Grafana, a metrics table).
+
+## Accessibility
+
+The chart is a focusable control with a descriptive label and arrow-key scrubbing; the SVG itself is decorative (`aria-hidden`), and the bound and readout values are plain text. There is no motion to reduce.

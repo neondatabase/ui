@@ -899,6 +899,24 @@
       ]
     },
     {
+      "name": "autoscale-chart",
+      "type": "registry:component",
+      "title": "AutoscaleChart",
+      "description": "Autoscaling compute units over time against the min/max bounds, with a scrubable readout.",
+      "dependencies": ["@visx/curve", "@visx/scale", "@visx/shape"],
+      "registryDependencies": [
+        "utils",
+        "https://ui.neon.com/r/skeleton.json",
+        "https://ui.neon.com/r/neon-tokens.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/autoscale-chart/autoscale-chart.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
       "name": "checkpoint-timeline",
       "type": "registry:component",
       "title": "CheckpointTimeline",

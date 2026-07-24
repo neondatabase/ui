@@ -14,6 +14,7 @@ export default defineComponents({
     AppCreatorPreview: "./demos/app-creator-preview.tsx",
     AuthFormCoverPreview: "./demos/auth-form-cover-preview.tsx",
     AuthFormPreview: "./demos/auth-form-preview.tsx",
+    AutoscaleChartPreview: "./demos/autoscale-chart-preview.tsx",
     BannerPatternPlayground: "./demos/banner-pattern-playground.tsx",
     BranchPickerPreview: "./demos/branch-picker-preview.tsx",
     BranchTreePreview: "./demos/branch-tree-preview.tsx",
