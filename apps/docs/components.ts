@@ -51,6 +51,7 @@ export default defineComponents({
     RegionCardPreview: "./demos/region-card-preview.tsx",
     RegionGlobePreview: "./demos/region-globe-preview.tsx",
     RegionSelectPreview: "./demos/region-select-preview.tsx",
+    SQLRunnerPreview: "./demos/sql-runner-preview.tsx",
     SchemaExplorerPreview: "./demos/schema-explorer-preview.tsx",
     StatusBadgePreview: "./demos/status-badge-preview.tsx",
     ThemePaster: "./demos/theme-paster.tsx",

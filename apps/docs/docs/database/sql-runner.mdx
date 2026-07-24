@@ -1,0 +1,140 @@
+---
+title: SQLRunner
+description: A guarded SQL editor with run and cancel controls, inline Postgres errors, and a typed results grid.
+seo:
+  image: /og-cards/docs/database/sql-runner.png
+---
+
+`SQLRunner` combines a PostgreSQL-aware CodeMirror editor, execution controls, Postgres feedback, and a typed results grid. Read-only mode blocks statements that can change data before they reach your handler. Read + write mode stays visible in amber. Cmd/Ctrl+Enter runs the selection (or the full document); Escape cancels an in-flight request.
+
+<SQLRunnerPreview />
+
+## Behavior
+
+- Select any statement to run only that SQL. With no selection, Run executes the full document.
+- PostgreSQL syntax highlighting, bracket matching, history, search, line numbers, and line/column feedback come from CodeMirror 6.
+- Run with the button or Cmd/Ctrl+Enter. The button becomes Cancel while the request is active.
+- Read-only mode blocks mutating statements locally and explains why. Enabling writes is explicit and persistent.
+- Errors mark the exact editor position with a gutter diagnostic and underline, then stay beside the editor with the Postgres code, line, column, detail, and hint.
+- Results preserve column order and types. `NULL` stays distinct from an empty string.
+- Editing after a successful run keeps the result visible and marks it as `Previous query` until the next run.
+- Horizontal and vertical result overflow use the Neon scroll fade.
+
+## Install
+
+```bash
+npx shadcn@latest add https://ui.neon.com/r/sql-runner.json
+```
+
+## Usage
+
+```tsx
+import { SQLRunner } from "@/components/neon-ui/sql-runner";
+import { useSQLRunner } from "@/hooks/use-sql-runner";
+
+const { execute } = useSQLRunner({ endpoint: "/api/sql" });
+
+<SQLRunner
+  database="production / neondb"
+  defaultValue="select now();"
+  onExecute={execute}
+/>;
+```
+
+## Props
+
+<TypeTable
+  type={{
+    onExecute: {
+      type: "(query: string, context: SQLExecutionContext) => Promise<SQLResult>",
+      description:
+        "Executes SQL. The context carries the safety mode and an AbortSignal.",
+      required: true,
+    },
+    value: {
+      type: "string",
+      description: "Controlled SQL value.",
+    },
+    defaultValue: {
+      type: "string",
+      description: "Initial SQL value when uncontrolled.",
+      default: '""',
+    },
+    onValueChange: {
+      type: "(value: string) => void",
+      description: "Called when the editor changes.",
+    },
+    mode: {
+      type: '"read" | "read-write"',
+      description: "Controlled safety mode.",
+    },
+    defaultMode: {
+      type: '"read" | "read-write"',
+      description: "Initial safety mode when uncontrolled.",
+      default: '"read"',
+    },
+    onModeChange: {
+      type: "(mode: SQLRunnerMode) => void",
+      description: "Called when the safety mode changes.",
+    },
+    title: {
+      type: "string",
+      description: "Editor heading.",
+      default: '"SQL editor"',
+    },
+    database: {
+      type: "string",
+      description: "Connection context shown under the heading.",
+      default: '"neondb"',
+    },
+    disabled: {
+      type: "boolean",
+      description: "Disables editing and execution.",
+      default: "false",
+    },
+  }}
+/>
+
+## Wiring to Neon
+
+The included `useSQLRunner` hook posts `{ query, mode }` to an endpoint and forwards its AbortSignal. A Next.js route handler can execute the authorized query with the Neon serverless driver:
+
+```ts
+import { neon } from "@neondatabase/serverless";
+
+export async function POST(request: Request) {
+  const { query } = await request.json();
+  const sql = neon(process.env.DATABASE_URL);
+  const startedAt = performance.now();
+  const result = await sql.query(query, [], { fullResults: true });
+
+  return Response.json({
+    command: result.command,
+    durationMs: performance.now() - startedAt,
+    fields: result.fields.map((field) => ({
+      name: field.name,
+      type: String(field.dataTypeID),
+    })),
+    rowCount: result.rowCount,
+    rows: result.rows,
+  });
+}
+```
+
+Authenticate the endpoint and enforce your own statement policy there. The component's read-only classifier is interaction feedback, not a security boundary.
+
+## Result shape
+
+```ts
+interface SQLResult {
+  rows: Record<string, unknown>[];
+  fields?: { name: string; type?: string }[];
+  rowCount?: number;
+  durationMs?: number;
+  command?: string;
+}
+```
+
+## Accessibility
+
+The CodeMirror editor carries an accessible name, visible focus, native text selection, search, history, and keyboard navigation. Cmd/Ctrl+Enter runs the current selection or document; Escape cancels. Errors use an assertive live region; execution and result metadata use a polite live region. The loading spinner stops under reduced motion.

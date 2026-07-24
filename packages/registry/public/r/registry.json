@@ -935,6 +935,39 @@
       ]
     },
     {
+      "name": "sql-runner",
+      "type": "registry:component",
+      "title": "SQLRunner",
+      "description": "A guarded SQL editor with run and cancel controls, inline Postgres errors, and a typed results grid.",
+      "dependencies": [
+        "@hugeicons/react",
+        "@hugeicons/core-free-icons",
+        "codemirror",
+        "@codemirror/lang-sql",
+        "@codemirror/language",
+        "@codemirror/state",
+        "@codemirror/view",
+        "@lezer/highlight",
+        "@codemirror/lint",
+        "@codemirror/search"
+      ],
+      "registryDependencies": [
+        "utils",
+        "https://ui.neon.com/r/button.json",
+        "https://ui.neon.com/r/neon-tokens.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/sql-runner/sql-runner.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/sql-runner/use-sql-runner.ts",
+          "type": "registry:hook"
+        }
+      ]
+    },
+    {
       "name": "checkpoint-timeline",
       "type": "registry:component",
       "title": "CheckpointTimeline",
