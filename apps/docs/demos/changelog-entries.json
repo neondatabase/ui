@@ -4,6 +4,19 @@
     "date": "2026-07-24",
     "items": [
       {
+        "text": "`AutoscaleChart` plots autoscaling CU over time against the min/max bounds with a scrubable readout",
+        "kind": "feat",
+        "href": "/infrastructure/autoscale-chart"
+      }
+    ],
+    "pr": 79,
+    "title": "Add AutoscaleChart"
+  },
+  {
+    "author": "Justin Levine",
+    "date": "2026-07-24",
+    "items": [
+      {
         "text": "`BranchTree` draws a project's branch graph with compute-state nodes and curved edges",
         "kind": "feat",
         "href": "/platform/branch-tree"
