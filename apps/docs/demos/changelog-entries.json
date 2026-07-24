@@ -4,6 +4,19 @@
     "date": "2026-07-24",
     "items": [
       {
+        "text": "`SQLRunner` adds PostgreSQL-aware editing, selected-statement execution, localized errors, cancellation, and typed results",
+        "kind": "feat",
+        "href": "/database/sql-runner"
+      }
+    ],
+    "pr": 83,
+    "title": "Add SQLRunner"
+  },
+  {
+    "author": "Justin Levine",
+    "date": "2026-07-24",
+    "items": [
+      {
         "text": "`SchemaExplorer` adds keyboard-native Postgres schema navigation with search, constraints, indexes, and relations",
         "kind": "feat",
         "href": "/database/schema-explorer"
