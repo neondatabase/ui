@@ -4,6 +4,19 @@
     "date": "2026-07-24",
     "items": [
       {
+        "text": "`SchemaExplorer` adds keyboard-native Postgres schema navigation with search, constraints, indexes, and relations",
+        "kind": "feat",
+        "href": "/database/schema-explorer"
+      }
+    ],
+    "pr": 81,
+    "title": "Add SchemaExplorer"
+  },
+  {
+    "author": "Justin Levine",
+    "date": "2026-07-24",
+    "items": [
+      {
         "text": "`AutoscaleChart` plots autoscaling CU over time against the min/max bounds with a scrubable readout",
         "kind": "feat",
         "href": "/infrastructure/autoscale-chart"
