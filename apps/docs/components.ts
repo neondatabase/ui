@@ -16,6 +16,7 @@ export default defineComponents({
     AuthFormPreview: "./demos/auth-form-preview.tsx",
     BannerPatternPlayground: "./demos/banner-pattern-playground.tsx",
     BranchPickerPreview: "./demos/branch-picker-preview.tsx",
+    BranchTreePreview: "./demos/branch-tree-preview.tsx",
     ChainOfThoughtPreview: "./demos/chain-of-thought-preview.tsx",
     ChangelogTimeline: "./demos/changelog-timeline.tsx",
     ChatInputPreview: "./demos/chat-input-preview.tsx",

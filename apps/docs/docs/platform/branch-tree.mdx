@@ -1,0 +1,75 @@
+---
+title: BranchTree
+description: A drawn Neon branch graph with compute-state nodes and curved edges to each parent.
+seo:
+  image: /og-cards/docs/platform/branch-tree.png
+---
+
+`BranchTree` draws a project's branches as a real graph: each branch is a node, and a curved edge runs from its parent's lane into it, so the hierarchy is physical rather than implied by indentation. The node color is the branch's compute state, the default and selected branches wear a ring, and each row carries its state word and relative last-updated time. It is presentational: the branches come from your backend as plain data.
+
+<BranchTreePreview />
+
+## Behavior
+
+- **Graph** each branch sits in the lane of its depth; an edge leaves the parent's lane, runs down, and curves into the child node. Selecting a branch highlights its row and rings its node.
+- **State** the node dot is painted from the compute state (`active`/`scaling` breathe on the house cadence; `idle` holds green; `suspended` goes gray). Omit `state` for a neutral node.
+- **Status** `default` shows a badge and a primary ring; `protected` shows a lock; `updatedAt` renders as relative time.
+
+## Install
+
+```bash
+npx shadcn@latest add https://ui.neon.com/r/branch-tree.json
+```
+
+## Usage
+
+```tsx
+import { BranchTree } from "@/components/neon-ui/branch-tree";
+
+<BranchTree branches={branches} value={branchId} onValueChange={setBranchId} />;
+```
+
+Controlled with `value` + `onValueChange`, or uncontrolled with `defaultValue`.
+
+## Props
+
+<TypeTable
+  type={{
+    branches: {
+      type: "Branch[]",
+      description:
+        "The branches to draw. Each is { id, name, default?, protected?, parent?, state?, updatedAt? }, where parent is the parent branch's id.",
+      required: true,
+    },
+    value: {
+      type: "string",
+      description: "Selected branch id (controlled).",
+    },
+    defaultValue: {
+      type: "string",
+      description: "Initial selected branch id (uncontrolled).",
+    },
+    onValueChange: {
+      type: "(id: string) => void",
+      description: "Notified when a branch node is chosen.",
+    },
+  }}
+/>
+
+## Wiring to Neon
+
+A server component lists a project's branches and selects the default:
+
+```tsx
+import { createNeonClient } from "@/lib/neon-client";
+
+const client = createNeonClient(process.env.NEON_API_KEY);
+const { data } = await client.listProjectBranches({ projectId });
+// map each branch to { id, name, default, protected, parent, updatedAt }
+```
+
+`updatedAt` comes straight off the branch. Fill `state` from the compute endpoints (`listProjectBranchEndpoints`) if you want the node to reflect live compute. Wire `onValueChange` in a client wrapper, since selection is client state.
+
+## Accessibility
+
+Each branch is a real button; the selected one carries `aria-current`. The graph is decorative (`aria-hidden`), so the tree reads as a plain list of branch names with their status. The breathing node states hold still under reduced motion.

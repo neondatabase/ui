@@ -882,6 +882,23 @@
       ]
     },
     {
+      "name": "branch-tree",
+      "type": "registry:component",
+      "title": "BranchTree",
+      "description": "A drawn branch graph: nodes colored by compute state, curved edges to each parent, default and selected marked.",
+      "dependencies": ["@hugeicons/react", "@hugeicons/core-free-icons"],
+      "registryDependencies": [
+        "utils",
+        "https://ui.neon.com/r/neon-tokens.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/branch-tree/branch-tree.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
       "name": "checkpoint-timeline",
       "type": "registry:component",
       "title": "CheckpointTimeline",

@@ -36,64 +36,137 @@ export interface Branch {
   default?: boolean;
   /** A protected branch. */
   protected?: boolean;
-  /** The parent branch's id; drives the hierarchy the picker draws. */
+  /** The parent branch's id; drives the drawn hierarchy. */
   parent?: string;
 }
 
-interface BranchRow {
+interface TreeNode {
   branch: Branch;
   depth: number;
-  /** Per ancestor level: does that ancestor have a following sibling (draw a line)? */
-  guides: boolean[];
-  /** Last among its siblings (elbow vs tee). */
-  isLast: boolean;
 }
 
-/** Flatten the branches into depth-first rows carrying tree-guide metadata. */
-const buildTree = (branches: Branch[]): BranchRow[] => {
+/* ─────────────────────────────────────────────────────────
+ * GEOMETRY
+ *
+ *  The list draws a real branch graph, not indent guides:
+ *  a branch sits in the lane of its depth, and a curved edge
+ *  runs from its parent's node into it. Tuned tight for the
+ *  32px popover rows. While searching, the list flattens to
+ *  one lane and drops the edges.
+ * ───────────────────────────────────────────────────────── */
+const ROW_H = 32;
+const LANE_W = 18;
+const PAD_X = 12;
+const DOT_R = 3;
+const CORNER = 8;
+
+const laneX = (depth: number) => PAD_X + depth * LANE_W;
+const rowY = (row: number) => row * ROW_H + ROW_H / 2;
+
+/** Depth-first flatten, assigning each branch a depth lane. */
+const buildTree = (branches: Branch[]): TreeNode[] => {
   const ids = new Set(branches.map((branch) => branch.id));
   const parentOf = (branch: Branch) =>
     branch.parent && ids.has(branch.parent) ? branch.parent : undefined;
   const childrenOf = (id?: string) =>
     branches.filter((branch) => parentOf(branch) === id);
 
-  const rows: BranchRow[] = [];
+  const nodes: TreeNode[] = [];
 
-  const walk = (
-    branch: Branch,
-    depth: number,
-    guides: boolean[],
-    isLast: boolean
-  ) => {
-    rows.push({ branch, depth, guides, isLast });
-    const kids = childrenOf(branch.id);
-    for (const [index, kid] of kids.entries()) {
-      walk(kid, depth + 1, [...guides, !isLast], index === kids.length - 1);
+  const walk = (branch: Branch, depth: number) => {
+    nodes.push({ branch, depth });
+    for (const kid of childrenOf(branch.id)) {
+      walk(kid, depth + 1);
     }
   };
 
-  const roots = childrenOf();
-  for (const [index, root] of roots.entries()) {
-    walk(root, 0, [], index === roots.length - 1);
+  for (const root of childrenOf()) {
+    walk(root, 0);
   }
 
-  return rows;
+  return nodes;
 };
 
-type GuideVariant = "empty" | "line" | "tee" | "elbow";
+const edgePath = (px: number, py: number, cx: number, cy: number) =>
+  `M ${px} ${py} V ${cy - CORNER} Q ${px} ${cy} ${px + CORNER} ${cy} H ${cx}`;
 
-const Guide = ({ variant }: { variant: GuideVariant }) => (
-  <span aria-hidden="true" className="relative block h-full w-4 shrink-0">
-    {variant === "empty" ? null : (
-      <span className="absolute top-0 bottom-1/2 left-1/2 w-px -translate-x-1/2 bg-border" />
-    )}
-    {variant === "line" || variant === "tee" ? (
-      <span className="absolute top-1/2 bottom-0 left-1/2 w-px -translate-x-1/2 bg-border" />
-    ) : null}
-    {variant === "tee" || variant === "elbow" ? (
-      <span className="absolute top-1/2 right-0 left-1/2 h-px -translate-y-1/2 bg-border" />
-    ) : null}
-  </span>
+const Graph = ({
+  nodes,
+  byId,
+  selectedId,
+  drawEdges,
+  width,
+  height,
+}: {
+  nodes: TreeNode[];
+  byId: Map<string, { depth: number; row: number }>;
+  selectedId?: string;
+  drawEdges: boolean;
+  width: number;
+  height: number;
+}) => (
+  <svg
+    aria-hidden="true"
+    className="pointer-events-none absolute top-0 left-0 z-10 overflow-visible"
+    height={height}
+    width={width}
+  >
+    {drawEdges
+      ? nodes.map((node, index) => {
+          const parent = node.branch.parent
+            ? byId.get(node.branch.parent)
+            : undefined;
+          if (!parent) {
+            return null;
+          }
+          return (
+            <path
+              className="stroke-border"
+              d={edgePath(
+                laneX(parent.depth),
+                rowY(parent.row),
+                laneX(node.depth),
+                rowY(index)
+              )}
+              fill="none"
+              key={`edge-${node.branch.id}`}
+              strokeLinecap="round"
+              strokeWidth={1.5}
+            />
+          );
+        })
+      : null}
+    {nodes.map((node, index) => {
+      const cx = laneX(node.depth);
+      const cy = rowY(index);
+      const selected = node.branch.id === selectedId;
+      const ringed = node.branch.default || selected;
+      return (
+        <g key={`node-${node.branch.id}`}>
+          {ringed ? (
+            <rect
+              className={selected ? "stroke-primary" : "stroke-primary/40"}
+              fill="none"
+              height={2 * (DOT_R + 2)}
+              rx={2.5}
+              strokeWidth={1.5}
+              width={2 * (DOT_R + 2)}
+              x={cx - DOT_R - 2}
+              y={cy - DOT_R - 2}
+            />
+          ) : null}
+          <rect
+            className={selected ? "fill-primary" : "fill-muted-foreground/60"}
+            height={2 * DOT_R}
+            rx={1}
+            width={2 * DOT_R}
+            x={cx - DOT_R}
+            y={cy - DOT_R}
+          />
+        </g>
+      );
+    })}
+  </svg>
 );
 
 const BranchBadge = ({ children }: { children: string }) => (
@@ -103,7 +176,7 @@ const BranchBadge = ({ children }: { children: string }) => (
 );
 
 const BranchOption = ({
-  row,
+  node,
   selected,
   highlighted,
   canBranch,
@@ -111,7 +184,7 @@ const BranchOption = ({
   onBranchFrom,
   onHighlight,
 }: {
-  row: BranchRow;
+  node: TreeNode;
   selected: boolean;
   highlighted: boolean;
   canBranch: boolean;
@@ -136,27 +209,15 @@ const BranchOption = ({
         highlighted ? "text-foreground" : "text-foreground/80"
       )}
       onClick={onSelect}
+      style={{ paddingLeft: laneX(node.depth) + DOT_R + 10 }}
       type="button"
     >
-      {row.guides.map((hasNext, level) => (
-        <Guide
-          key={`${row.branch.id}-${level}`}
-          variant={hasNext ? "line" : "empty"}
-        />
-      ))}
-      {row.depth > 0 ? <Guide variant={row.isLast ? "elbow" : "tee"} /> : null}
-
-      <span className="flex min-w-0 flex-1 items-center gap-1.5 pl-1.5">
-        <HugeiconsIcon
-          className="size-3.5 shrink-0 text-muted-foreground"
-          icon={GitBranchIcon}
-          strokeWidth={2}
-        />
+      <span className="flex min-w-0 flex-1 items-center gap-1.5">
         <span className="min-w-0 truncate font-mono text-xs">
-          {row.branch.name}
+          {node.branch.name}
         </span>
-        {row.branch.default ? <BranchBadge>default</BranchBadge> : null}
-        {row.branch.protected ? (
+        {node.branch.default ? <BranchBadge>default</BranchBadge> : null}
+        {node.branch.protected ? (
           <HugeiconsIcon
             aria-label="protected"
             className="size-3 shrink-0 text-muted-foreground/70"
@@ -183,7 +244,7 @@ const BranchOption = ({
           <TooltipTrigger
             render={
               <button
-                aria-label={`New branch from ${row.branch.name}`}
+                aria-label={`New branch from ${node.branch.name}`}
                 className="flex size-6 scale-75 items-center justify-center rounded-md text-muted-foreground/50 opacity-0 outline-none transition-all duration-150 ease-out hover:bg-muted-foreground/10 hover:text-foreground focus-visible:scale-100 focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-ring/50 group-hover/row:scale-100 group-hover/row:opacity-100 motion-reduce:transition-none motion-reduce:group-hover/row:scale-100"
                 onClick={onBranchFrom}
                 type="button"
@@ -196,7 +257,7 @@ const BranchOption = ({
               </button>
             }
           />
-          <TooltipContent>New branch from {row.branch.name}</TooltipContent>
+          <TooltipContent>New branch from {node.branch.name}</TooltipContent>
         </Tooltip>
       ) : null}
     </div>
@@ -246,11 +307,20 @@ export const BranchPicker = ({
   const selected = branches.find((branch) => branch.id === selectedId);
 
   const searching = query.trim().length > 0;
-  const rows: BranchRow[] = searching
+  const nodes: TreeNode[] = searching
     ? branches
         .filter((branch) => normalize(branch.name).includes(normalize(query)))
-        .map((branch) => ({ branch, depth: 0, guides: [], isLast: true }))
+        .map((branch) => ({ branch, depth: 0 }))
     : buildTree(branches);
+
+  const byId = new Map(
+    nodes.map((node, index) => [
+      node.branch.id,
+      { depth: node.depth, row: index },
+    ])
+  );
+  const maxDepth = Math.max(0, ...nodes.map((node) => node.depth));
+  const gutterWidth = laneX(maxDepth) + DOT_R + 6;
 
   useEffect(() => {
     if (!open) {
@@ -301,15 +371,15 @@ export const BranchPicker = ({
   const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "ArrowDown") {
       event.preventDefault();
-      setHighlight((current) => Math.min(current + 1, rows.length - 1));
+      setHighlight((current) => Math.min(current + 1, nodes.length - 1));
     } else if (event.key === "ArrowUp") {
       event.preventDefault();
       setHighlight((current) => Math.max(current - 1, 0));
     } else if (event.key === "Enter") {
-      const row = rows[highlight];
-      if (row) {
+      const node = nodes[highlight];
+      if (node) {
         event.preventDefault();
-        choose(row.branch.id);
+        choose(node.branch.id);
       }
     }
   };
@@ -426,28 +496,43 @@ export const BranchPicker = ({
                 />
               </div>
 
-              <div className="max-h-72 overflow-auto p-1" role="listbox">
-                {rows.map((row, index) => (
-                  <BranchOption
-                    canBranch={Boolean(onCreateBranch)}
-                    highlighted={highlight === index}
-                    key={row.branch.id}
-                    onBranchFrom={() => {
-                      setCreateFrom(row.branch);
-                      setNewName("");
-                    }}
-                    onHighlight={() => setHighlight(index)}
-                    onSelect={() => choose(row.branch.id)}
-                    row={row}
-                    selected={row.branch.id === selectedId}
-                  />
-                ))}
+              <div
+                className="neon-scroll-fade max-h-72 overflow-auto p-1"
+                role="listbox"
+              >
+                <div className="relative">
+                  {nodes.length > 0 ? (
+                    <Graph
+                      byId={byId}
+                      drawEdges={!searching}
+                      height={nodes.length * ROW_H}
+                      nodes={nodes}
+                      selectedId={selectedId}
+                      width={gutterWidth}
+                    />
+                  ) : null}
+                  {nodes.map((node, index) => (
+                    <BranchOption
+                      canBranch={Boolean(onCreateBranch)}
+                      highlighted={highlight === index}
+                      key={node.branch.id}
+                      node={node}
+                      onBranchFrom={() => {
+                        setCreateFrom(node.branch);
+                        setNewName("");
+                      }}
+                      onHighlight={() => setHighlight(index)}
+                      onSelect={() => choose(node.branch.id)}
+                      selected={node.branch.id === selectedId}
+                    />
+                  ))}
 
-                {rows.length === 0 ? (
-                  <p className="px-2 py-6 text-center text-muted-foreground text-xs">
-                    No branches found.
-                  </p>
-                ) : null}
+                  {nodes.length === 0 ? (
+                    <p className="px-2 py-6 text-center text-muted-foreground text-xs">
+                      No branches found.
+                    </p>
+                  ) : null}
+                </div>
               </div>
             </>
           )}

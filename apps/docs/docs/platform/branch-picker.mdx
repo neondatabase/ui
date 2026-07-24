@@ -11,7 +11,7 @@ seo:
 
 ## Behavior
 
-- **Tree** with no search, branches are drawn on connector lines by parent, so the hierarchy is visible. Searching collapses it to a flat filtered list.
+- **Graph** with no search, branches are drawn as a real graph: each is a node in the lane of its depth, with a curved edge from its parent. Searching collapses it to a flat filtered list.
 - **Keyboard** the arrow keys move through the list, Enter selects the highlighted branch, and Escape closes.
 - **Branch from** with `onCreateBranch` set, each row reveals a `+` on hover: it opens a "New branch from ⟨name⟩" field, so a branch is always created from a chosen parent.
 - **Status** `default` and `protected` render inline; the selected branch shows a check.
