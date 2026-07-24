@@ -1,0 +1,91 @@
+---
+title: BranchPicker
+description: A searchable Neon branch selector with default and protected status and an inline create-branch affordance.
+seo:
+  image: /og-cards/docs/platform/branch-picker.png
+---
+
+`BranchPicker` is a searchable selector for a project's Neon branches, drawn as the branch tree so you can see what is a branch of what. Open it, type to filter, pick a branch, or create a new branch from any branch. The default branch wears a `default` badge, protected branches show a lock, and the current choice carries a check. It is presentational: the branches come from your backend as plain data.
+
+<BranchPickerPreview />
+
+## Behavior
+
+- **Tree** with no search, branches are drawn on connector lines by parent, so the hierarchy is visible. Searching collapses it to a flat filtered list.
+- **Keyboard** the arrow keys move through the list, Enter selects the highlighted branch, and Escape closes.
+- **Branch from** with `onCreateBranch` set, each row reveals a `+` on hover: it opens a "New branch from ⟨name⟩" field, so a branch is always created from a chosen parent.
+- **Status** `default` and `protected` render inline; the selected branch shows a check.
+
+## Install
+
+```bash
+npx shadcn@latest add https://ui.neon.com/r/branch-picker.json
+```
+
+## Usage
+
+```tsx
+import { BranchPicker } from "@/components/neon-ui/branch-picker";
+
+<BranchPicker
+  branches={branches}
+  value={branchId}
+  onValueChange={setBranchId}
+  onCreateBranch={(name, fromId) => createBranch(name, fromId)}
+/>;
+```
+
+Controlled with `value` + `onValueChange`, or uncontrolled with `defaultValue`. Omit `onCreateBranch` to hide the create affordance.
+
+## Props
+
+<TypeTable
+  type={{
+    branches: {
+      type: "Branch[]",
+      description:
+        "The branches to choose from. Each is { id, name, default?, protected?, parent? }, where parent is the parent branch's id.",
+      required: true,
+    },
+    value: {
+      type: "string",
+      description: "Selected branch id (controlled).",
+    },
+    defaultValue: {
+      type: "string",
+      description: "Initial selected branch id (uncontrolled).",
+    },
+    onValueChange: {
+      type: "(id: string) => void",
+      description: "Notified when a branch is chosen.",
+    },
+    onCreateBranch: {
+      type: "(name: string, fromId: string) => void",
+      description:
+        "Create a branch with the typed name off the chosen parent branch. The per-branch affordance hides when omitted.",
+    },
+    placeholder: {
+      type: "string",
+      description: "Trigger text when nothing is selected.",
+      default: '"Select branch"',
+    },
+  }}
+/>
+
+## Wiring to Neon
+
+A server component lists a project's branches and selects the default:
+
+```tsx
+import { createNeonClient } from "@/lib/neon-client";
+
+const client = createNeonClient(process.env.NEON_API_KEY);
+const { data } = await client.listProjectBranches({ projectId });
+// map each branch to { id, name, default, protected, parent }
+```
+
+Wire `onValueChange` and `onCreateBranch` in a client wrapper or as server actions, since they mutate.
+
+## Accessibility
+
+The trigger is a button with `aria-haspopup` and `aria-expanded`; the list is an ARIA `listbox` of `option` rows with the selected one marked; and the search and create fields are real inputs. Arrow keys and Enter drive selection from the keyboard. Focus lands on the search field when the picker opens, and on the name field when you branch from a row.

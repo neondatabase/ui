@@ -861,6 +861,27 @@
       ]
     },
     {
+      "name": "branch-picker",
+      "type": "registry:component",
+      "title": "BranchPicker",
+      "description": "A searchable branch selector with default/protected status and an inline create-branch affordance.",
+      "dependencies": ["@hugeicons/react", "@hugeicons/core-free-icons"],
+      "registryDependencies": [
+        "utils",
+        "https://ui.neon.com/r/button.json",
+        "https://ui.neon.com/r/input.json",
+        "https://ui.neon.com/r/popover.json",
+        "https://ui.neon.com/r/neon-tokens.json",
+        "https://ui.neon.com/r/tooltip.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/branch-picker/branch-picker.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
       "name": "checkpoint-timeline",
       "type": "registry:component",
       "title": "CheckpointTimeline",
