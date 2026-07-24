@@ -1,0 +1,96 @@
+---
+title: SchemaExplorer
+description: A collapsible Postgres schema tree from tables to columns, indexes, and relations, with types and search.
+seo:
+  image: /og-cards/docs/database/schema-explorer.png
+---
+
+`SchemaExplorer` browses a database's schema as a keyboard-native tree. Each table expands to its columns (with SQL types, primary keys, foreign keys, unique constraints, and nullability), its indexes, and its relations. Search reveals matching descendants and highlights the match. It is presentational: the schema comes from your backend, usually via `information_schema` introspection.
+
+<SchemaExplorerPreview />
+
+## Behavior
+
+- **Expand** click a table to reveal its columns, indexes, and relations. Several tables can stay open at once.
+- **Types** each column shows its SQL type; primary keys wear a key, unique columns a `unique` tag, and nullable columns a faint `null`.
+- **Relations** foreign-key columns are listed under Relations as `column → table.column`.
+- **Search** press `/` from the tree, then search table names, column names, index names, or Postgres types. Matching descendants open automatically.
+- **Keyboard** use Up/Down to move, Right to open or enter a table, Left to close or return to its parent, Home/End to jump, and typeahead to find a visible row.
+
+## Install
+
+```bash
+npx shadcn@latest add https://ui.neon.com/r/schema-explorer.json
+```
+
+## Usage
+
+```tsx
+import { SchemaExplorer } from "@/components/neon-ui/schema-explorer";
+
+<SchemaExplorer tables={tables} defaultExpanded={["users"]} />;
+```
+
+`tables` is an array of `{ name, columns, indexes?, rowCount? }`. Each column is `{ name, type, primaryKey?, unique?, nullable?, references? }`.
+
+## Props
+
+<TypeTable
+  type={{
+    tables: {
+      type: "Table[]",
+      description:
+        "The tables to browse. Each is { name, schema?, columns, indexes?, rowCount? }.",
+      required: true,
+    },
+    defaultExpanded: {
+      type: "string[]",
+      description: "Table names expanded on first render.",
+    },
+    expanded: {
+      type: "string[]",
+      description: "Expanded table names when controlled.",
+    },
+    onExpandedChange: {
+      type: "(expanded: string[]) => void",
+      description: "Called whenever a table opens or closes.",
+    },
+    onColumnSelect: {
+      type: "(table: Table, column: Column) => void",
+      description: "Called when a column row is activated.",
+    },
+    onIndexSelect: {
+      type: "(table: Table, index: Index) => void",
+      description: "Called when an index row is activated.",
+    },
+    title: {
+      type: "string",
+      description: "Panel heading (typically the schema name).",
+      default: '"public"',
+    },
+  }}
+/>
+
+## Wiring to Neon
+
+A server component introspects the public schema over the Neon serverless driver and maps the rows to tables:
+
+```tsx
+import { neon } from "@neondatabase/serverless";
+
+const sql = neon(process.env.DATABASE_URL);
+const rows = await sql`
+  SELECT table_name, column_name, data_type, is_nullable
+  FROM information_schema.columns
+  WHERE table_schema = 'public'
+  ORDER BY table_name, ordinal_position
+`;
+// group rows by table_name into { name, columns } and add PK/FK from
+// information_schema.table_constraints
+```
+
+It runs server-side, so the connection string never reaches the browser. Add indexes from `pg_indexes` if you want the Indexes section populated.
+
+## Accessibility
+
+The component follows the WAI-ARIA tree pattern with one Tab stop, roving focus, arrow-key navigation, Home/End, typeahead, and `aria-expanded` on table rows. Focus stays visible over hover and open states. The only motion is the chevron turn, which snaps under reduced motion.

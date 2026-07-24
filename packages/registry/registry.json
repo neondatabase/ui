@@ -917,6 +917,24 @@
       ]
     },
     {
+      "name": "schema-explorer",
+      "type": "registry:component",
+      "title": "SchemaExplorer",
+      "description": "A collapsible Postgres schema tree: tables to columns, indexes, and relations, with types and a search.",
+      "dependencies": ["@hugeicons/react", "@hugeicons/core-free-icons"],
+      "registryDependencies": [
+        "utils",
+        "https://ui.neon.com/r/input.json",
+        "https://ui.neon.com/r/neon-tokens.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/schema-explorer/schema-explorer.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
       "name": "checkpoint-timeline",
       "type": "registry:component",
       "title": "CheckpointTimeline",
