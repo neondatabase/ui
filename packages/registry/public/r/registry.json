@@ -917,6 +917,32 @@
       ]
     },
     {
+      "name": "branch-diff",
+      "type": "registry:component",
+      "title": "BranchDiff",
+      "description": "Schema and row-level comparison between two branches with change counts, search, kind filters, and expandable DDL and word-level value diffs.",
+      "dependencies": [
+        "@hugeicons/react",
+        "@hugeicons/core-free-icons",
+        "diff"
+      ],
+      "registryDependencies": [
+        "utils",
+        "https://ui.neon.com/r/tabs.json",
+        "https://ui.neon.com/r/neon-tokens.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/branch-diff/branch-diff.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/branch-diff/use-branch-diff.ts",
+          "type": "registry:hook"
+        }
+      ]
+    },
+    {
       "name": "schema-explorer",
       "type": "registry:component",
       "title": "SchemaExplorer",

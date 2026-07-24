@@ -138,6 +138,9 @@ importers:
       codemirror:
         specifier: ^6.0.2
         version: 6.0.2
+      diff:
+        specifier: ^9.0.0
+        version: 9.0.0
       globe.gl:
         specifier: ^2.46.1
         version: 2.46.1
@@ -154,6 +157,9 @@ importers:
       '@shadcn/helpers':
         specifier: ^0.1.0
         version: 0.1.0(ai@7.0.31(zod@4.4.3))
+      '@types/diff':
+        specifier: ^8.0.0
+        version: 8.0.0
       '@types/react':
         specifier: ^19.2.0
         version: 19.2.17
@@ -2120,6 +2126,10 @@ packages:
 
   '@types/deep-eql@4.0.2':
     resolution: {integrity: sha512-c9h9dVVMigMPc4bwTvC5dxqtqJZwQPePsWjPlpSOnojbor6pGqdk541lfA7AqFQr5pB1BRdq0juY9db81BwyFw==}
+
+  '@types/diff@8.0.0':
+    resolution: {integrity: sha512-o7jqJM04gfaYrdCecCVMbZhNdG6T1MHg/oQoRFdERLV+4d+V7FijhiEAbFu0Usww84Yijk9yH58U4Jk4HbtzZw==}
+    deprecated: This is a stub types definition. diff provides its own type definitions, so you do not need this installed.
 
   '@types/esrecurse@4.3.1':
     resolution: {integrity: sha512-xJBAbDifo5hpffDBuHl0Y8ywswbiAp/Wi7Y/GtAgSlZyIABppyurxVueOPE8LUQOxdlgi6Zqce7uoEpqNTeiUw==}
@@ -7992,6 +8002,10 @@ snapshots:
       '@types/ms': 2.1.0
 
   '@types/deep-eql@4.0.2': {}
+
+  '@types/diff@8.0.0':
+    dependencies:
+      diff: 9.0.0
 
   '@types/esrecurse@4.3.1': {}
 

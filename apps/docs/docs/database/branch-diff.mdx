@@ -1,0 +1,135 @@
+---
+title: BranchDiff
+description: Compare two branches across schema changes and row-level data changes.
+seo:
+  image: /og-cards/docs/database/branch-diff.png
+---
+
+`BranchDiff` answers one question before a merge or a restore: what actually differs between two branches. Schema changes and row changes share a single header of added, modified, and removed counts, then split into focused tabs so DDL review and data review never fight for the same space.
+
+<BranchDiffPreview />
+
+## Behavior
+
+- The header states direction (`from` to `to`) and totals across both tabs, so the summary never depends on which tab is open.
+- `Schema` lists tables, columns, indexes, and constraints. Opening a change shows before and after values plus the generated DDL.
+- Changed values are diffed word by word, so `integer` to `numeric(12,2)` marks the exact text that moved instead of tinting the whole value.
+- `Data` groups row changes by table. Opening a row shows a per-column before and after table, with only the changed columns tinted.
+- Search and the kind filter apply to the active tab and compose with each other.
+- Breaking schema changes carry an explicit label, not just color.
+- Large tables can page: set `hasMore` and handle `onLoadMore`, which supports a promise and drives the row's loading state.
+- Wide value tables scroll inside the component with `.neon-scroll-fade`; the page never gains horizontal overflow.
+
+## Install
+
+```bash
+npx shadcn@latest add https://ui.neon.com/r/branch-diff.json
+```
+
+## Usage
+
+```tsx
+import { BranchDiff } from "@/components/neon-ui/branch-diff";
+
+<BranchDiff
+  from={{ id: "br-main", name: "main" }}
+  to={{ id: "br-feature-billing", name: "br-feature-billing" }}
+  schemaChanges={schemaChanges}
+  dataDiffs={dataDiffs}
+/>;
+```
+
+## Change shapes
+
+```ts
+interface SchemaChange {
+  id: string;
+  kind: "added" | "removed" | "modified";
+  objectType: "table" | "column" | "index" | "constraint";
+  path: string[];
+  before?: string;
+  after?: string;
+  ddl?: string;
+  breaking?: boolean;
+}
+
+interface TableDataDiff {
+  id: string;
+  schema: string;
+  table: string;
+  primaryKey: string[];
+  rows: RowChange[];
+  addedCount: number;
+  removedCount: number;
+  modifiedCount: number;
+  unchangedCount?: number;
+  hasMore?: boolean;
+}
+```
+
+`path` is display order, so `["public", "accounts", "balance"]` renders as `public.accounts.balance`. Row changes carry their `primaryKey` separately from `before` and `after` values, which keeps identity visible even when every column changed.
+
+## Props
+
+<TypeTable
+  type={{
+    from: {
+      type: "BranchDiffBranch",
+      description: "Base branch of the comparison.",
+      required: true,
+    },
+    to: {
+      type: "BranchDiffBranch",
+      description: "Branch being compared against the base.",
+      required: true,
+    },
+    schemaChanges: {
+      type: "SchemaChange[]",
+      description: "DDL-level changes.",
+      required: true,
+    },
+    dataDiffs: {
+      type: "TableDataDiff[]",
+      description: "Row-level changes grouped by table.",
+      required: true,
+    },
+    tab: {
+      type: '"schema" | "data"',
+      description: "Controlled active tab.",
+    },
+    defaultTab: {
+      type: '"schema" | "data"',
+      description: "Initial tab for uncontrolled usage.",
+      default: '"schema"',
+    },
+    onTabChange: {
+      type: "(tab: DiffTab) => void",
+      description: "Fires when the active tab changes.",
+    },
+    onLoadMore: {
+      type: "(table: TableDataDiff) => void | Promise<void>",
+      description: "Requests the next page of row changes for one table.",
+    },
+    loadingTableId: {
+      type: "string | null",
+      description: "Table id currently loading more rows.",
+    },
+    isLoading: {
+      type: "boolean",
+      description: "Renders the loading state.",
+      default: "false",
+    },
+    error: {
+      type: "Error | string | null",
+      description: "Renders an error state instead of the diff.",
+    },
+  }}
+/>
+
+## Computing the diff
+
+Compute the comparison on the server and pass the result in. Schema changes come from `information_schema` and `pg_indexes` on each branch; row changes come from a keyed comparison of the tables you choose to track. Diffing whole tables in the browser would mean shipping both branches' rows to the client, so the component stays presentational and the application decides what is worth comparing.
+
+## Accessibility
+
+Search and the kind filter sit on their own row below the tabs, so neither control is squeezed in narrow containers. Tabs come from the shared Base UI primitive, so arrow keys move between Schema and Data. One shared pill slides between the two tabs in 200ms while the panel fades in from the direction of travel; reduced motion switches tabs instantly. Every change row is a real button with `aria-expanded` and `aria-controls`. Change kind is carried by a text label and a symbol, not color alone, and the header exposes a total count for screen readers. Load-more sets `aria-busy` and disables repeat presses. Disclosure height and opacity settle in 150ms; reduced motion opens rows instantly.
