@@ -47,6 +47,7 @@ export default defineComponents({
     NeonLoaderPreview: "./demos/neon-loader-preview.tsx",
     PreviewFramePreview: "./demos/preview-frame-preview.tsx",
     ProvisioningStatusPreview: "./demos/provisioning-status-preview.tsx",
+    QueryHistoryPreview: "./demos/query-history-preview.tsx",
     ReasoningPreview: "./demos/reasoning-preview.tsx",
     RegionCardPreview: "./demos/region-card-preview.tsx",
     RegionGlobePreview: "./demos/region-globe-preview.tsx",

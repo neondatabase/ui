@@ -1,0 +1,152 @@
+---
+title: QueryHistory
+description: Search, inspect, save, copy, and rerun recent SQL with execution status and timing.
+seo:
+  image: /og-cards/docs/database/query-history.png
+---
+
+`QueryHistory` keeps recent SQL close to the runner without turning history into another editor. Search covers SQL, branch, database, and command. Filters separate saved and failed work. Each row keeps its status, duration, row count, and execution target visible; opening a row reveals the exact statement and any Postgres error.
+
+<QueryHistoryPreview />
+
+## Behavior
+
+- The full SQL statement expands in place with PostgreSQL syntax highlighting. Only one row stays open at a time by default.
+- `All`, `Saved`, and `Failed` filters update immediately. Text search narrows the active filter.
+- Save is a quiet toggle. Copy confirms in the same button. Rerun returns the complete entry to the consumer and holds a visible running state until its promise settles.
+- Save, copy, and rerun icons have concise tooltips on hover and keyboard focus.
+- Successful, failed, and cancelled rows use distinct icons and text announced to screen readers; color is supporting information.
+- Loading, empty, no-match, and fetch-error states keep the component's outer size contract intact.
+- Query text and long errors scroll inside the component with `.neon-scroll-fade`; the page never gains horizontal overflow.
+
+## Install
+
+```bash
+npx shadcn@latest add https://ui.neon.com/r/query-history.json
+```
+
+## Usage
+
+```tsx
+import { QueryHistory } from "@/components/neon-ui/query-history";
+
+<QueryHistory
+  entries={history}
+  onRerun={(entry) => openRunner(entry.query)}
+  onSavedChange={(entry, saved) => saveQuery(entry.id, saved)}
+/>;
+```
+
+## Entry shape
+
+```ts
+interface QueryHistoryEntry {
+  id: string;
+  query: string;
+  status: "success" | "error" | "cancelled";
+  timestamp: string;
+  executedAt?: string;
+  durationMs?: number;
+  rowCount?: number;
+  command?: string;
+  database?: string;
+  branch?: string;
+  error?: string;
+  saved?: boolean;
+}
+```
+
+`timestamp` is display-ready, so the application controls relative-time wording and locale. Set `executedAt` to the ISO timestamp for the semantic `<time>` element.
+
+## Props
+
+<TypeTable
+  type={{
+    entries: {
+      type: "QueryHistoryEntry[]",
+      description: "Recorded queries, newest first.",
+      required: true,
+    },
+    query: {
+      type: "string",
+      description: "Controlled text search.",
+    },
+    defaultQuery: {
+      type: "string",
+      description: "Initial search for uncontrolled usage.",
+      default: '""',
+    },
+    onQueryChange: {
+      type: "(query: string) => void",
+      description: "Fires when text search changes.",
+    },
+    filter: {
+      type: '"all" | "saved" | "failed"',
+      description: "Controlled history filter.",
+    },
+    defaultFilter: {
+      type: '"all" | "saved" | "failed"',
+      description: "Initial filter for uncontrolled usage.",
+      default: '"all"',
+    },
+    expandedId: {
+      type: "string | null",
+      description: "Controlled open row. Pass null to close all rows.",
+    },
+    onRerun: {
+      type: "(entry: QueryHistoryEntry) => void | Promise<void>",
+      description:
+        "Fires with the exact saved SQL. A returned promise drives the built-in running state.",
+    },
+    runningId: {
+      type: "string | null",
+      description: "Controlled id for a query currently rerunning.",
+    },
+    onSavedChange: {
+      type: "(entry: QueryHistoryEntry, saved: boolean) => void",
+      description: "Fires when a query is saved or removed from saved queries.",
+    },
+    onCopy: {
+      type: "(entry: QueryHistoryEntry) => void",
+      description: "Optional callback after the built-in copy action runs.",
+    },
+    isLoading: {
+      type: "boolean",
+      description: "Render the skeleton state.",
+      default: "false",
+    },
+    error: {
+      type: "Error | string | null",
+      description: "Render the fetch-error state.",
+      default: "null",
+    },
+  }}
+/>
+
+## Recording real SQL
+
+Postgres does not expose per-user application history as a UI-ready feed. Record each SQLRunner execution in your server endpoint, then return those rows from `/api/query-history`. The component never stores SQL on its own.
+
+```tsx
+import { neon } from "@neondatabase/serverless";
+
+const sql = neon(process.env.DATABASE_URL!);
+
+export async function GET() {
+  const rows = await sql`
+    select id, query, status, executed_at, duration_ms, row_count,
+           command, database_name, branch_name, error_message, saved
+    from app_query_history
+    order by executed_at desc
+    limit 100
+  `;
+
+  return Response.json({ entries: rows });
+}
+```
+
+The included `useQueryHistory()` hook loads that endpoint with request cancellation and exposes `entries`, `isLoading`, `error`, `refresh`, and `setEntries`. Save changes can use `PATCH /api/query-history/:id`. Rerun should pass `entry.query` back to SQLRunner or navigate to your runner route with the query in application state.
+
+## Accessibility
+
+Search uses a native labelled input. Filters use pressed buttons inside a fieldset. Each query disclosure is a real button with `aria-expanded` and `aria-controls`; save exposes `aria-pressed`. Copy feedback and filtered result counts use a polite live region. Rerunning sets `aria-busy`, disables repeat presses, and labels the spinner as `Running query`. Every action has a focus-visible tooltip and ring. Disclosure height, position, and opacity settle together in 180ms; reduced motion changes the row instantly.

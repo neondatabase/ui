@@ -968,6 +968,35 @@
       ]
     },
     {
+      "name": "query-history",
+      "type": "registry:component",
+      "title": "QueryHistory",
+      "description": "Searchable recent SQL with status, timing, saved queries, expandable statements, copy, and rerun actions.",
+      "dependencies": [
+        "@hugeicons/react",
+        "@hugeicons/core-free-icons",
+        "@codemirror/lang-sql",
+        "@lezer/highlight"
+      ],
+      "registryDependencies": [
+        "utils",
+        "https://ui.neon.com/r/skeleton.json",
+        "https://ui.neon.com/r/empty-state.json",
+        "https://ui.neon.com/r/tooltip.json",
+        "https://ui.neon.com/r/neon-tokens.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/query-history/query-history.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/query-history/use-query-history.ts",
+          "type": "registry:hook"
+        }
+      ]
+    },
+    {
       "name": "checkpoint-timeline",
       "type": "registry:component",
       "title": "CheckpointTimeline",
