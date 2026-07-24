@@ -222,6 +222,7 @@
 
 .neon-scroll-fade::-webkit-scrollbar {
   width: 6px;
+  height: 6px;
 }
 
 .neon-scroll-fade::-webkit-scrollbar-track {
@@ -230,10 +231,28 @@
 
 .neon-scroll-fade::-webkit-scrollbar-thumb {
   background: var(--border);
+  border-radius: 999px;
 }
 
 .neon-scroll-fade::-webkit-scrollbar-thumb:hover {
   background: var(--muted-foreground);
+}
+
+.neon-scroll-fade::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Panels that auto-scroll (log tails) hide the scrollbar while they are pinned
+   to the end: the thumb reports a position the reader does not control, and it
+   slides on every new line. Scrolling still works; the bar returns as soon as
+   the reader scrolls away and takes over. */
+.neon-scroll-pinned {
+  scrollbar-width: none;
+}
+
+.neon-scroll-pinned::-webkit-scrollbar {
+  width: 0;
+  height: 0;
 }
 
 @supports (animation-timeline: scroll()) {

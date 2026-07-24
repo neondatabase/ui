@@ -917,6 +917,31 @@
       ]
     },
     {
+      "name": "logs-viewer",
+      "type": "registry:component",
+      "title": "LogsViewer",
+      "description": "Virtualized, follow-tailing log pane with ANSI colors, level filters, search, and a retention cap.",
+      "dependencies": [
+        "@hugeicons/react",
+        "@hugeicons/core-free-icons",
+        "anser"
+      ],
+      "registryDependencies": [
+        "utils",
+        "https://ui.neon.com/r/neon-tokens.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/logs-viewer/logs-viewer.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/logs-viewer/use-logs-stream.ts",
+          "type": "registry:hook"
+        }
+      ]
+    },
+    {
       "name": "branch-diff",
       "type": "registry:component",
       "title": "BranchDiff",

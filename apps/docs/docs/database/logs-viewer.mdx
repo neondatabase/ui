@@ -1,0 +1,146 @@
+---
+title: LogsViewer
+description: Follow compute logs with ANSI colors, level filters, search, and a retention cap.
+seo:
+  image: /og-cards/docs/database/logs-viewer.png
+---
+
+`LogsViewer` is a log pane that stays usable while output is still arriving. Rows are virtualized, so a long session scrolls at the same speed as a short one, and the viewer follows the tail until you scroll away from it.
+
+<LogsViewerPreview />
+
+## Behavior
+
+- The viewer follows new output while you sit at the bottom. Scrolling up detaches it and a pill reports how many lines arrived while you were reading; scrolling back to the bottom reattaches it.
+- Only the rows in view are rendered, plus a small overscan, so 50,000 lines cost the same as 50.
+- `maxLines` caps retention (5,000 by default) and the header states when the cap is trimming output.
+- ANSI escape codes render as color and weight through `anser`. Text is parsed into spans, never injected as HTML.
+- Level filters, the time range, and search all compose. Search matches the timestamp, source, and the log text with escape codes stripped, so colored text stays findable.
+- The time range (5 minutes to 24 hours) measures back from the newest line, not the wall clock, so a paused stream keeps showing the same window instead of draining as time passes. The control only appears when lines carry `at`.
+- Scroll areas use the house scrollbar: thin, rounded, and transparent-tracked, on both axes. While the viewer is following, the scrollbar hides, since the thumb would report a position the reader does not control and would slide on every new line. It returns the moment you scroll and take over.
+- Long lines scroll sideways inside the pane; the page never gains horizontal overflow.
+
+## Install
+
+```bash
+npx shadcn@latest add https://ui.neon.com/r/logs-viewer.json
+```
+
+## Usage
+
+```tsx
+import { LogsViewer } from "@/components/neon-ui/logs-viewer";
+
+<LogsViewer lines={lines} isStreaming={isStreaming} title="Compute logs" />;
+```
+
+## Line shape
+
+```ts
+interface LogLine {
+  id: string;
+  message: string;
+  level?: "debug" | "info" | "warn" | "error";
+  timestamp?: string;
+  at?: string;
+  source?: string;
+}
+```
+
+`timestamp` is display-ready, so the application controls precision and time zone. Set `at` to the ISO timestamp to enable time-range filtering. `message` may contain ANSI escape codes.
+
+## Props
+
+<TypeTable
+  type={{
+    lines: {
+      type: "LogLine[]",
+      description: "Log lines, oldest first.",
+      required: true,
+    },
+    title: {
+      type: "string",
+      description: "Heading and accessible name for the log region.",
+      default: '"Logs"',
+    },
+    maxLines: {
+      type: "number",
+      description: "Retention cap. Older lines are dropped.",
+      default: "5000",
+    },
+    rowHeight: {
+      type: "number",
+      description: "Row height in pixels, used for virtualization math.",
+      default: "20",
+    },
+    visibleRows: {
+      type: "number",
+      description: "Height of the pane, counted in rows.",
+      default: "18",
+    },
+    follow: {
+      type: "boolean",
+      description: "Controlled follow-tail state.",
+    },
+    defaultFollow: {
+      type: "boolean",
+      description: "Initial follow state for uncontrolled usage.",
+      default: "true",
+    },
+    onFollowChange: {
+      type: "(follow: boolean) => void",
+      description: "Fires when following starts or stops.",
+    },
+    query: {
+      type: "string",
+      description: "Controlled search text.",
+    },
+    levels: {
+      type: "LogLevel[]",
+      description: "Controlled set of enabled levels.",
+    },
+    range: {
+      type: '"all" | "5m" | "15m" | "1h" | "24h"',
+      description: "Controlled time range, measured back from the newest line.",
+    },
+    defaultRange: {
+      type: '"all" | "5m" | "15m" | "1h" | "24h"',
+      description: "Initial range for uncontrolled usage.",
+      default: '"all"',
+    },
+    onRangeChange: {
+      type: "(range: TimeRange) => void",
+      description: "Fires when the time range changes.",
+    },
+    isStreaming: {
+      type: "boolean",
+      description: "Marks the stream as live in the header.",
+      default: "false",
+    },
+    isLoading: {
+      type: "boolean",
+      description: "Renders the loading state.",
+      default: "false",
+    },
+    error: {
+      type: "Error | string | null",
+      description: "Renders an error state instead of the pane.",
+    },
+  }}
+/>
+
+## Streaming from Neon
+
+`useLogsStream` reads a server-sent events endpoint that emits one JSON line per message:
+
+```tsx
+const { lines, isStreaming, error } = useLogsStream({
+  endpoint: "/api/logs/stream?branch=br-main&compute=compute-0",
+});
+```
+
+The endpoint belongs to the application. Neon credentials stay on the server, which also decides retention and who may read a compute's output.
+
+## Accessibility
+
+The pane is a `log` region with an accessible name, and it is focusable so keyboard users can scroll it. Search has a real label and a clear button. Level filters are pressed buttons inside a fieldset, and the time range uses the shared select, so its menu is keyboard driven and styled with the rest of the system. Level is carried by text as well as color. The follow pill states its purpose and the pending line count. The streaming dot and the pill entrance both stop under reduced motion.

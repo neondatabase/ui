@@ -38,6 +38,7 @@ export default defineComponents({
     HealthCardPreview: "./demos/health-card-preview.tsx",
     HealthCardStatusVariants: "./demos/health-card-status-variants.tsx",
     InlineCitationPreview: "./demos/inline-citation-preview.tsx",
+    LogsViewerPreview: "./demos/logs-viewer-preview.tsx",
     MeshGradientPlayground: "./demos/mesh-gradient-playground.tsx",
     MetricCardDeltaVariants: "./demos/metric-card-delta-variants.tsx",
     MetricCardFormatVariants: "./demos/metric-card-format-variants.tsx",
