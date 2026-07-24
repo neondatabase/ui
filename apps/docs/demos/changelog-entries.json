@@ -4,6 +4,24 @@
     "date": "2026-07-24",
     "items": [
       {
+        "text": "`BranchTree` draws a project's branch graph with compute-state nodes and curved edges",
+        "kind": "feat",
+        "href": "/platform/branch-tree"
+      },
+      {
+        "text": "`BranchPicker` now draws its branch hierarchy as a graph to match `BranchTree`",
+        "kind": "feat",
+        "href": "/platform/branch-picker"
+      }
+    ],
+    "pr": 77,
+    "title": "Add BranchTree and draw BranchPicker's tree"
+  },
+  {
+    "author": "Justin Levine",
+    "date": "2026-07-24",
+    "items": [
+      {
         "text": "`BranchPicker` selects a Neon branch from a searchable tree, with default/protected status and a per-branch create-from affordance",
         "kind": "feat",
         "href": "/platform/branch-picker"
