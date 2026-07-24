@@ -1,6 +1,19 @@
 [
   {
     "author": "Justin Levine",
+    "date": "2026-07-24",
+    "items": [
+      {
+        "text": "`ActivityFeed` threads system events (provision, transfer, agent) onto a status-vocabulary timeline with expandable detail, copy, and per-entry actions",
+        "kind": "feat",
+        "href": "/platform/activity-feed"
+      }
+    ],
+    "pr": 73,
+    "title": "Add ActivityFeed"
+  },
+  {
+    "author": "Justin Levine",
     "date": "2026-07-23",
     "items": [
       {
