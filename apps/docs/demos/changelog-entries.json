@@ -4,6 +4,19 @@
     "date": "2026-07-24",
     "items": [
       {
+        "text": "`BranchPicker` selects a Neon branch from a searchable tree, with default/protected status and a per-branch create-from affordance",
+        "kind": "feat",
+        "href": "/platform/branch-picker"
+      }
+    ],
+    "pr": 75,
+    "title": "Add BranchPicker"
+  },
+  {
+    "author": "Justin Levine",
+    "date": "2026-07-24",
+    "items": [
+      {
         "text": "`ActivityFeed` threads system events (provision, transfer, agent) onto a status-vocabulary timeline with expandable detail, copy, and per-entry actions",
         "kind": "feat",
         "href": "/platform/activity-feed"
