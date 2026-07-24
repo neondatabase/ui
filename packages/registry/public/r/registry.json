@@ -923,6 +923,26 @@
       ]
     },
     {
+      "name": "activity-feed",
+      "type": "registry:component",
+      "title": "ActivityFeed",
+      "description": "A chronological feed of system events (provision, transfer, agent) on a status-vocabulary timeline, with expandable detail and optional per-entry actions.",
+      "dependencies": ["@hugeicons/react", "@hugeicons/core-free-icons"],
+      "registryDependencies": [
+        "utils",
+        "https://ui.neon.com/r/button.json",
+        "https://ui.neon.com/r/skeleton.json",
+        "https://ui.neon.com/r/empty-state.json",
+        "https://ui.neon.com/r/neon-tokens.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/activity-feed/activity-feed.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
       "name": "compute-status",
       "type": "registry:component",
       "title": "ComputeStatus",

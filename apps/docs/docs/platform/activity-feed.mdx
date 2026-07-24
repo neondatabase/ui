@@ -1,0 +1,111 @@
+---
+title: ActivityFeed
+description: A chronological feed of system events on a status-vocabulary timeline, with expandable detail and optional per-entry actions.
+seo:
+  image: /og-cards/docs/platform/activity-feed.png
+---
+
+`ActivityFeed` threads a project's system events, provision, transfer, and agent, onto one continuous timeline, newest first. Each event carries a status-colored marker from the house vocabulary: success holds primary, errors go destructive, work in flight breathes amber, and quiet events stay muted. Long detail expands in place, and an event can offer an action such as `Retry`. It is presentational: the events come from your backend as plain data.
+
+<ActivityFeedPreview />
+
+## Anatomy
+
+- **Marker** the status dot on the rail. `pending` breathes on the shared 2.6s cadence and holds steady under reduced motion.
+- **Title + time** the summary and a mono relative timestamp, right-aligned.
+- **Source** an optional mono line naming who or what caused the event.
+- **Detail** an optional long block (an error, a request id, a result) that expands under a `details` toggle.
+- **Action** an optional button (e.g. `Retry`) that fires `onAction` with the entry.
+
+Rows rise one at a time on entrance and hold steady under reduced motion.
+
+## Install
+
+```bash
+npx shadcn@latest add https://ui.neon.com/r/activity-feed.json
+```
+
+## Usage
+
+```tsx
+import { ActivityFeed } from "@/components/neon-ui/activity-feed";
+
+<ActivityFeed
+  entries={[
+    {
+      id: "1",
+      status: "success",
+      title: "Provisioned production database",
+      timestamp: "1h ago",
+    },
+    {
+      id: "2",
+      status: "error",
+      title: "Snapshot transfer failed",
+      timestamp: "2m ago",
+      detail: errorText,
+      actionLabel: "Retry",
+    },
+  ]}
+  onAction={(entry) => retry(entry.id)}
+/>;
+```
+
+## Props
+
+<TypeTable
+  type={{
+    entries: {
+      type: "ActivityEntry[]",
+      description:
+        "Events, newest first. Each is { id, status, title, timestamp, source?, detail?, actionLabel? }.",
+      required: true,
+    },
+    onAction: {
+      type: "(entry: ActivityEntry) => void",
+      description: "Fires when an entry's action is used.",
+    },
+    label: {
+      type: "string",
+      description: "Card title.",
+      default: '"Activity"',
+    },
+    empty: {
+      type: "ReactNode",
+      description: "Override the built-in empty state.",
+    },
+    isLoading: {
+      type: "boolean",
+      description: "Render the skeleton state.",
+      default: "false",
+    },
+    error: {
+      type: "Error | string | null",
+      description: "Render the error state with the message.",
+      default: "null",
+    },
+  }}
+/>
+
+## Status
+
+`ActivityStatus` is `"success" | "error" | "pending" | "info"`. It maps to the house tokens: `--primary`, `--destructive`, `--status-scaling` (breathing), and `--muted-foreground`. Color lives only in the marker; the text stays calm so a long feed reads without noise.
+
+## Wiring to Neon
+
+A server component turns a project's recent operations into a feed:
+
+```tsx
+import { OperationStatus } from "@neondatabase/api-client";
+import { createNeonClient } from "@/lib/neon-client";
+
+const client = createNeonClient(process.env.NEON_API_KEY);
+const { data } = await client.listProjectOperations({ projectId });
+// map each operation to { id, status, title, timestamp }
+```
+
+`finished` reads as success, `failed`/`error` as error, `running`/`scheduling` as pending.
+
+## Accessibility
+
+The detail toggle is a real button with `aria-expanded`; the rail marker is decorative (`aria-hidden`) and never the only signal, since each event states its outcome in words. Motion honors reduced-motion. Loading sets `aria-busy`; the error state is a `role="alert"`.

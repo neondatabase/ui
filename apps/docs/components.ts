@@ -4,6 +4,7 @@ import Header from "./components/blume/header.astro";
 
 export default defineComponents({
   islands: {
+    ActivityFeedPreview: "./demos/activity-feed-preview.tsx",
     AgentChatPreview: "./demos/agent-chat-preview.tsx",
     AnimatedWashPlayground: "./demos/animated-wash-playground.tsx",
     AnimatedWashPreview: "./demos/animated-wash-preview.tsx",
