@@ -1,5 +1,6 @@
 import { defineComponents } from "blume";
 
+import Footer from "./components/blume/footer.astro";
 import Header from "./components/blume/header.astro";
 
 export default defineComponents({
@@ -67,5 +68,5 @@ export default defineComponents({
     UsagePanelPreview: "./demos/usage-panel-preview.tsx",
     WorkspaceTabsPreview: "./demos/workspace-tabs-preview.tsx",
   },
-  layout: { Header },
+  layout: { Footer, Header },
 });

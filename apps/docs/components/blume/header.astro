@@ -105,9 +105,14 @@ const TAB_HREFS: Record<string, string> = {
 // breakpoint with the docs drawer; without one, the tabs-only drawer is the sole
 // mobile nav below `lg`, so the inline tabs wait until `lg` to avoid duplicating
 // the drawer's links between `md` and `lg`.
+// Structure (group dividers, the active-tab rule, search width) lives in
+// theme.css instead of here: custom pages go through Blume's PageLayout, which
+// hardcodes the stock header, so anything expressed in this override would make
+// /changelog and / drift from the docs pages. Styling both by their shared
+// data-blume-header DOM keeps one bar across every layout.
 const tabsNavClass = hasSidebar
-  ? "hidden gap-1 md:flex"
-  : "hidden gap-1 lg:flex";
+  ? "hidden h-full items-center gap-1 md:flex"
+  : "hidden h-full items-center gap-1 lg:flex";
 
 const iconButton =
   "inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground";
@@ -163,7 +168,7 @@ const clickScript = `(()=>{const dr=()=>{const h=document.querySelector("[data-b
         {navigation.tabs.map((tab) => (
           <a
             aria-current={tab === activeTab ? "page" : undefined}
-            class="px-3 py-1.5 font-medium text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=page]:text-foreground"
+            class="relative flex h-full items-center px-3 font-medium text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=page]:text-foreground"
             href={withBase(TAB_HREFS[tab.path] ?? tab.href ?? tab.path)}
           >
             {tab.label}
@@ -182,6 +187,11 @@ const clickScript = `(()=>{const dr=()=>{const h=document.querySelector("[data-b
       />
     )
   }
+  {/*
+   * Search sits flush against the tools group. It is widened from theme.css
+   * (`blume-search` renders `display: contents`, so a wrapper here would size
+   * a box the trigger does not fill, leaving it stranded mid-bar).
+   */}
   {
     searchEnabled && (
       <SearchSlot

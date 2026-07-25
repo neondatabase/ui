@@ -427,12 +427,9 @@ details[class*="group/tt"] code.text-accent {
   border-bottom: 1px solid color-mix(in oklch, var(--border) 60%, transparent);
 }
 
-/* The site is dark-only (theme.mode: dark); Blume always renders the
- * header theme toggle, so hide it — data-blume-theme-toggle is its
- * stable hook. */
-[data-blume-theme-toggle] {
-  display: none !important;
-}
+/* The site opens dark (theme.mode: dark) but is no longer dark-only: the
+ * header and footer both carry the toggle, and Blume's pre-paint script
+ * lets a stored choice win over the configured default. */
 
 /*
  * Search: collapse Blume's result-preview pane — the dialog becomes a
@@ -722,4 +719,76 @@ header nav a.rounded-full:hover {
  */
 nav details > summary .truncate {
   font-weight: 600;
+}
+
+/*
+ * Header structure, applied to the shared [data-blume-header] DOM rather than
+ * to our header override: custom pages (/, /changelog) go through Blume's
+ * PageLayout, which hardcodes the stock header, so anything expressed only in
+ * the override drifts those pages out of alignment (search lands at a different
+ * x, the active tab loses its marker). Styling by DOM keeps one bar everywhere.
+ *
+ * Shape is: logo <a>, tabs <nav>, spacer <div>, <blume-search>, tools <div>.
+ */
+
+/* Group separators: identity | navigation | tools. */
+[data-blume-header] > nav::before,
+[data-blume-header] > div:last-of-type::before {
+  content: "";
+  align-self: center;
+  width: 1px;
+  height: 1.25rem;
+  margin-inline-end: 0.75rem;
+  background: var(--border);
+}
+
+[data-blume-header] > nav::before {
+  margin-inline: 0 0.25rem;
+}
+
+/*
+ * Tabs run the full height of the bar so the active marker can sit on the
+ * header's own bottom border. Blume's stock header gives them a short pill
+ * (py-1.5) and our docs header gives them full height; without normalizing,
+ * the marker lands mid-bar on /changelog and on the border everywhere else.
+ */
+[data-blume-header] > nav {
+  align-self: stretch;
+  align-items: center;
+}
+
+[data-blume-header] > nav a {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding-block: 0;
+  border-radius: 0;
+  background: none;
+}
+
+/*
+ * The active tab carries a rule on the header's bottom border. Color alone is
+ * the weakest possible signal in a bar this quiet, and the rule reads as "this
+ * section" the way a real tab does.
+ */
+
+[data-blume-header] nav a[aria-current="page"]::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0.75rem;
+  bottom: -1px;
+  height: 1px;
+  background: var(--foreground);
+}
+
+/* Search is the main way through a registry, so it gets real width. */
+[data-blume-header] blume-search button {
+  min-width: 14rem;
+}
+
+@media (min-width: 48rem) {
+  [data-blume-header] blume-search button {
+    min-width: 18rem;
+  }
 }

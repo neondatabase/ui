@@ -1,0 +1,168 @@
+---
+import { AnimatedWash } from "@neon-ui/registry/components/animated-wash/animated-wash";
+import { withBase } from "blume/components/islands/base-path.ts";
+import { GITHUB_MARK } from "blume/components/github-mark.ts";
+import Icon from "blume/components/Icon.astro";
+
+// The landing page owns its own closing section (the aurora stage runs to the
+// bottom edge), so the site footer is scoped to the docs tree and /changelog.
+const route = Astro.url.pathname.replace(/\/+$/u, "") || "/";
+const HIDDEN_ROUTES = new Set(["/"]);
+const visible = !HIDDEN_ROUTES.has(route);
+
+// Sections have no index page — the sidebar tree is built from the files — so
+// each column entry points at a real component page.
+const columns = [
+  {
+    label: "Components",
+    links: [
+      { href: "/base-components/metric-card", label: "Base" },
+      { href: "/platform/branch-picker", label: "Platform" },
+      { href: "/database/sql-runner", label: "Database" },
+      { href: "/infrastructure/compute-status", label: "Infrastructure" },
+      { href: "/agent/agent-chat", label: "Agent" },
+      { href: "/brand/mesh-gradient", label: "Brand" },
+    ],
+  },
+  {
+    label: "Resources",
+    links: [
+      { href: "/installation", label: "Installation" },
+      { href: "/theming", label: "Theming" },
+      { href: "/blocks/create-project", label: "Blocks" },
+      { href: "/changelog", label: "Changelog" },
+    ],
+  },
+  {
+    label: "Neon",
+    links: [
+      { external: true, href: "https://neon.com", label: "neon.com" },
+      { external: true, href: "https://neon.com/docs", label: "Neon Docs" },
+      {
+        external: true,
+        href: "https://github.com/neonpostgres/ui",
+        label: "GitHub",
+      },
+      { external: true, href: "https://x.com/neondatabase", label: "X" },
+    ],
+  },
+];
+
+const linkClass =
+  "text-muted-foreground text-sm transition-colors hover:text-foreground";
+---
+
+{
+  visible && (
+    <footer
+      class="relative isolate mt-24 overflow-hidden border-border border-t bg-background text-primary"
+      data-neon-footer
+    >
+      {/*
+       * The house wash rises from the bottom edge, which is where the footer
+       * wants weight anyway. It reads `currentColor` (the `text-primary` above),
+       * mounts only once scrolled into view, and holds a single static frame
+       * under reduced motion.
+       */}
+      <AnimatedWash
+        className="-z-10 pointer-events-none absolute inset-0 h-full w-full"
+        client:visible
+        intensity={0.28}
+        noise={0.3}
+        speed={0.5}
+      />
+      <div class="mx-auto grid w-full max-w-6xl grid-cols-1 gap-10 px-6 pt-14 pb-8 md:grid-cols-[minmax(0,1fr)_repeat(3,minmax(0,auto))] md:gap-16 md:px-10">
+        <div class="flex flex-col items-start gap-5">
+          {/*
+           * With the small lockup gone this line is the column's only voice, so
+           * it carries display weight: it reads as a statement, not a caption.
+           */}
+          <p class="max-w-sm text-balance font-medium text-foreground text-xl leading-snug tracking-tight md:text-2xl">
+            The UI layer for building with Neon. Installable via the shadcn CLI.
+          </p>
+
+          <div class="-ml-2 flex items-center gap-1">
+            <a
+              aria-label="Neon UI on GitHub"
+              class="inline-flex size-9 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              href="https://github.com/neonpostgres/ui"
+              rel="noreferrer"
+              target="_blank"
+            >
+              <svg
+                aria-hidden="true"
+                fill="currentColor"
+                height="16"
+                set:html={GITHUB_MARK}
+                viewBox="0 0 16 16"
+                width="16"
+                xmlns="http://www.w3.org/2000/svg"
+              />
+            </a>
+            {/*
+             * The site opens dark (theme.mode: "dark"); Blume's pre-paint script
+             * lets a stored choice win, so this button is the only way to reach
+             * light mode. It reuses the header's delegated handler.
+             */}
+            <button
+              aria-label="Toggle theme"
+              class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              data-blume-theme-toggle
+              type="button"
+            >
+              <span class="inline-flex dark:hidden">
+                <Icon name="sun" size={16} />
+              </span>
+              <span class="hidden dark:inline-flex">
+                <Icon name="moon" size={16} />
+              </span>
+            </button>
+          </div>
+        </div>
+
+        {columns.map((column) => (
+          <nav aria-label={column.label} class="flex flex-col gap-3">
+            <h2 class="font-medium text-foreground text-sm">{column.label}</h2>
+            <ul class="flex flex-col gap-2.5">
+              {column.links.map((link) => (
+                <li>
+                  <a
+                    class={linkClass}
+                    href={link.external ? link.href : withBase(link.href)}
+                    rel={link.external ? "noreferrer" : undefined}
+                    target={link.external ? "_blank" : undefined}
+                  >
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        ))}
+      </div>
+
+      {/*
+       * The lockup bleeds off the bottom edge: it sits in a clipping band whose
+       * height is smaller than the art, so the lower third of the letterforms is
+       * cut by the viewport edge like a printed cover. `aria-hidden` because the
+       * same wordmark is already the footer's first link.
+       */}
+      <div
+        aria-hidden="true"
+        class="pointer-events-none mx-auto h-[7vw] max-h-24 min-h-10 w-full max-w-6xl overflow-hidden px-6 md:px-10"
+      >
+        <img
+          alt=""
+          class="w-full select-none dark:hidden"
+          src={withBase("/brand/neon-logo-color-dark.svg")}
+        />
+        <img
+          alt=""
+          class="hidden w-full select-none dark:block"
+          src={withBase("/brand/neon-logo-color-light.svg")}
+        />
+      </div>
+    </footer>
+  )
+}
+

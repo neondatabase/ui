@@ -16,6 +16,13 @@ const navigation = {
 };
 ---
 
+{/*
+ * The landing is a dark stage: the aurora shader, the scrim, and the headline
+ * are all painted against #000, so a light theme leaves a white header sitting
+ * on a black hero. Pin this one route to dark before first paint and hide the
+ * theme controls here, rather than half-theming a page that is one big image.
+ * Every other route keeps the visitor's stored choice.
+ */}
 <PageLayout
   site={{ title: config.title }}
   logo={config.logo}
@@ -51,17 +58,28 @@ const navigation = {
 </PageLayout>
 
 <style>
+  /*
+   * The hero follows the theme. The aurora is an additive neon field built to
+   * glow on black, so light mode does not recolor it: it inverts the rendered
+   * frame and rotates the hue back, which turns the black backdrop white and
+   * keeps the bars in the brand hues, reading as ink on paper instead of a
+   * black slab under a white header.
+   */
   .stage {
     position: relative;
     height: calc(100dvh - 4rem);
     min-height: 480px;
     overflow: hidden;
-    background: #000;
+    background: var(--background);
   }
 
   .stage :global(.aurora) {
     position: absolute;
     inset: 0;
+  }
+
+  :global(:root:not([data-theme="dark"])) .stage :global(.aurora) {
+    filter: invert(1) hue-rotate(180deg);
   }
 
   .scrim {
@@ -74,6 +92,16 @@ const navigation = {
       transparent 65%
     );
     pointer-events: none;
+  }
+
+  /* The scrim exists to hold the headline legible, so it flips with the page. */
+  :global(:root:not([data-theme="dark"])) .scrim {
+    background: linear-gradient(
+      to top,
+      rgb(255 255 255 / 92%) 0%,
+      rgb(255 255 255 / 55%) 35%,
+      transparent 65%
+    );
   }
 
   .content {
@@ -92,7 +120,7 @@ const navigation = {
     font-weight: 600;
     letter-spacing: -0.03em;
     line-height: 1.05;
-    color: #fff;
+    color: var(--foreground);
   }
 
   .accent {
@@ -100,6 +128,14 @@ const navigation = {
     background-clip: text;
     -webkit-background-clip: text;
     color: transparent;
+  }
+
+  /* Brand green at full brightness fails contrast on white; these are the same
+   * two hues darkened until the phrase holds up against the light scrim. */
+  :global(:root:not([data-theme="dark"])) .accent {
+    background: linear-gradient(to right, #00875a, #1d6fd4);
+    background-clip: text;
+    -webkit-background-clip: text;
   }
 
   .actions {
