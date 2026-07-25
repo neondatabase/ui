@@ -43,6 +43,10 @@ import {
 </InlineCitationCard>;
 ```
 
+## Wiring to Neon
+
+Models don't emit citation markup natively, so generate structured output — a `{ content, citations }` schema via `experimental_useObject` — and split the content on `[n]` markers. The typed example shows the full parse-and-render pass; markers with a matching source become pills, everything else stays prose.
+
 ## Props
 
 ### `<InlineCitation />` and `<InlineCitationText />`
@@ -105,10 +109,6 @@ Extends the Base UI `PreviewCard.Root` — hover and focus open the preview; Esc
 ### `<InlineCitationQuote />`
 
 A blockquote for a short excerpt, on the house rail.
-
-## Wiring to Neon
-
-Models don't emit citation markup natively, so generate structured output — a `{ content, citations }` schema via `experimental_useObject` — and split the content on `[n]` markers. The typed example shows the full parse-and-render pass; markers with a matching source become pills, everything else stays prose.
 
 ## Accessibility
 

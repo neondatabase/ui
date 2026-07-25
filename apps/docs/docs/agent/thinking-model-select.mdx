@@ -29,6 +29,22 @@ import { ThinkingModelSelect } from "@/components/neon-ui/thinking-model-select"
 />;
 ```
 
+## Wiring to Neon
+
+Send both selections in one Neon AI Gateway chat call:
+
+```tsx
+await fetch(`${gatewayUrl}/v1/chat/completions`, {
+  method: "POST",
+  headers: { Authorization: `Bearer ${token}` },
+  body: JSON.stringify({
+    model,
+    messages,
+    ...(effort === "off" ? {} : { reasoning_effort: effort }),
+  }),
+});
+```
+
 ## Props
 
 Accepts every [ModelSelect](/agent/model-select) prop except the composition slots (including `excludeModels`), plus:
@@ -56,22 +72,6 @@ Accepts every [ModelSelect](/agent/model-select) prop except the composition slo
 ## Keyboard
 
 While the popup is open, Tab cycles the thinking effort (off → low → med → high → xhigh); typing filters models; arrows walk the list.
-
-## Wiring to Neon
-
-Send both selections in one Neon AI Gateway chat call:
-
-```tsx
-await fetch(`${gatewayUrl}/v1/chat/completions`, {
-  method: "POST",
-  headers: { Authorization: `Bearer ${token}` },
-  body: JSON.stringify({
-    model,
-    messages,
-    ...(effort === "off" ? {} : { reasoning_effort: effort }),
-  }),
-});
-```
 
 ## Accessibility
 

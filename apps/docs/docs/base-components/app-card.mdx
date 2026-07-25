@@ -29,6 +29,10 @@ import { AppCard } from "@/components/neon-ui/app-card";
 />;
 ```
 
+## Wiring to Neon
+
+The typed example maps `GET /projects` onto a grid: project name, a status derived from the default endpoint state, and a relative timestamp from `updated_at`.
+
 ## Props
 
 Extends `ComponentProps<"a">` — pass `href` and any anchor props.
@@ -71,10 +75,6 @@ Extends `ComponentProps<"a">` — pass `href` and any anchor props.
 The default wash is pure CSS — the same fractal grain MetricCard draws, faded from the foot, brightening and drifting up on hover. For a live animated wash, pass any ReactNode to `wash`; it renders inside the same positioned, status-tinted slot. `AnimatedWash` is the registry's own WebGL grain gradient (adapted from [paper-design/shaders](https://github.com/paper-design/shaders), Apache-2.0): it reads `currentColor` from the slot, so the status vocabulary colors it automatically, and it freezes under reduced motion:
 
 <AppCardShaderPreview />
-
-## Wiring to Neon
-
-The typed example maps `GET /projects` onto a grid: project name, a status derived from the default endpoint state, and a relative timestamp from `updated_at`.
 
 ## Accessibility
 

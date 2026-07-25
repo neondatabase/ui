@@ -39,6 +39,10 @@ import { BranchDiff } from "@/components/neon-ui/branch-diff";
 />;
 ```
 
+## Wiring to Neon
+
+Compute the comparison on the server and pass the result in. Schema changes come from `information_schema` and `pg_indexes` on each branch; row changes come from a keyed comparison of the tables you choose to track. Diffing whole tables in the browser would mean shipping both branches' rows to the client, so the component stays presentational and the application decides what is worth comparing.
+
 ## Change shapes
 
 ```ts
@@ -125,10 +129,6 @@ interface TableDataDiff {
     },
   }}
 />
-
-## Computing the diff
-
-Compute the comparison on the server and pass the result in. Schema changes come from `information_schema` and `pg_indexes` on each branch; row changes come from a keyed comparison of the tables you choose to track. Diffing whole tables in the browser would mean shipping both branches' rows to the client, so the component stays presentational and the application decides what is worth comparing.
 
 ## Accessibility
 

@@ -26,6 +26,10 @@ import { AppCreator } from "@/components/neon-ui/app-creator";
 />;
 ```
 
+## Wiring to Neon
+
+The typed example creates a Neon project per app (`POST /projects`) through your API layer, then routes to the new workspace. The plan value maps onto your billing tier.
+
 ## Props
 
 <TypeTable
@@ -63,10 +67,6 @@ import { AppCreator } from "@/components/neon-ui/app-creator";
     },
   }}
 />
-
-## Wiring to Neon
-
-The typed example creates a Neon project per app (`POST /projects`) through your API layer, then routes to the new workspace. The plan value maps onto your billing tier.
 
 ## Accessibility
 

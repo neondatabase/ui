@@ -23,6 +23,10 @@ import { ToolCallChip } from "@/components/neon-ui/tool-call-chip";
 <ToolCallChip name="writeFile" state="running" />;
 ```
 
+## Wiring to Neon
+
+Map AI SDK tool parts (from `message.parts`) onto chips: `output-available` → done, `output-error` → error, anything else → running. The typed example shows the full mapping for both static and dynamic tool parts.
+
 ## Props
 
 <TypeTable
@@ -43,10 +47,6 @@ import { ToolCallChip } from "@/components/neon-ui/tool-call-chip";
     },
   }}
 />
-
-## Wiring to Neon
-
-Map AI SDK tool parts (from `message.parts`) onto chips: `output-available` → done, `output-error` → error, anything else → running. The typed example shows the full mapping for both static and dynamic tool parts.
 
 ## Accessibility
 

@@ -31,6 +31,20 @@ import { BranchTree } from "@/components/neon-ui/branch-tree";
 
 Controlled with `value` + `onValueChange`, or uncontrolled with `defaultValue`.
 
+## Wiring to Neon
+
+A server component lists a project's branches and selects the default:
+
+```tsx
+import { createNeonClient } from "@/lib/neon-client";
+
+const client = createNeonClient(process.env.NEON_API_KEY);
+const { data } = await client.listProjectBranches({ projectId });
+// map each branch to { id, name, default, protected, parent, updatedAt }
+```
+
+`updatedAt` comes straight off the branch. Fill `state` from the compute endpoints (`listProjectBranchEndpoints`) if you want the node to reflect live compute. Wire `onValueChange` in a client wrapper, since selection is client state.
+
 ## Props
 
 <TypeTable
@@ -55,20 +69,6 @@ Controlled with `value` + `onValueChange`, or uncontrolled with `defaultValue`.
     },
   }}
 />
-
-## Wiring to Neon
-
-A server component lists a project's branches and selects the default:
-
-```tsx
-import { createNeonClient } from "@/lib/neon-client";
-
-const client = createNeonClient(process.env.NEON_API_KEY);
-const { data } = await client.listProjectBranches({ projectId });
-// map each branch to { id, name, default, protected, parent, updatedAt }
-```
-
-`updatedAt` comes straight off the branch. Fill `state` from the compute endpoints (`listProjectBranchEndpoints`) if you want the node to reflect live compute. Wire `onValueChange` in a client wrapper, since selection is client state.
 
 ## Accessibility
 

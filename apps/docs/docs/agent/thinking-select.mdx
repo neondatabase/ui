@@ -23,6 +23,22 @@ import { ThinkingSelect } from "@/components/neon-ui/thinking-select";
 <ThinkingSelect value={effort} onValueChange={setEffort} />;
 ```
 
+## Wiring to Neon
+
+Forward the selection to a Neon AI Gateway chat call; omit the parameter when thinking is off:
+
+```tsx
+await fetch(`${gatewayUrl}/v1/chat/completions`, {
+  method: "POST",
+  headers: { Authorization: `Bearer ${token}` },
+  body: JSON.stringify({
+    model: "neon/claude-sonnet-4-6",
+    messages,
+    ...(effort === "off" ? {} : { reasoning_effort: effort }),
+  }),
+});
+```
+
 ## Props
 
 <TypeTable
@@ -52,22 +68,6 @@ import { ThinkingSelect } from "@/components/neon-ui/thinking-select";
     },
   }}
 />
-
-## Wiring to Neon
-
-Forward the selection to a Neon AI Gateway chat call; omit the parameter when thinking is off:
-
-```tsx
-await fetch(`${gatewayUrl}/v1/chat/completions`, {
-  method: "POST",
-  headers: { Authorization: `Bearer ${token}` },
-  body: JSON.stringify({
-    model: "neon/claude-sonnet-4-6",
-    messages,
-    ...(effort === "off" ? {} : { reasoning_effort: effort }),
-  }),
-});
-```
 
 ## Accessibility
 

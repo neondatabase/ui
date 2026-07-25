@@ -24,6 +24,10 @@ import { PlanBadge, StatusBadge } from "@/components/neon-ui/status-badge";
 <PlanBadge plan="paid" />;
 ```
 
+## Wiring to Neon
+
+Map a Neon compute endpoint (`GET /projects/{id}/endpoints`) onto the vocabulary: a `pending_state` or `init` state is provisioning, `active` is ready, `idle` is stopped. The typed example ships the full mapping.
+
 ## Props
 
 ### StatusBadge
@@ -57,10 +61,6 @@ import { PlanBadge, StatusBadge } from "@/components/neon-ui/status-badge";
     },
   }}
 />
-
-## Wiring to Neon
-
-Map a Neon compute endpoint (`GET /projects/{id}/endpoints`) onto the vocabulary: a `pending_state` or `init` state is provisioning, `active` is ready, `idle` is stopped. The typed example ships the full mapping.
 
 ## Accessibility
 

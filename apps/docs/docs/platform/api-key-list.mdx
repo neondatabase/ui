@@ -38,6 +38,24 @@ import { ApiKeyList } from "@/components/neon-ui/api-key-list";
 />;
 ```
 
+## Wiring to Neon
+
+List the account's keys in a server component and wire create and revoke as server actions:
+
+```tsx
+import { createNeonClient } from "@/lib/neon-client";
+
+const createKey = async (name: string, scope: ApiKeyScope) => {
+  "use server";
+  const client = createNeonClient(process.env.NEON_API_KEY);
+  const { data } =
+    scope === "organization"
+      ? await client.createOrgApiKey(orgId, { key_name: name })
+      : await client.createApiKey({ key_name: name });
+  return data.key; // shown once
+};
+```
+
 ## Props
 
 <TypeTable
@@ -75,24 +93,6 @@ import { ApiKeyList } from "@/components/neon-ui/api-key-list";
     },
   }}
 />
-
-## Wiring to Neon
-
-A server component lists the account's keys and wires create and revoke as server actions, so the token is minted and returned without ever touching the client as stored state:
-
-```tsx
-import { createNeonClient } from "@/lib/neon-client";
-
-const createKey = async (name: string, scope: ApiKeyScope) => {
-  "use server";
-  const client = createNeonClient(process.env.NEON_API_KEY);
-  const { data } =
-    scope === "organization"
-      ? await client.createOrgApiKey(orgId, { key_name: name })
-      : await client.createApiKey({ key_name: name });
-  return data.key; // shown once
-};
-```
 
 ## Accessibility
 

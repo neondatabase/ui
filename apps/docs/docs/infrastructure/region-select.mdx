@@ -42,6 +42,30 @@ import { RegionSelect } from "@/components/neon-ui/region-select";
 />;
 ```
 
+## Wiring to Neon
+
+A server component turns the active regions into `ServerRegion`s:
+
+```tsx
+import { createNeonClient } from "@/lib/neon-client";
+
+const client = createNeonClient(process.env.NEON_API_KEY);
+const { data } = await client.getActiveRegions({});
+// pass org_id to get the regions one organization can actually use
+
+const regions = data.regions
+  .filter((region) => region.geo_lat && region.geo_long)
+  .map((region) => ({
+    id: region.region_id,
+    name: region.name,
+    provider: region.region_id.split("-")[0].toUpperCase(),
+    lat: Number(region.geo_lat),
+    lng: Number(region.geo_long),
+  }));
+```
+
+Coordinates come back as strings and are empty when Neon does not know them, so filter before mapping or the marker lands at 0,0. `default: true` marks the region new projects use, which makes a sensible `defaultValue`. Selection is client state, so wire `onValueChange` in a client wrapper.
+
 ## Props
 
 <TypeTable

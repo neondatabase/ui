@@ -34,6 +34,18 @@ import { LogsViewer } from "@/components/neon-ui/logs-viewer";
 <LogsViewer lines={lines} isStreaming={isStreaming} title="Compute logs" />;
 ```
 
+## Wiring to Neon
+
+`useLogsStream` reads a server-sent events endpoint that emits one JSON line per message:
+
+```tsx
+const { lines, isStreaming, error } = useLogsStream({
+  endpoint: "/api/logs/stream?branch=br-main&compute=compute-0",
+});
+```
+
+The endpoint belongs to the application. Neon credentials stay on the server, which also decides retention and who may read a compute's output.
+
 ## Line shape
 
 ```ts
@@ -128,18 +140,6 @@ interface LogLine {
     },
   }}
 />
-
-## Streaming from Neon
-
-`useLogsStream` reads a server-sent events endpoint that emits one JSON line per message:
-
-```tsx
-const { lines, isStreaming, error } = useLogsStream({
-  endpoint: "/api/logs/stream?branch=br-main&compute=compute-0",
-});
-```
-
-The endpoint belongs to the application. Neon credentials stay on the server, which also decides retention and who may read a compute's output.
 
 ## Accessibility
 

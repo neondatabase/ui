@@ -31,6 +31,39 @@ import { CreateProject } from "@/components/neon-ui/create-project";
 />;
 ```
 
+## Wiring to Neon
+
+A server component loads the region list, and a server action creates the project from the submitted values:
+
+```tsx
+import { createNeonClient } from "@/lib/neon-client";
+
+const client = createNeonClient(process.env.NEON_API_KEY);
+
+const { data } = await client.getActiveRegions({});
+const regions = data.regions.map((region) => ({
+  id: region.region_id,
+  name: region.name,
+  provider: region.region_id.split("-")[0].toUpperCase(),
+  lat: Number(region.geo_lat),
+  lng: Number(region.geo_long),
+}));
+
+const createProject = async (values: CreateProjectValues) => {
+  "use server";
+  const { data: created } = await client.createProject({
+    project: {
+      name: values.name,
+      region_id: values.regionId,
+      pg_version: Number(values.postgresVersion) as PgVersion,
+    },
+  });
+  return created.project.id;
+};
+```
+
+`geo_lat` and `geo_long` arrive as strings and are empty when unknown, so drop regions that fail to parse before plotting them. Pass the action to `onSubmit` from a client wrapper, hold `isBusy` while it runs, and map a rejected create onto `errors` so the message lands beside the field.
+
 ## Props
 
 <TypeTable

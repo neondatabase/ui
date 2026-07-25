@@ -29,6 +29,44 @@ import { AuthForm } from "@/components/neon-ui/auth-form";
 />;
 ```
 
+## Wiring to Neon Auth
+
+Neon Auth is built on [Better Auth](https://better-auth.com), and the form maps onto its client 1:1 — `AuthFormValues` matches the email methods, provider ids are social slugs, and API failures route to `error` or `fieldErrors`:
+
+```tsx
+const handleSubmit = async (values: AuthFormValues) => {
+  setBusy(true);
+  const { error } =
+    mode === "sign-up"
+      ? await authClient.signUp.email({
+          email: values.email,
+          name: values.name ?? "",
+          password: values.password,
+        })
+      : await authClient.signIn.email(values);
+  setBusy(false);
+
+  if (error?.code === "INVALID_EMAIL_OR_PASSWORD") {
+    setFieldErrors({ password: "Incorrect email or password." });
+  } else if (error) {
+    setError(error.message ?? "Something went wrong.");
+  }
+};
+
+<AuthForm
+  mode={mode}
+  onModeChange={setMode}
+  onProvider={(id) => authClient.signIn.social({ provider: id })}
+  onSubmit={handleSubmit}
+  providers={[
+    { id: "github", label: "GitHub" },
+    { id: "google", label: "Google" },
+  ]}
+/>;
+```
+
+The default sign-up password rule (8–128 characters) mirrors Better Auth's server defaults, so client verdicts and server verdicts agree.
+
 ## With the aurora cover
 
 The reason [`NeonAurora`](/brand/neon-aurora) exists: use it as the cover panel of a split sign-in screen. The aurora fills the left half, the form sits on `bg-card` to the right, and the whole screen stays two theme tokens away from any brand.
@@ -70,44 +108,6 @@ Keep messages short — they render in the label slot, one line.
 On sign up the password field also opens a floating requirements popover while focused — 8+ characters, mixed case, a number, a symbol — each rule flipping from a muted dot to a drawn check as the password satisfies it. It floats below the field, so nothing shifts.
 
 On sign up the password field carries a strength meter: the beam under the field grows with the password and warms from destructive through neutral to primary, and the reading (`weak` / `fair` / `strong`) rides the trailing slot. Scoring uses Better Auth's 8–128 character defaults as the floor, then rewards mixed case, digits, symbols, and length.
-
-## Better Auth
-
-Neon Auth is built on [Better Auth](https://better-auth.com), and the form maps onto its client 1:1 — `AuthFormValues` matches the email methods, provider ids are social slugs, and API failures route to `error` or `fieldErrors`:
-
-```tsx
-const handleSubmit = async (values: AuthFormValues) => {
-  setBusy(true);
-  const { error } =
-    mode === "sign-up"
-      ? await authClient.signUp.email({
-          email: values.email,
-          name: values.name ?? "",
-          password: values.password,
-        })
-      : await authClient.signIn.email(values);
-  setBusy(false);
-
-  if (error?.code === "INVALID_EMAIL_OR_PASSWORD") {
-    setFieldErrors({ password: "Incorrect email or password." });
-  } else if (error) {
-    setError(error.message ?? "Something went wrong.");
-  }
-};
-
-<AuthForm
-  mode={mode}
-  onModeChange={setMode}
-  onProvider={(id) => authClient.signIn.social({ provider: id })}
-  onSubmit={handleSubmit}
-  providers={[
-    { id: "github", label: "GitHub" },
-    { id: "google", label: "Google" },
-  ]}
-/>;
-```
-
-The default sign-up password rule (8–128 characters) mirrors Better Auth's server defaults, so client verdicts and server verdicts agree.
 
 ## Props
 

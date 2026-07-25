@@ -5,7 +5,7 @@ seo:
   image: /og-cards/docs/platform/db-connection-card.png
 ---
 
-`DBConnectionCard` is the connection panel for a Neon database. Pick a role, a database, and pooled or direct; switch between the connection URI, a ready-to-run `psql` command, the broken-out parameters, and an agent prompt. The scheme, role, host, and database stay readable so the string is scannable, while the password hides behind one reveal that applies to every view. Copy always carries the real value, whatever is shown. It is presentational: the URIs come from the server as plain data, one per combination, so no secret is ever built in the browser.
+`DBConnectionCard` is the connection panel for a Neon database. Pick a role, a database, and pooled or direct; switch between the connection URI, a ready-to-run `psql` command, the broken-out parameters, and an agent prompt. The scheme, role, host, and database stay readable so the string is scannable, while the password hides behind one reveal that applies to every view. Copy always carries the real value, whatever is shown. It is presentational: the URIs come in as plain data, one per combination.
 
 <DBConnectionCardPreview />
 
@@ -37,6 +37,26 @@ import { DBConnectionCard } from "@/components/neon-ui/db-connection-card";
   ]}
 />;
 ```
+
+## Wiring to Neon
+
+Fetch the URIs for each combination and pass them in as plain data:
+
+```tsx
+import { createNeonClient } from "@/lib/neon-client";
+
+const client = createNeonClient(process.env.NEON_API_KEY);
+const { data } = await client.getConnectionUri({
+  projectId,
+  branch_id: branchId,
+  role_name: role,
+  database_name: database,
+  pooled,
+});
+// { role, database, pooled, uri: data.uri }
+```
+
+Reveal only toggles what is shown; copy always writes the real string to the clipboard. The parameters view parses the selected URI in place. A value that is not URL-shaped masks whole.
 
 ## Props
 
@@ -92,26 +112,6 @@ import { DBConnectionCard } from "@/components/neon-ui/db-connection-card";
     },
   }}
 />
-
-## Secrets stay server-side
-
-The card never builds a connection string. A server component prefetches the URIs for each combination and passes them as plain data:
-
-```tsx
-import { createNeonClient } from "@/lib/neon-client";
-
-const client = createNeonClient(process.env.NEON_API_KEY);
-const { data } = await client.getConnectionUri({
-  projectId,
-  branch_id: branchId,
-  role_name: role,
-  database_name: database,
-  pooled,
-});
-// { role, database, pooled, uri: data.uri }
-```
-
-Reveal only toggles what is shown; copy always writes the real string to the clipboard. The parameters view parses the selected URI in place. A value that is not URL-shaped masks whole rather than leak.
 
 ## Accessibility
 

@@ -49,6 +49,23 @@ import { MetricCard } from "@/components/neon-ui/metric-card";
 />;
 ```
 
+## Wiring to Neon
+
+The presentational component takes data as props. A server component fetches real consumption from the [Neon API](https://neon.com/docs/reference/api) and passes it down:
+
+```tsx
+import { ConsumptionHistoryGranularity } from "@neondatabase/api-client";
+import { createNeonClient } from "@/lib/neon-client";
+
+const client = createNeonClient(process.env.NEON_API_KEY);
+const { data } = await client.getConsumptionHistoryPerProject({
+  from: from.toISOString(),
+  to: now.toISOString(),
+  granularity: ConsumptionHistoryGranularity.Daily,
+  project_ids: [projectId],
+});
+```
+
 ## Props
 
 <TypeTable
@@ -109,23 +126,6 @@ import { MetricCard } from "@/components/neon-ui/metric-card";
 - `percent` — value with a `%` suffix (`99.2%`)
 - `currency` — USD (`$284.50`)
 - `duration` — value in seconds as `h/m/s` (`2h 8m`)
-
-## Wiring to Neon
-
-The presentational component takes data as props. A server component fetches real consumption from the [Neon API](https://neon.com/docs/reference/api) and passes it down:
-
-```tsx
-import { ConsumptionHistoryGranularity } from "@neondatabase/api-client";
-import { createNeonClient } from "@/lib/neon-client";
-
-const client = createNeonClient(process.env.NEON_API_KEY);
-const { data } = await client.getConsumptionHistoryPerProject({
-  from: from.toISOString(),
-  to: now.toISOString(),
-  granularity: ConsumptionHistoryGranularity.Daily,
-  project_ids: [projectId],
-});
-```
 
 ## Accessibility
 

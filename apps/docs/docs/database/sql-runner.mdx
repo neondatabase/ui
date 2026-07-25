@@ -41,6 +41,34 @@ const { execute } = useSQLRunner({ endpoint: "/api/sql" });
 />;
 ```
 
+## Wiring to Neon
+
+The included `useSQLRunner` hook posts `{ query, mode }` to an endpoint and forwards its AbortSignal. A Next.js route handler can execute the authorized query with the Neon serverless driver:
+
+```ts
+import { neon } from "@neondatabase/serverless";
+
+export async function POST(request: Request) {
+  const { query } = await request.json();
+  const sql = neon(process.env.DATABASE_URL);
+  const startedAt = performance.now();
+  const result = await sql.query(query, [], { fullResults: true });
+
+  return Response.json({
+    command: result.command,
+    durationMs: performance.now() - startedAt,
+    fields: result.fields.map((field) => ({
+      name: field.name,
+      type: String(field.dataTypeID),
+    })),
+    rowCount: result.rowCount,
+    rows: result.rows,
+  });
+}
+```
+
+Authenticate the endpoint and enforce your own statement policy there. The component's read-only classifier is interaction feedback, not a security boundary.
+
 ## Props
 
 <TypeTable
@@ -94,34 +122,6 @@ const { execute } = useSQLRunner({ endpoint: "/api/sql" });
     },
   }}
 />
-
-## Wiring to Neon
-
-The included `useSQLRunner` hook posts `{ query, mode }` to an endpoint and forwards its AbortSignal. A Next.js route handler can execute the authorized query with the Neon serverless driver:
-
-```ts
-import { neon } from "@neondatabase/serverless";
-
-export async function POST(request: Request) {
-  const { query } = await request.json();
-  const sql = neon(process.env.DATABASE_URL);
-  const startedAt = performance.now();
-  const result = await sql.query(query, [], { fullResults: true });
-
-  return Response.json({
-    command: result.command,
-    durationMs: performance.now() - startedAt,
-    fields: result.fields.map((field) => ({
-      name: field.name,
-      type: String(field.dataTypeID),
-    })),
-    rowCount: result.rowCount,
-    rows: result.rows,
-  });
-}
-```
-
-Authenticate the endpoint and enforce your own statement policy there. The component's read-only classifier is interaction feedback, not a security boundary.
 
 ## Result shape
 

@@ -39,6 +39,25 @@ import { UsageCard } from "@/components/neon-ui/usage-card";
 />;
 ```
 
+## Wiring to Neon
+
+A server component pulls two windows of daily consumption, keeps the current one as samples and sums the prior one for the delta:
+
+```tsx
+import { ConsumptionHistoryGranularity } from "@neondatabase/api-client";
+import { createNeonClient } from "@/lib/neon-client";
+
+const client = createNeonClient(process.env.NEON_API_KEY);
+const { data } = await client.getConsumptionHistoryPerProject({
+  from: from.toISOString(),
+  to: now.toISOString(),
+  granularity: ConsumptionHistoryGranularity.Daily,
+  project_ids: [projectId],
+});
+```
+
+Read `compute_time_seconds` (or `synthetic_storage_size_bytes`, `written_data_bytes`, `active_time_seconds`) off each timeframe into `UsagePoint`s and pass them straight through.
+
 ## Props
 
 `UsageCard` forwards every prop the [MetricCard](/base-components/metric-card) shell accepts — `isLoading`, `error`, `className`, and the rest — while owning the metric semantics below.
@@ -94,25 +113,6 @@ import { UsageCard } from "@/components/neon-ui/usage-card";
 - **storage** — a level, not a total: the card reads the latest sample and formats it as a size.
 - **delta** — only when `previousTotal` is set: the signed percentage change of the current window against it. No comparison base, no delta — the card never invents one.
 - **sparkline** — every sample maps to a trend point in the displayed unit; an empty `data` array drops the chart rather than faking one.
-
-## Wiring to Neon
-
-A server component pulls two windows of daily consumption, keeps the current one as samples and sums the prior one for the delta:
-
-```tsx
-import { ConsumptionHistoryGranularity } from "@neondatabase/api-client";
-import { createNeonClient } from "@/lib/neon-client";
-
-const client = createNeonClient(process.env.NEON_API_KEY);
-const { data } = await client.getConsumptionHistoryPerProject({
-  from: from.toISOString(),
-  to: now.toISOString(),
-  granularity: ConsumptionHistoryGranularity.Daily,
-  project_ids: [projectId],
-});
-```
-
-Read `compute_time_seconds` (or `synthetic_storage_size_bytes`, `written_data_bytes`, `active_time_seconds`) off each timeframe into `UsagePoint`s and pass them straight through.
 
 ## Accessibility
 

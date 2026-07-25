@@ -37,6 +37,30 @@ import { QueryHistory } from "@/components/neon-ui/query-history";
 />;
 ```
 
+## Wiring to Neon
+
+Postgres does not expose per-user application history as a UI-ready feed. Record each SQLRunner execution in your server endpoint, then return those rows from `/api/query-history`. The component never stores SQL on its own.
+
+```tsx
+import { neon } from "@neondatabase/serverless";
+
+const sql = neon(process.env.DATABASE_URL!);
+
+export async function GET() {
+  const rows = await sql`
+    select id, query, status, executed_at, duration_ms, row_count,
+           command, database_name, branch_name, error_message, saved
+    from app_query_history
+    order by executed_at desc
+    limit 100
+  `;
+
+  return Response.json({ entries: rows });
+}
+```
+
+The included `useQueryHistory()` hook loads that endpoint with request cancellation and exposes `entries`, `isLoading`, `error`, `refresh`, and `setEntries`. Save changes can use `PATCH /api/query-history/:id`. Rerun should pass `entry.query` back to SQLRunner or navigate to your runner route with the query in application state.
+
 ## Entry shape
 
 ```ts
@@ -122,30 +146,6 @@ interface QueryHistoryEntry {
     },
   }}
 />
-
-## Recording real SQL
-
-Postgres does not expose per-user application history as a UI-ready feed. Record each SQLRunner execution in your server endpoint, then return those rows from `/api/query-history`. The component never stores SQL on its own.
-
-```tsx
-import { neon } from "@neondatabase/serverless";
-
-const sql = neon(process.env.DATABASE_URL!);
-
-export async function GET() {
-  const rows = await sql`
-    select id, query, status, executed_at, duration_ms, row_count,
-           command, database_name, branch_name, error_message, saved
-    from app_query_history
-    order by executed_at desc
-    limit 100
-  `;
-
-  return Response.json({ entries: rows });
-}
-```
-
-The included `useQueryHistory()` hook loads that endpoint with request cancellation and exposes `entries`, `isLoading`, `error`, `refresh`, and `setEntries`. Save changes can use `PATCH /api/query-history/:id`. Rerun should pass `entry.query` back to SQLRunner or navigate to your runner route with the query in application state.
 
 ## Accessibility
 

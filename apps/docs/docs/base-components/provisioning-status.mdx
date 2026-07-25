@@ -27,6 +27,27 @@ import { ProvisioningStatus } from "@/components/neon-ui/provisioning-status";
 />;
 ```
 
+## Wiring to Neon
+
+Provisioning is a Neon operation, so poll the project's operations and map their status onto the panel:
+
+```tsx
+import { OperationStatus } from "@neondatabase/api-client";
+import { createNeonClient } from "@/lib/neon-client";
+
+const client = createNeonClient(process.env.NEON_API_KEY);
+const { data } = await client.listProjectOperations({ projectId, limit: 10 });
+const pending = data.operations.find(
+  (operation) =>
+    operation.status === OperationStatus.Running ||
+    operation.status === OperationStatus.Scheduling
+);
+// state: pending ? "provisioning" : failed ? "error" : done
+// detail: pending?.action, e.g. "create_compute" mapped to your own copy
+```
+
+`failed`, `error`, and `cancelled` all mean the panel shows `error`; `start_compute` on an existing project is the `waking` case. Turn `operation.action` into your own sentence rather than showing the raw action name, and swap `detail` as each operation completes so the line crossfades instead of jumping.
+
 ## States
 
 - **Provisioning** — loader + headline + shimmering detail. Swap `detail` as your API reports progress ("Creating Neon project…" → "Provisioning database…") and it crossfades in place.

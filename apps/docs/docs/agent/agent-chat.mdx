@@ -32,6 +32,22 @@ const { messages, sendMessage, status } = useChat({ transport });
 />;
 ```
 
+## Wiring to Neon
+
+Stream a Neon-hosted agent (e.g. a Mastra agent on a Neon Function) directly from the browser with a short-lived JWT, so your app server never sits in the path of the long stream:
+
+```tsx
+const { messages, sendMessage, status } = useChat({
+  transport: new DefaultChatTransport({
+    api: `${agentUrl}/chat`,
+    prepareSendMessagesRequest: async ({ messages }) => ({
+      headers: { Authorization: `Bearer ${await getToken()}` },
+      body: { messages, model, reasoning_effort: effort },
+    }),
+  }),
+});
+```
+
 ## Props
 
 <TypeTable
@@ -104,22 +120,6 @@ The composer on its own: auto-growing textarea, controls slot, Enter to send.
 The busy row: the Neon mark and the status line painted with the same shadcn `shimmer` gradient, sweeping in sync. Tune both at once with `shimmer-duration-*` or `shimmer-color-*` on the wrapper; the grain-resolve [NeonLoader](/brand/neon-loader) remains available standalone. Rendered automatically while a message is submitted; the `label` is yours.
 
 <ChatWorkingPreview />
-
-## Wiring to Neon
-
-Stream a Neon-hosted agent (e.g. a Mastra agent on a Neon Function) directly from the browser with a short-lived JWT, so your app server never sits in the path of the long stream:
-
-```tsx
-const { messages, sendMessage, status } = useChat({
-  transport: new DefaultChatTransport({
-    api: `${agentUrl}/chat`,
-    prepareSendMessagesRequest: async ({ messages }) => ({
-      headers: { Authorization: `Bearer ${await getToken()}` },
-      body: { messages, model, reasoning_effort: effort },
-    }),
-  }),
-});
-```
 
 ## Accessibility
 

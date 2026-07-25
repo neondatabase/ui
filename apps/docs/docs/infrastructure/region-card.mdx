@@ -28,6 +28,22 @@ import { RegionCard } from "@/components/neon-ui/region-card";
 />;
 ```
 
+## Wiring to Neon
+
+The card is one region's readout, so it takes a single entry off the active-regions list:
+
+```tsx
+import { createNeonClient } from "@/lib/neon-client";
+
+const client = createNeonClient(process.env.NEON_API_KEY);
+const { data } = await client.getActiveRegions({});
+const region = data.regions.find((item) => item.region_id === regionId);
+
+<RegionCard title={region.name} regionId={region.region_id} ping={ping} />;
+```
+
+`ping` never comes from the API. It is a browser measurement, so take it from `useRegionPing` (shipped with [RegionGlobe](/infrastructure/region-globe)) and pass `null` until the first round-trip lands.
+
 ## Props
 
 <TypeTable

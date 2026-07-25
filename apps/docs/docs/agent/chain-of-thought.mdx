@@ -39,6 +39,10 @@ import {
 </ChainOfThought>;
 ```
 
+## Wiring to Neon
+
+Map AI SDK tool parts onto steps — `output-available` and `output-error` are complete, anything still streaming is active. The typed example renders one step per tool call and opens the fold while the message streams so the reader watches steps land.
+
 ## Props
 
 ### `<ChainOfThought />`
@@ -98,10 +102,6 @@ A wrapping row of quiet outline chips. `ChainOfThoughtSearchResult` extends [Bad
     },
   }}
 />
-
-## Wiring to Neon
-
-Map AI SDK tool parts onto steps — `output-available` and `output-error` are complete, anything still streaming is active. The typed example renders one step per tool call and opens the fold while the message streams so the reader watches steps land.
 
 ## Accessibility
 

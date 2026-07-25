@@ -27,6 +27,32 @@ import { CheckpointTimeline } from "@/components/neon-ui/checkpoint-timeline";
 />;
 ```
 
+## Wiring to Neon
+
+A server component lists the project's snapshots and wires restore as a server action:
+
+```tsx
+import { createNeonClient } from "@/lib/neon-client";
+
+const client = createNeonClient(process.env.NEON_API_KEY);
+const { data } = await client.listSnapshots(projectId);
+
+const checkpoints = data.snapshots.map((snapshot) => ({
+  id: snapshot.id,
+  label: snapshot.name,
+  createdAt: snapshot.created_at,
+  snapshot: snapshot.id,
+  projectId,
+}));
+
+const restore = async (snapshotId: string) => {
+  "use server";
+  await client.restoreSnapshot({ projectId, snapshotId }, {});
+};
+```
+
+Snapshots come back oldest first, so reverse them: the timeline expects newest first. `restoreSnapshot` creates a new branch rather than overwriting one, and it returns before the operation finishes, so poll `listProjectOperations` and hold `restoringId` until the restore operation reports `finished`.
+
 ## States
 
 - **Entrance** — rows rise 8px one at a time, 60ms apart, newest first.

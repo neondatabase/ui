@@ -55,6 +55,34 @@ import { UsagePanel } from "@/components/neon-ui/usage-panel";
 
 Each metric accepts the full MetricCard surface: `delta`, `comparisonLabel`, `trend`, `format`, `unit`.
 
+## Wiring to Neon
+
+One consumption call fills every card. Sum the billing period's timeframes into a metric each:
+
+```tsx
+import { ConsumptionHistoryGranularity } from "@neondatabase/api-client";
+import { createNeonClient } from "@/lib/neon-client";
+
+const client = createNeonClient(process.env.NEON_API_KEY);
+const { data } = await client.getConsumptionHistoryPerProject({
+  from: periodStart.toISOString(),
+  to: now.toISOString(),
+  granularity: ConsumptionHistoryGranularity.Daily,
+  project_ids: [projectId],
+});
+
+const timeframes = data.projects[0].periods.flatMap(
+  (period) => period.consumption
+);
+const computeSeconds = timeframes.reduce(
+  (sum, frame) => sum + frame.compute_time_seconds,
+  0
+);
+// storage: synthetic_storage_size_bytes, writes: written_data_bytes
+```
+
+Compute arrives in seconds, so divide by 3600 for CU-hours; storage and writes are bytes, which `format: "bytes"` renders. Storage is a point-in-time size rather than a total, so read the newest timeframe instead of summing. Network egress is not in this response: use `getConsumptionHistoryPerProjectV2` with the `public_network_transfer_bytes` metric when you need an egress card. Neon meters on a delay, so state it in `meteredThrough` rather than letting a low number read as a bug. Gate a metric with `gated` when the account's plan does not include it.
+
 ## States
 
 - **Gated** — `gated: true` swaps the value for the plan gate inside the same frame; `onUpgrade` renders the pill.

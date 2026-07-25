@@ -29,6 +29,29 @@ const { pings } = useRegionPing({
 <p>~{pings[region]} ms from your location</p>
 ```
 
+## Wiring to Neon
+
+The globe takes the same `ServerRegion[]` as [RegionSelect](/infrastructure/region-select), built on the server from the active regions:
+
+```tsx
+import { createNeonClient } from "@/lib/neon-client";
+
+const client = createNeonClient(process.env.NEON_API_KEY);
+const { data } = await client.getActiveRegions({});
+
+const regions = data.regions
+  .filter((region) => region.geo_lat && region.geo_long)
+  .map((region) => ({
+    id: region.region_id,
+    name: region.name,
+    provider: region.region_id.split("-")[0].toUpperCase(),
+    lat: Number(region.geo_lat),
+    lng: Number(region.geo_long),
+  }));
+```
+
+Latency is measured in the browser, not fetched: pass the regions to `useRegionPing` in a client component and hand the result back as `latencies`.
+
 ## Props
 
 <TypeTable

@@ -33,6 +33,26 @@ import { SchemaExplorer } from "@/components/neon-ui/schema-explorer";
 
 `tables` is an array of `{ name, columns, indexes?, rowCount? }`. Each column is `{ name, type, primaryKey?, unique?, nullable?, references? }`.
 
+## Wiring to Neon
+
+A server component introspects the public schema over the Neon serverless driver and maps the rows to tables:
+
+```tsx
+import { neon } from "@neondatabase/serverless";
+
+const sql = neon(process.env.DATABASE_URL);
+const rows = await sql`
+  SELECT table_name, column_name, data_type, is_nullable
+  FROM information_schema.columns
+  WHERE table_schema = 'public'
+  ORDER BY table_name, ordinal_position
+`;
+// group rows by table_name into { name, columns } and add PK/FK from
+// information_schema.table_constraints
+```
+
+It runs server-side, so the connection string never reaches the browser. Add indexes from `pg_indexes` if you want the Indexes section populated.
+
 ## Props
 
 <TypeTable
@@ -70,26 +90,6 @@ import { SchemaExplorer } from "@/components/neon-ui/schema-explorer";
     },
   }}
 />
-
-## Wiring to Neon
-
-A server component introspects the public schema over the Neon serverless driver and maps the rows to tables:
-
-```tsx
-import { neon } from "@neondatabase/serverless";
-
-const sql = neon(process.env.DATABASE_URL);
-const rows = await sql`
-  SELECT table_name, column_name, data_type, is_nullable
-  FROM information_schema.columns
-  WHERE table_schema = 'public'
-  ORDER BY table_name, ordinal_position
-`;
-// group rows by table_name into { name, columns } and add PK/FK from
-// information_schema.table_constraints
-```
-
-It runs server-side, so the connection string never reaches the browser. Add indexes from `pg_indexes` if you want the Indexes section populated.
 
 ## Accessibility
 

@@ -28,6 +28,10 @@ import { AnimatedWash } from "@/components/neon-ui/animated-wash";
 </div>;
 ```
 
+## Wiring to Neon
+
+The typed example tints a panel from a compute endpoint's state (`active` → primary, `idle` → muted) — since the wash reads `currentColor`, the class on the wrapper is the entire integration.
+
 ## Props
 
 <TypeTable
@@ -64,10 +68,6 @@ Drag the props live — `speed` at 0 freezes the field, `intensity` fills in the
 ## Composition
 
 [AppCard](/base-components/app-card) accepts it through the `wash` slot, where the status vocabulary supplies the tint automatically.
-
-## Wiring to Neon
-
-The typed example tints a panel from a compute endpoint's state (`active` → primary, `idle` → muted) — since the wash reads `currentColor`, the class on the wrapper is the entire integration.
 
 ## Accessibility
 

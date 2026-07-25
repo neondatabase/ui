@@ -34,6 +34,10 @@ import {
 </Reasoning>;
 ```
 
+## Wiring to Neon
+
+With AI SDK `useChat`, consolidate every `reasoning` part into one block — models with high reasoning effort emit several parts, and one fold beats a stack of "Thinking…" indicators. The typed example shows the full mapping, including live-stream detection from the message's last part. Reasoning-capable gateway models (pick one with [ModelSelect](/agent/model-select)) stream these parts when the route sets `sendReasoning: true`.
+
 ## Props
 
 ### `<Reasoning />`
@@ -86,10 +90,6 @@ Extends the Base UI `Collapsible.Trigger`. Children replace the default label ("
 ### `useReasoning`
 
 Read the surrounding state from custom children: `{ isStreaming, open, setOpen, duration }`.
-
-## Wiring to Neon
-
-With AI SDK `useChat`, consolidate every `reasoning` part into one block — models with high reasoning effort emit several parts, and one fold beats a stack of "Thinking…" indicators. The typed example shows the full mapping, including live-stream detection from the message's last part. Reasoning-capable gateway models (pick one with [ModelSelect](/agent/model-select)) stream these parts when the route sets `sendReasoning: true`.
 
 ## Accessibility
 

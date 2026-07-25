@@ -51,6 +51,21 @@ import { ActivityFeed } from "@/components/neon-ui/activity-feed";
 />;
 ```
 
+## Wiring to Neon
+
+A server component turns a project's recent operations into a feed:
+
+```tsx
+import { OperationStatus } from "@neondatabase/api-client";
+import { createNeonClient } from "@/lib/neon-client";
+
+const client = createNeonClient(process.env.NEON_API_KEY);
+const { data } = await client.listProjectOperations({ projectId });
+// map each operation to { id, status, title, timestamp }
+```
+
+`finished` reads as success, `failed`/`error` as error, `running`/`scheduling` as pending.
+
 ## Props
 
 <TypeTable
@@ -90,21 +105,6 @@ import { ActivityFeed } from "@/components/neon-ui/activity-feed";
 ## Status
 
 `ActivityStatus` is `"success" | "error" | "pending" | "info"`. It maps to the house tokens: `--primary`, `--destructive`, `--status-scaling` (breathing), and `--muted-foreground`. Color lives only in the marker; the text stays calm so a long feed reads without noise.
-
-## Wiring to Neon
-
-A server component turns a project's recent operations into a feed:
-
-```tsx
-import { OperationStatus } from "@neondatabase/api-client";
-import { createNeonClient } from "@/lib/neon-client";
-
-const client = createNeonClient(process.env.NEON_API_KEY);
-const { data } = await client.listProjectOperations({ projectId });
-// map each operation to { id, status, title, timestamp }
-```
-
-`finished` reads as success, `failed`/`error` as error, `running`/`scheduling` as pending.
 
 ## Accessibility
 
