@@ -510,7 +510,7 @@
       "type": "registry:lib",
       "title": "Neon Client",
       "description": "Shared Neon API client factory used by neon-ui data hooks.",
-      "dependencies": ["@neondatabase/api-client"],
+      "dependencies": ["@neon/sdk"],
       "files": [
         {
           "path": "src/lib/neon-client.ts",

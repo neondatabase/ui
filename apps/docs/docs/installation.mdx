@@ -26,7 +26,9 @@ Every component pulls in `components/tokens.css` — the Neon palette, radius, a
 - React 19 and Tailwind v4
 - A shadcn-initialized project (`npx shadcn@latest init`)
 - [`tw-animate-css`](https://github.com/Wombosvideo/tw-animate-css) imported in your global stylesheet (`@import "tw-animate-css";`) — entrance cascades, verdict rolls, and overlay fades ride its `animate-in` / `animate-out` utilities and stay politely static without it
-- For components that talk to Neon, the relevant SDK (`@neondatabase/api-client` or `@neondatabase/serverless`), installed automatically as a dependency
+- For components that talk to Neon, the relevant SDK, installed automatically as a dependency. Which one depends on what the component reads:
+  - [`@neon/sdk`](https://www.npmjs.com/package/@neon/sdk) for the control plane: projects, branches, endpoints, snapshots, API keys, consumption. This is the official TypeScript SDK for the Neon API, and it is the one nearly every data-backed component uses.
+  - [`@neondatabase/serverless`](https://www.npmjs.com/package/@neondatabase/serverless) for running SQL against a branch, which is what [SQLRunner](/database/sql-runner) and [SchemaExplorer](/database/schema-explorer) do. It is a Postgres driver, not an API client, so it is only pulled in by components that execute queries.
 
 ## How components are built
 

@@ -4,12 +4,12 @@
   "title": "Neon Client",
   "description": "Shared Neon API client factory used by neon-ui data hooks.",
   "dependencies": [
-    "@neondatabase/api-client"
+    "@neon/sdk"
   ],
   "files": [
     {
       "path": "src/lib/neon-client.ts",
-      "content": "import { createApiClient } from \"@neondatabase/api-client\";\n\n/**\n * Shared Neon API client factory for neon-ui data hooks.\n *\n * The API key must come from the server side (route handler, server\n * component, or server function). Never expose NEON_API_KEY to the browser;\n * browser-facing components should receive data as props or go through the\n * Data API, which is designed for untrusted clients.\n */\nexport const createNeonClient = (apiKey: string) => {\n  if (!apiKey) {\n    throw new Error(\n      \"neon-ui: missing Neon API key. Pass process.env.NEON_API_KEY from server-side code.\"\n    );\n  }\n\n  return createApiClient({ apiKey });\n};\n\nexport type NeonClient = ReturnType<typeof createNeonClient>;\n",
+      "content": "import { createNeonClient as createSdkClient } from \"@neon/sdk\";\n\n/**\n * Shared Neon API client factory for neon-ui data hooks.\n *\n * Wraps `@neon/sdk`, the official TypeScript SDK for the Neon API. Methods are\n * grouped into resource namespaces (`neon.branches`, `neon.postgres.endpoints`,\n * `neon.consumption`, ...) and resolve to `{ data, error }` rather than\n * throwing, so a failed call is handled where it happens.\n *\n * The API key must come from the server side (route handler, server\n * component, or server function). Never expose NEON_API_KEY to the browser;\n * browser-facing components should receive data as props or go through the\n * Data API, which is designed for untrusted clients.\n */\nexport const createNeonClient = (apiKey: string) => {\n  if (!apiKey) {\n    throw new Error(\n      \"neon-ui: missing Neon API key. Pass process.env.NEON_API_KEY from server-side code.\"\n    );\n  }\n\n  return createSdkClient({ apiKey });\n};\n\nexport type NeonClient = ReturnType<typeof createNeonClient>;\n",
       "type": "registry:lib"
     }
   ],

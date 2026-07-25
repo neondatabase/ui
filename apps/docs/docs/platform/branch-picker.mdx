@@ -44,8 +44,8 @@ A server component lists a project's branches and selects the default:
 ```tsx
 import { createNeonClient } from "@/lib/neon-client";
 
-const client = createNeonClient(process.env.NEON_API_KEY);
-const { data } = await client.listProjectBranches({ projectId });
+const neon = createNeonClient(process.env.NEON_API_KEY);
+const { data } = await neon.branches.list(projectId).all();
 // map each branch to { id, name, default, protected, parent }
 ```
 

@@ -20,7 +20,7 @@ export const DBConnectionCardExample = async ({
   roles: string[];
   databases: string[];
 }) => {
-  const client = createNeonClient(process.env.NEON_API_KEY ?? "");
+  const neon = createNeonClient(process.env.NEON_API_KEY ?? "");
 
   const combinations = roles.flatMap((role) =>
     databases.flatMap((database) =>
@@ -30,15 +30,15 @@ export const DBConnectionCardExample = async ({
 
   const connections: ConnectionEntry[] = await Promise.all(
     combinations.map(async ({ role, database, pooled }) => {
-      const { data } = await client.getConnectionUri({
-        branch_id: branchId,
-        database_name: database,
+      const { data: uri } = await neon.postgres.connectionString({
+        branchId,
+        databaseName: database,
         pooled,
         projectId,
-        role_name: role,
+        roleName: role,
       });
 
-      return { database, pooled, role, uri: data.uri };
+      return { database, pooled, role, uri: uri ?? "" };
     })
   );
 

@@ -43,16 +43,25 @@ import { ApiKeyList } from "@/components/neon-ui/api-key-list";
 List the account's keys in a server component and wire create and revoke as server actions:
 
 ```tsx
+import { raw } from "@neon/sdk";
 import { createNeonClient } from "@/lib/neon-client";
 
 const createKey = async (name: string, scope: ApiKeyScope) => {
   "use server";
-  const client = createNeonClient(process.env.NEON_API_KEY);
+  const neon = createNeonClient(process.env.NEON_API_KEY);
+
+  // Organization keys are not in the SDK's ergonomic layer yet, so that one
+  // call drops to the raw layer, reusing the client's auth.
   const { data } =
     scope === "organization"
-      ? await client.createOrgApiKey(orgId, { key_name: name })
-      : await client.createApiKey({ key_name: name });
-  return data.key; // shown once
+      ? await raw.createOrgApiKey({
+          body: { key_name: name },
+          client: neon.client,
+          path: { org_id: orgId },
+        })
+      : await neon.apiKeys.create(name);
+
+  return data?.key; // shown once
 };
 ```
 

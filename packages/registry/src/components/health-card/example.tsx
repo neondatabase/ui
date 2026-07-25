@@ -1,18 +1,15 @@
-import { OperationStatus } from "@neondatabase/api-client";
+import type { OperationStatus } from "@neon/sdk";
 
 import { createNeonClient } from "@/lib/neon-client";
 
 import type { HealthSignal, HealthStatus } from "./health-card";
 import { HealthCard } from "./health-card";
 
-const FAILED = new Set<OperationStatus>([
-  OperationStatus.Failed,
-  OperationStatus.Error,
-]);
+const FAILED = new Set<OperationStatus>(["failed", "error"]);
 const IN_FLIGHT = new Set<OperationStatus>([
-  OperationStatus.Running,
-  OperationStatus.Scheduling,
-  OperationStatus.Cancelling,
+  "running",
+  "scheduling",
+  "cancelling",
 ]);
 
 const plural = (count: number) => (count === 1 ? "" : "s");
@@ -27,10 +24,10 @@ export const HealthCardExample = async ({
 }: {
   projectId: string;
 }) => {
-  const client = createNeonClient(process.env.NEON_API_KEY ?? "");
+  const neon = createNeonClient(process.env.NEON_API_KEY ?? "");
 
-  const { data } = await client.listProjectOperations({ projectId });
-  const { operations } = data;
+  const { data } = await neon.operations.list(projectId).page();
+  const operations = data?.items ?? [];
 
   const failed = operations.filter((op) => FAILED.has(op.status)).length;
   const inFlight = operations.filter((op) => IN_FLIGHT.has(op.status)).length;

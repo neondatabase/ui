@@ -40,12 +40,14 @@ Pass `variant="panel"` to wrap the row in the house card surface; the default `i
 A server component reads the branch's read-write endpoint and maps Neon's `init`/`active`/`idle` states onto the readout, with the autoscaling range and suspend timeout alongside:
 
 ```tsx
-import { EndpointState } from "@neondatabase/api-client";
 import { createNeonClient } from "@/lib/neon-client";
 
-const client = createNeonClient(process.env.NEON_API_KEY);
-const { data } = await client.listProjectBranchEndpoints(projectId, branchId);
-const endpoint = data.endpoints.find((item) => item.type === "read_write");
+const neon = createNeonClient(process.env.NEON_API_KEY);
+const { data: endpoints } = await neon.postgres.endpoints.listByBranch(
+  projectId,
+  branchId
+);
+const endpoint = endpoints?.find((item) => item.type === "read_write");
 ```
 
 `init` (or a pending `active`) reads as `scaling`, `idle` as `suspended`, everything else as `active`.

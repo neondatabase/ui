@@ -13,10 +13,10 @@ export const BranchPickerExample = async ({
 }: {
   projectId: string;
 }) => {
-  const client = createNeonClient(process.env.NEON_API_KEY ?? "");
-  const { data } = await client.listProjectBranches({ projectId });
+  const neon = createNeonClient(process.env.NEON_API_KEY ?? "");
+  const { data } = await neon.branches.list(projectId).all();
 
-  const branches: Branch[] = data.branches.map((branch) => ({
+  const branches: Branch[] = (data ?? []).map((branch) => ({
     default: branch.default,
     id: branch.id,
     name: branch.name,

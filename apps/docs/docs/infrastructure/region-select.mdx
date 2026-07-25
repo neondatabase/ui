@@ -49,11 +49,11 @@ A server component turns the active regions into `ServerRegion`s:
 ```tsx
 import { createNeonClient } from "@/lib/neon-client";
 
-const client = createNeonClient(process.env.NEON_API_KEY);
-const { data } = await client.getActiveRegions({});
-// pass org_id to get the regions one organization can actually use
+const neon = createNeonClient(process.env.NEON_API_KEY);
+const { data } = await neon.regions.list();
+// set orgId on the client to scope this to one organization's regions
 
-const regions = data.regions
+const regions = (data ?? [])
   .filter((region) => region.geo_lat && region.geo_long)
   .map((region) => ({
     id: region.region_id,

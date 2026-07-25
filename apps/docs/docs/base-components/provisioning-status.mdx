@@ -32,15 +32,13 @@ import { ProvisioningStatus } from "@/components/neon-ui/provisioning-status";
 Provisioning is a Neon operation, so poll the project's operations and map their status onto the panel:
 
 ```tsx
-import { OperationStatus } from "@neondatabase/api-client";
 import { createNeonClient } from "@/lib/neon-client";
 
-const client = createNeonClient(process.env.NEON_API_KEY);
-const { data } = await client.listProjectOperations({ projectId, limit: 10 });
-const pending = data.operations.find(
+const neon = createNeonClient(process.env.NEON_API_KEY);
+const { data } = await neon.operations.list(projectId).page();
+const pending = data?.items.find(
   (operation) =>
-    operation.status === OperationStatus.Running ||
-    operation.status === OperationStatus.Scheduling
+    operation.status === "running" || operation.status === "scheduling"
 );
 // state: pending ? "provisioning" : failed ? "error" : done
 // detail: pending?.action, e.g. "create_compute" mapped to your own copy

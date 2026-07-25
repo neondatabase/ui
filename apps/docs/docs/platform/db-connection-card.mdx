@@ -45,15 +45,15 @@ Fetch the URIs for each combination and pass them in as plain data:
 ```tsx
 import { createNeonClient } from "@/lib/neon-client";
 
-const client = createNeonClient(process.env.NEON_API_KEY);
-const { data } = await client.getConnectionUri({
+const neon = createNeonClient(process.env.NEON_API_KEY);
+const { data: uri } = await neon.postgres.connectionString({
   projectId,
-  branch_id: branchId,
-  role_name: role,
-  database_name: database,
+  branchId,
+  roleName: role,
+  databaseName: database,
   pooled,
 });
-// { role, database, pooled, uri: data.uri }
+// { role, database, pooled, uri }
 ```
 
 Reveal only toggles what is shown; copy always writes the real string to the clipboard. The parameters view parses the selected URI in place. A value that is not URL-shaped masks whole.

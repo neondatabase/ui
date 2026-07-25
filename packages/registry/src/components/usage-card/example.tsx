@@ -1,5 +1,3 @@
-import { ConsumptionHistoryGranularity } from "@neondatabase/api-client";
-
 import { createNeonClient } from "@/lib/neon-client";
 
 import type { UsagePoint } from "./usage-card";
@@ -21,21 +19,23 @@ export const UsageCardExample = async ({
 }: {
   projectId: string;
 }) => {
-  const client = createNeonClient(process.env.NEON_API_KEY ?? "");
+  const neon = createNeonClient(process.env.NEON_API_KEY ?? "");
 
   const now = new Date();
   const from = new Date(now.getTime() - 2 * WINDOW_DAYS * DAY_MS);
   const windowStart = now.getTime() - WINDOW_DAYS * DAY_MS;
 
-  const { data } = await client.getConsumptionHistoryPerProject({
-    from: from.toISOString(),
-    granularity: ConsumptionHistoryGranularity.Daily,
-    project_ids: [projectId],
-    to: now.toISOString(),
-  });
+  const { data } = await neon.consumption
+    .perProject({
+      from: from.toISOString(),
+      granularity: "daily",
+      project_ids: [projectId],
+      to: now.toISOString(),
+    })
+    .all();
 
   const timeframes =
-    data.projects[0]?.periods.flatMap((period) => period.consumption) ?? [];
+    data?.[0]?.periods.flatMap((period) => period.consumption) ?? [];
 
   const current: UsagePoint[] = [];
   let previousTotal = 0;

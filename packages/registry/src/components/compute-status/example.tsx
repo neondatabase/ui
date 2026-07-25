@@ -1,4 +1,4 @@
-import { EndpointState } from "@neondatabase/api-client";
+import type { EndpointState } from "@neon/sdk";
 
 import { createNeonClient } from "@/lib/neon-client";
 
@@ -12,10 +12,10 @@ const toComputeState = (
   current: EndpointState,
   pending?: EndpointState
 ): ComputeState => {
-  if (current === EndpointState.Init || pending === EndpointState.Active) {
+  if (current === "init" || pending === "active") {
     return "scaling";
   }
-  if (current === EndpointState.Idle) {
+  if (current === "idle") {
     return "suspended";
   }
 
@@ -45,10 +45,13 @@ export const ComputeStatusExample = async ({
   projectId: string;
   branchId: string;
 }) => {
-  const client = createNeonClient(process.env.NEON_API_KEY ?? "");
+  const neon = createNeonClient(process.env.NEON_API_KEY ?? "");
 
-  const { data } = await client.listProjectBranchEndpoints(projectId, branchId);
-  const endpoint = data.endpoints.find((item) => item.type === "read_write");
+  const { data: endpoints } = await neon.postgres.endpoints.listByBranch(
+    projectId,
+    branchId
+  );
+  const endpoint = endpoints?.find((item) => item.type === "read_write");
 
   if (!endpoint) {
     return <ComputeStatus state="suspended" />;

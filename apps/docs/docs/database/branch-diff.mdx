@@ -41,37 +41,37 @@ import { BranchDiff } from "@/components/neon-ui/branch-diff";
 
 ## Wiring to Neon
 
-Compute the comparison on the server and pass the result in. Schema changes come from `information_schema` and `pg_indexes` on each branch; row changes come from a keyed comparison of the tables you choose to track. Diffing whole tables in the browser would mean shipping both branches' rows to the client, so the component stays presentational and the application decides what is worth comparing.
+Neon has two schema endpoints, both on the SDK's raw layer:
 
-## Change shapes
+- `getProjectBranchSchemaComparison` returns a unified diff string. Good for showing a patch, no use here.
+- `getProjectBranchSchema` returns the schema as JSON. Fetch it for both branches, compare the two, and you have `SchemaChange[]`.
 
-```ts
-interface SchemaChange {
-  id: string;
-  kind: "added" | "removed" | "modified";
-  objectType: "table" | "column" | "index" | "constraint";
-  path: string[];
-  before?: string;
-  after?: string;
-  ddl?: string;
-  breaking?: boolean;
-}
+```tsx
+import { raw } from "@neon/sdk";
+import { createNeonClient } from "@/lib/neon-client";
 
-interface TableDataDiff {
-  id: string;
-  schema: string;
-  table: string;
-  primaryKey: string[];
-  rows: RowChange[];
-  addedCount: number;
-  removedCount: number;
-  modifiedCount: number;
-  unchangedCount?: number;
-  hasMore?: boolean;
-}
+const neon = createNeonClient(process.env.NEON_API_KEY);
+
+const schemaOf = async (branchId: string) => {
+  const { data } = await raw.getProjectBranchSchema({
+    client: neon.client,
+    path: { branch_id: branchId, project_id: projectId },
+    query: { db_name: "neondb" }, // required
+  });
+
+  return data?.json;
+};
+
+const [base, head] = await Promise.all([
+  schemaOf(fromBranchId),
+  schemaOf(toBranchId),
+]);
+// walk base.tables against head.tables into SchemaChange[]
 ```
 
-`path` is display order, so `["public", "accounts", "balance"]` renders as `public.accounts.balance`. Row changes carry their `primaryKey` separately from `before` and `after` values, which keeps identity visible even when every column changed.
+The JSON has tables, columns and constraints but no indexes, so index changes need `pg_indexes`. `breaking` is yours to decide: the API has no opinion on what breaks your app.
+
+Row changes have no endpoint. Compare the tables you care about on the server, since diffing them in the browser means shipping both branches' rows to the client.
 
 ## Props
 

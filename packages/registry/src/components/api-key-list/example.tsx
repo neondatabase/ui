@@ -1,3 +1,5 @@
+import { raw } from "@neon/sdk";
+
 import { createNeonClient } from "@/lib/neon-client";
 
 import type { ApiKey, ApiKeyScope } from "./api-key-list";
@@ -16,10 +18,10 @@ const shortDate = (iso: string) =>
  * The token is returned once, at creation, and never stored.
  */
 export const ApiKeyListExample = async ({ orgId }: { orgId?: string }) => {
-  const client = createNeonClient(process.env.NEON_API_KEY ?? "");
-  const { data } = await client.listApiKeys();
+  const neon = createNeonClient(process.env.NEON_API_KEY ?? "");
+  const { data } = await neon.apiKeys.list();
 
-  const keys: ApiKey[] = data.map((item) => ({
+  const keys: ApiKey[] = (data ?? []).map((item) => ({
     createdAt: shortDate(item.created_at),
     id: String(item.id),
     lastUsedAt: item.last_used_at ? shortDate(item.last_used_at) : undefined,
@@ -32,16 +34,20 @@ export const ApiKeyListExample = async ({ orgId }: { orgId?: string }) => {
     const server = createNeonClient(process.env.NEON_API_KEY ?? "");
 
     if (scope === "organization" && orgId) {
-      const { data: orgKey } = await server.createOrgApiKey(orgId, {
-        key_name: name,
+      // Organization keys are not in the SDK's ergonomic layer yet, so this one
+      // call drops to the raw layer, reusing the client's auth.
+      const { data: orgKey } = await raw.createOrgApiKey({
+        body: { key_name: name },
+        client: server.client,
+        path: { org_id: orgId },
       });
 
-      return orgKey.key;
+      return orgKey?.key;
     }
 
-    const { data: created } = await server.createApiKey({ key_name: name });
+    const { data: created } = await server.apiKeys.create(name);
 
-    return created.key;
+    return created?.key;
   };
 
   const revokeKey = async (key: ApiKey) => {
@@ -49,11 +55,14 @@ export const ApiKeyListExample = async ({ orgId }: { orgId?: string }) => {
     const server = createNeonClient(process.env.NEON_API_KEY ?? "");
 
     if (key.scope === "organization" && orgId) {
-      await server.revokeOrgApiKey(orgId, Number(key.id));
+      await raw.revokeOrgApiKey({
+        client: server.client,
+        path: { key_id: Number(key.id), org_id: orgId },
+      });
       return;
     }
 
-    await server.revokeApiKey(Number(key.id));
+    await server.apiKeys.revoke(Number(key.id));
   };
 
   return <ApiKeyList keys={keys} onCreate={createKey} onRevoke={revokeKey} />;

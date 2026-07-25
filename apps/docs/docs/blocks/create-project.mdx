@@ -38,10 +38,10 @@ A server component loads the region list, and a server action creates the projec
 ```tsx
 import { createNeonClient } from "@/lib/neon-client";
 
-const client = createNeonClient(process.env.NEON_API_KEY);
+const neon = createNeonClient(process.env.NEON_API_KEY);
 
-const { data } = await client.getActiveRegions({});
-const regions = data.regions.map((region) => ({
+const { data } = await neon.regions.list();
+const regions = (data ?? []).map((region) => ({
   id: region.region_id,
   name: region.name,
   provider: region.region_id.split("-")[0].toUpperCase(),
@@ -51,18 +51,16 @@ const regions = data.regions.map((region) => ({
 
 const createProject = async (values: CreateProjectValues) => {
   "use server";
-  const { data: created } = await client.createProject({
-    project: {
-      name: values.name,
-      region_id: values.regionId,
-      pg_version: Number(values.postgresVersion) as PgVersion,
-    },
+  const { data: project } = await neon.projects.create({
+    name: values.name,
+    region_id: values.regionId,
+    pg_version: Number(values.postgresVersion) as PgVersion,
   });
-  return created.project.id;
+  return project?.id;
 };
 ```
 
-`geo_lat` and `geo_long` arrive as strings and are empty when unknown, so drop regions that fail to parse before plotting them. Pass the action to `onSubmit` from a client wrapper, hold `isBusy` while it runs, and map a rejected create onto `errors` so the message lands beside the field.
+`geo_lat` and `geo_long` arrive as strings and are empty when unknown, so drop regions that fail to parse before plotting them. Pass the action to `onSubmit` from a client wrapper, hold `isBusy` while it runs, and map a rejected create onto `errors` so the message lands beside the field. `projects.createAndConnect` is the one-call alternative: it waits for provisioning and hands back a ready connection string with the project.
 
 ## Props
 
@@ -132,7 +130,8 @@ const createProject = async (values: CreateProjectValues) => {
 
 The block is deliberately thin — its pieces shipped as registry items first:
 
-- [RegionGlobe](/infrastructure/region-globe) — the tilted spinning globe with clickable dots, plus the `use-region-ping` hook for live latency.
+- [RegionGlobe](/infrastructure/region-globe) — the tilted spinning globe with clickable dots.
+- `use-region-ping` — the live-latency hook, installable on its own (`https://ui.neon.com/r/use-region-ping.json`); no component depends on it.
 - [RegionSelect](/infrastructure/region-select) — the flat dot-matrix map picker; no longer inside the block, but it pairs with the same `ServerRegion` data if you prefer a 2D map.
 - `input` and `switch` — Base UI primitives extracted for the form, installable on their own (`https://ui.neon.com/r/input.json`, `https://ui.neon.com/r/switch.json`).
 

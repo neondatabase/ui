@@ -1,5 +1,3 @@
-import { ConsumptionHistoryGranularity } from "@neondatabase/api-client";
-
 import { createNeonClient } from "@/lib/neon-client";
 
 import { MetricCard } from "./metric-card";
@@ -17,20 +15,22 @@ export const MetricCardExample = async ({
 }: {
   projectId: string;
 }) => {
-  const client = createNeonClient(process.env.NEON_API_KEY ?? "");
+  const neon = createNeonClient(process.env.NEON_API_KEY ?? "");
 
   const now = new Date();
   const from = new Date(now.getTime() - WINDOW_DAYS * DAY_MS);
 
-  const { data } = await client.getConsumptionHistoryPerProject({
-    from: from.toISOString(),
-    granularity: ConsumptionHistoryGranularity.Daily,
-    project_ids: [projectId],
-    to: now.toISOString(),
-  });
+  const { data } = await neon.consumption
+    .perProject({
+      from: from.toISOString(),
+      granularity: "daily",
+      project_ids: [projectId],
+      to: now.toISOString(),
+    })
+    .all();
 
   const timeframes =
-    data.projects[0]?.periods.flatMap((period) => period.consumption) ?? [];
+    data?.[0]?.periods.flatMap((period) => period.consumption) ?? [];
   const trend = timeframes.map((frame) => frame.compute_time_seconds / 3600);
   const total = trend.reduce((sum, hours) => sum + hours, 0);
 

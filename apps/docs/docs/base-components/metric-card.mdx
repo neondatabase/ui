@@ -54,16 +54,17 @@ import { MetricCard } from "@/components/neon-ui/metric-card";
 The presentational component takes data as props. A server component fetches real consumption from the [Neon API](https://neon.com/docs/reference/api) and passes it down:
 
 ```tsx
-import { ConsumptionHistoryGranularity } from "@neondatabase/api-client";
 import { createNeonClient } from "@/lib/neon-client";
 
-const client = createNeonClient(process.env.NEON_API_KEY);
-const { data } = await client.getConsumptionHistoryPerProject({
-  from: from.toISOString(),
-  to: now.toISOString(),
-  granularity: ConsumptionHistoryGranularity.Daily,
-  project_ids: [projectId],
-});
+const neon = createNeonClient(process.env.NEON_API_KEY);
+const { data } = await neon.consumption
+  .perProject({
+    from: from.toISOString(),
+    to: now.toISOString(),
+    granularity: "daily",
+    project_ids: [projectId],
+  })
+  .all();
 ```
 
 ## Props

@@ -18,12 +18,12 @@ export const AutoscaleChartExample = async ({
   branchId: string;
   data: AutoscalePoint[];
 }) => {
-  const client = createNeonClient(process.env.NEON_API_KEY ?? "");
-  const { data: response } = await client.listProjectBranchEndpoints(
+  const neon = createNeonClient(process.env.NEON_API_KEY ?? "");
+  const { data: endpoints } = await neon.postgres.endpoints.listByBranch(
     projectId,
     branchId
   );
-  const [endpoint] = response.endpoints;
+  const [endpoint] = endpoints ?? [];
 
   return (
     <AutoscaleChart

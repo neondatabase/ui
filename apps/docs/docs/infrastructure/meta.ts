@@ -2,6 +2,6 @@ import { defineMeta } from "blume";
 
 export default defineMeta({
   collapsed: false,
-  order: 5,
+  order: 4,
   title: "Infrastructure",
 });

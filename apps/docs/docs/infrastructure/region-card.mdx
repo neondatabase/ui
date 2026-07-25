@@ -24,9 +24,10 @@ import { RegionCard } from "@/components/neon-ui/region-card";
   className="absolute bottom-3 left-3"
   title="AWS Europe Central 1 (Frankfurt)"
   regionId="aws-eu-central-1"
-  ping={pings["aws-eu-central-1"]}
 />;
 ```
+
+`ping` is optional; add it to get the color-coded latency line. It is a browser measurement rather than API data, so it comes from the standalone [`useRegionPing`](#showing-a-ping) hook.
 
 ## Wiring to Neon
 
@@ -35,14 +36,38 @@ The card is one region's readout, so it takes a single entry off the active-regi
 ```tsx
 import { createNeonClient } from "@/lib/neon-client";
 
-const client = createNeonClient(process.env.NEON_API_KEY);
-const { data } = await client.getActiveRegions({});
-const region = data.regions.find((item) => item.region_id === regionId);
+const neon = createNeonClient(process.env.NEON_API_KEY);
+const { data } = await neon.regions.list();
+const region = data?.find((item) => item.region_id === regionId);
 
-<RegionCard title={region.name} regionId={region.region_id} ping={ping} />;
+<RegionCard title={region.name} regionId={region.region_id} />;
 ```
 
-`ping` never comes from the API. It is a browser measurement, so take it from `useRegionPing` (shipped with [RegionGlobe](/infrastructure/region-globe)) and pass `null` until the first round-trip lands.
+## Showing a ping
+
+Latency is measured in the browser, not reported by the API. The hook that measures it is its own registry item, so the card does not drag another component in:
+
+```bash
+npx shadcn@latest add https://ui.neon.com/r/use-region-ping.json
+```
+
+```tsx
+"use client";
+
+import { useRegionPing } from "@/hooks/use-region-ping";
+
+const { pings } = useRegionPing({
+  "aws-us-east-1": "https://us-east-1.aws.example.com/health",
+});
+
+<RegionCard
+  title="AWS US East 1 (N. Virginia)"
+  regionId="aws-us-east-1"
+  ping={pings["aws-us-east-1"] ?? null}
+/>;
+```
+
+The hook takes a URL per region and times an opaque `no-cors` HEAD request against each. Until the first round-trip lands the entry is `undefined`, so pass `null` and the card leaves the line out rather than showing a placeholder number.
 
 ## Props
 

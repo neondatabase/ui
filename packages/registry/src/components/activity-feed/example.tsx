@@ -1,4 +1,4 @@
-import { OperationStatus } from "@neondatabase/api-client";
+import type { OperationStatus } from "@neon/sdk";
 
 import { createNeonClient } from "@/lib/neon-client";
 
@@ -26,16 +26,13 @@ const relativeTime = (iso: string) => {
 };
 
 const statusOf = (status: OperationStatus): ActivityStatus => {
-  if (status === OperationStatus.Failed || status === OperationStatus.Error) {
+  if (status === "failed" || status === "error") {
     return "error";
   }
-  if (
-    status === OperationStatus.Running ||
-    status === OperationStatus.Scheduling
-  ) {
+  if (status === "running" || status === "scheduling") {
     return "pending";
   }
-  if (status === OperationStatus.Finished) {
+  if (status === "finished") {
     return "success";
   }
 
@@ -54,10 +51,11 @@ export const ActivityFeedExample = async ({
 }: {
   projectId: string;
 }) => {
-  const client = createNeonClient(process.env.NEON_API_KEY ?? "");
-  const { data } = await client.listProjectOperations({ projectId });
+  const neon = createNeonClient(process.env.NEON_API_KEY ?? "");
+  // Operations are cursor-paginated; one page is a feed's worth of history.
+  const { data } = await neon.operations.list(projectId).page();
 
-  const entries: ActivityEntry[] = data.operations.map((operation) => ({
+  const entries: ActivityEntry[] = (data?.items ?? []).map((operation) => ({
     id: operation.id,
     source: operation.branch_id ? `branch ${operation.branch_id}` : "system",
     status: statusOf(operation.status),

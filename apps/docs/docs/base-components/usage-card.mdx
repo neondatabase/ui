@@ -44,16 +44,17 @@ import { UsageCard } from "@/components/neon-ui/usage-card";
 A server component pulls two windows of daily consumption, keeps the current one as samples and sums the prior one for the delta:
 
 ```tsx
-import { ConsumptionHistoryGranularity } from "@neondatabase/api-client";
 import { createNeonClient } from "@/lib/neon-client";
 
-const client = createNeonClient(process.env.NEON_API_KEY);
-const { data } = await client.getConsumptionHistoryPerProject({
-  from: from.toISOString(),
-  to: now.toISOString(),
-  granularity: ConsumptionHistoryGranularity.Daily,
-  project_ids: [projectId],
-});
+const neon = createNeonClient(process.env.NEON_API_KEY);
+const { data } = await neon.consumption
+  .perProject({
+    from: from.toISOString(),
+    to: now.toISOString(),
+    granularity: "daily",
+    project_ids: [projectId],
+  })
+  .all();
 ```
 
 Read `compute_time_seconds` (or `synthetic_storage_size_bytes`, `written_data_bytes`, `active_time_seconds`) off each timeframe into `UsagePoint`s and pass them straight through.

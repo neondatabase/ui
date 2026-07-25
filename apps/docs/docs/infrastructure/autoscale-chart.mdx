@@ -38,9 +38,12 @@ A server component reads the endpoint's autoscaling bounds, then plots a CU seri
 ```tsx
 import { createNeonClient } from "@/lib/neon-client";
 
-const client = createNeonClient(process.env.NEON_API_KEY);
-const { data } = await client.listProjectBranchEndpoints(projectId, branchId);
-const endpoint = data.endpoints[0];
+const neon = createNeonClient(process.env.NEON_API_KEY);
+const { data: endpoints } = await neon.postgres.endpoints.listByBranch(
+  projectId,
+  branchId
+);
+const [endpoint] = endpoints ?? [];
 
 <AutoscaleChart
   data={metrics}
