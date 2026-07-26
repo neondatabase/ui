@@ -782,13 +782,47 @@ nav details > summary .truncate {
   background: var(--foreground);
 }
 
-/* Search is the main way through a registry, so it gets real width. */
-[data-blume-header] blume-search button {
-  min-width: 14rem;
+/*
+ * Search is the main way through a registry, so it gets real width — but only
+ * once there is width to give. Forcing a minimum on a phone squeezed the icon
+ * buttons beside it down to a few pixels, since flex items shrink before a
+ * min-width gives way.
+ */
+@media (min-width: 40rem) {
+  [data-blume-header] blume-search button {
+    min-width: 14rem;
+  }
 }
 
 @media (min-width: 48rem) {
   [data-blume-header] blume-search button {
     min-width: 18rem;
   }
+}
+
+/* The tools group keeps its size; the search field absorbs the difference. */
+[data-blume-header] > div:last-of-type {
+  flex-shrink: 0;
+}
+
+/*
+ * Touch targets. A 36px control is under every touch-target guideline, and the
+ * bar has room on a phone once the tabs collapse into the drawer. Sized here
+ * rather than in the header override so the stock header on / and /changelog
+ * gets the same treatment.
+ */
+@media (max-width: 39.99rem) {
+  [data-blume-header] [data-blume-nav-toggle],
+  [data-blume-header] [data-blume-theme-toggle],
+  [data-blume-header] > div:last-of-type > a {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+}
+
+/* Icons never collapse: they sit beside a search field that takes all it can. */
+[data-blume-header] [data-blume-nav-toggle],
+[data-blume-header] [data-blume-theme-toggle],
+[data-blume-header] > div:last-of-type > a {
+  flex-shrink: 0;
 }
