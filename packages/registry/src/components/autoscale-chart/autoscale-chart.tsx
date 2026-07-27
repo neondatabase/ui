@@ -1,11 +1,22 @@
 "use client";
 
-import { curveMonotoneX } from "@visx/curve";
-import { scaleLinear } from "@visx/scale";
-import { AreaClosed, LinePath } from "@visx/shape";
-import { useId, useRef, useState } from "react";
-import type { ComponentProps, KeyboardEvent, PointerEvent } from "react";
+import { useId } from "react";
+import type { ComponentProps } from "react";
+import {
+  Area,
+  AreaChart,
+  ReferenceArea,
+  ReferenceLine,
+  XAxis,
+  YAxis,
+} from "recharts";
 
+import type { ChartConfig } from "@/components/ui/chart";
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 
@@ -16,55 +27,32 @@ export interface AutoscalePoint {
   cu: number;
 }
 
-interface Plotted extends AutoscalePoint {
-  index: number;
-}
+const HEADROOM = 1.08;
+const NICE_STEPS = [1, 2, 2.5, 5, 10] as const;
 
-const CHART_W = 600;
-const CHART_H = 150;
-const PAD_X = 10;
-const PAD_TOP = 14;
-const PAD_BOTTOM = 10;
+/**
+ * Rounds the top of the scale to a readable number. Left at peak x 1.08
+ * the axis reads 4.32, which is a number nobody asked for.
+ */
+const niceCeiling = (peak: number) => {
+  const raw = peak * HEADROOM;
+
+  if (raw <= 0) {
+    return 1;
+  }
+
+  const magnitude = 10 ** Math.floor(Math.log10(raw));
+  const normalized = raw / magnitude;
+  const step = NICE_STEPS.find((candidate) => normalized <= candidate) ?? 10;
+
+  return step * magnitude;
+};
 
 const formatCu = (cu: number) => {
   const rounded = Math.round(cu * 100) / 100;
+
   return Number.isInteger(rounded) ? String(rounded) : rounded.toFixed(2);
 };
-
-/** Where a reading sits against its bounds: at the ceiling, at the floor, or scaling between. */
-const zoneOf = (cu: number, min: number, max: number) => {
-  if (cu >= max) {
-    return "ceiling" as const;
-  }
-  if (cu <= min) {
-    return "floor" as const;
-  }
-  return "scaling" as const;
-};
-
-const ZONE_COLOR: Record<ReturnType<typeof zoneOf>, string> = {
-  ceiling: "var(--status-scaling)",
-  floor: "var(--status-sleeping)",
-  scaling: "var(--status-active)",
-};
-
-const BoundLabel = ({
-  kind,
-  cu,
-  top,
-}: {
-  kind: string;
-  cu: number;
-  top: number;
-}) => (
-  <div
-    className="-translate-y-1/2 absolute right-2 flex items-center gap-1 font-mono text-[10px] text-muted-foreground/80 tabular-nums"
-    style={{ top: `${top}%` }}
-  >
-    <span className="text-muted-foreground/50">{kind}</span>
-    <span>{formatCu(cu)} CU</span>
-  </div>
-);
 
 export type AutoscaleChartProps = Omit<ComponentProps<"div">, "children"> & {
   /** Compute-unit readings over time, oldest first. */
@@ -78,19 +66,51 @@ export type AutoscaleChartProps = Omit<ComponentProps<"div">, "children"> & {
   isLoading?: boolean;
 };
 
+/* ─────────────────────────────────────────────────────────
+ * AUTOSCALE STORYBOARD
+ *
+ *  envelope  the band between min and max is drawn first,
+ *            so the reading is always seen against the
+ *            room it has to move in
+ *  bounds    dashed lines with mono labels at both edges;
+ *            a ceiling you can't see is a ceiling you'll
+ *            hit without knowing
+ *  scrub     Recharts' accessibility layer gives the plot
+ *            focus and arrow keys; the tooltip names the
+ *            moment and its CU
+ * ───────────────────────────────────────────────────────── */
+
+const cuTooltipFormatter = (
+  value: unknown,
+  _name: unknown,
+  entry: { color?: string }
+) => (
+  <>
+    <span
+      aria-hidden="true"
+      className="size-2.5 shrink-0 translate-y-[1px] rounded-[2px]"
+      style={{ background: String(entry?.color ?? "var(--primary)") }}
+    />
+    <div className="flex flex-1 items-center justify-between gap-3 leading-none">
+      <span className="text-muted-foreground">Compute</span>
+      <span className="font-medium font-mono text-foreground tabular-nums">
+        {formatCu(Number(value))}
+        <span className="ml-1 font-normal text-muted-foreground/70">CU</span>
+      </span>
+    </div>
+  </>
+);
+
 export const AutoscaleChart = ({
-  data,
-  min,
-  max,
-  title = "Autoscaling",
-  isLoading = false,
   className,
+  data,
+  isLoading = false,
+  max,
+  min,
+  title = "Autoscaling",
   ...props
 }: AutoscaleChartProps) => {
-  const chartId = useId().replaceAll(":", "");
-  const gradientId = `autoscale-fill-${chartId}`;
-  const chartRef = useRef<HTMLButtonElement>(null);
-  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const gradientId = `autoscale-fill-${useId().replaceAll(":", "")}`;
 
   if (isLoading) {
     return (
@@ -108,44 +128,11 @@ export const AutoscaleChart = ({
     );
   }
 
-  const points: Plotted[] = data.map((point, index) => ({ ...point, index }));
-  const values = points.map((point) => point.cu);
-  const ceiling = Math.max(max, ...values);
-  const headroom = ceiling * 1.08 || 1;
+  const current = data.at(-1)?.cu ?? 0;
+  const ceiling = niceCeiling(Math.max(max, ...data.map((point) => point.cu)));
 
-  const xScale = scaleLinear<number>({
-    domain: [0, Math.max(points.length - 1, 1)],
-    range: [PAD_X, CHART_W - PAD_X],
-  });
-  const yScale = scaleLinear<number>({
-    domain: [0, headroom],
-    range: [CHART_H - PAD_BOTTOM, PAD_TOP],
-  });
-
-  const yPct = (cu: number) => (yScale(cu) / CHART_H) * 100;
-  const current = points.at(-1)?.cu ?? 0;
-  const active = activeIndex === null ? null : points[activeIndex];
-  const readout = active ?? points.at(-1) ?? { cu: 0, index: 0, label: "" };
-
-  const selectFromPointer = (event: PointerEvent<HTMLButtonElement>) => {
-    const bounds = event.currentTarget.getBoundingClientRect();
-    const ratio = Math.min(
-      1,
-      Math.max(0, (event.clientX - bounds.left) / bounds.width)
-    );
-    setActiveIndex(Math.round(ratio * (points.length - 1)));
-  };
-
-  const handleKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
-    const last = points.length - 1;
-    const from = activeIndex ?? last;
-    if (event.key === "ArrowLeft") {
-      event.preventDefault();
-      setActiveIndex(Math.max(0, from - 1));
-    } else if (event.key === "ArrowRight") {
-      event.preventDefault();
-      setActiveIndex(Math.min(last, from + 1));
-    }
+  const config: ChartConfig = {
+    cu: { color: "var(--primary)", label: "Compute units" },
   };
 
   return (
@@ -170,126 +157,77 @@ export const AutoscaleChart = ({
         </span>
       </header>
 
-      <div className="relative">
-        <BoundLabel cu={max} kind="max" top={yPct(max)} />
-        <BoundLabel cu={min} kind="min" top={yPct(min)} />
-
-        <button
-          aria-label={`${title}: ${formatCu(current)} compute units, autoscaling between ${formatCu(min)} and ${formatCu(max)}. Use arrow keys to inspect.`}
-          className="block w-full touch-none outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
-          onBlur={() => setActiveIndex(null)}
-          onFocus={() => setActiveIndex(points.length - 1)}
-          onKeyDown={handleKeyDown}
-          onPointerLeave={() => setActiveIndex(null)}
-          onPointerMove={selectFromPointer}
-          ref={chartRef}
-          type="button"
+      <ChartContainer className="aspect-auto h-[170px] w-full" config={config}>
+        <AreaChart
+          accessibilityLayer
+          data={data}
+          margin={{ left: 4, right: 76, top: 4 }}
         >
-          <svg
-            aria-hidden="true"
-            className="block h-40 w-full overflow-visible"
-            preserveAspectRatio="none"
-            viewBox={`0 0 ${CHART_W} ${CHART_H}`}
-          >
-            <defs>
-              <linearGradient id={gradientId} x1="0" x2="0" y1="0" y2="1">
-                <stop
-                  offset="0%"
-                  stopColor="var(--primary)"
-                  stopOpacity={0.2}
-                />
-                <stop
-                  offset="100%"
-                  stopColor="var(--primary)"
-                  stopOpacity={0}
-                />
-              </linearGradient>
-            </defs>
+          <defs>
+            <linearGradient id={gradientId} x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%" stopColor="var(--primary)" stopOpacity={0.2} />
+              <stop offset="100%" stopColor="var(--primary)" stopOpacity={0} />
+            </linearGradient>
+          </defs>
 
-            {/* Autoscale envelope: the band the compute may move within. */}
-            <rect
-              fill="var(--muted-foreground)"
-              height={Math.max(yScale(min) - yScale(max), 0)}
-              opacity={0.06}
-              width={CHART_W - 2 * PAD_X}
-              x={PAD_X}
-              y={yScale(max)}
-            />
-            {[max, min].map((bound) => (
-              <line
-                key={bound}
-                stroke="var(--border)"
-                strokeDasharray="3 3"
-                vectorEffect="non-scaling-stroke"
-                x1={PAD_X}
-                x2={CHART_W - PAD_X}
-                y1={yScale(bound)}
-                y2={yScale(bound)}
-              />
-            ))}
-
-            <AreaClosed<Plotted>
-              curve={curveMonotoneX}
-              data={points}
-              fill={`url(#${gradientId})`}
-              pointerEvents="none"
-              x={(point) => xScale(point.index)}
-              y={(point) => yScale(point.cu)}
-              y0={CHART_H}
-              yScale={yScale}
-            />
-            <LinePath<Plotted>
-              curve={curveMonotoneX}
-              data={points}
-              fill="none"
-              pointerEvents="none"
-              stroke="var(--primary)"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={1.75}
-              vectorEffect="non-scaling-stroke"
-              x={(point) => xScale(point.index)}
-              y={(point) => yScale(point.cu)}
-            />
-
-            {active ? (
-              <g pointerEvents="none">
-                <line
-                  stroke="var(--border)"
-                  strokeDasharray="2 3"
-                  vectorEffect="non-scaling-stroke"
-                  x1={xScale(active.index)}
-                  x2={xScale(active.index)}
-                  y1={PAD_TOP}
-                  y2={CHART_H - PAD_BOTTOM}
-                />
-                <circle
-                  cx={xScale(active.index)}
-                  cy={yScale(active.cu)}
-                  fill="var(--card)"
-                  r={3.5}
-                  stroke={ZONE_COLOR[zoneOf(active.cu, min, max)]}
-                  strokeWidth={2}
-                  vectorEffect="non-scaling-stroke"
-                />
-              </g>
-            ) : null}
-          </svg>
-        </button>
-
-        {active ? (
-          <div
-            className="-translate-x-1/2 -translate-y-full pointer-events-none absolute z-10 mt-[-8px] inline-flex w-max items-center gap-1.5 rounded-md border border-border/70 bg-popover px-2.5 py-1 font-mono text-popover-foreground text-xs tabular-nums"
-            style={{
-              left: `${(xScale(readout.index) / CHART_W) * 100}%`,
-              top: `${yPct(readout.cu)}%`,
+          {/* The band the compute may move within. */}
+          <ReferenceArea
+            fill="var(--muted-foreground)"
+            fillOpacity={0.06}
+            ifOverflow="extendDomain"
+            y1={min}
+            y2={max}
+          />
+          <ReferenceLine
+            label={{
+              className: "fill-muted-foreground/80 font-mono text-[10px]",
+              position: "right",
+              value: `max ${formatCu(max)} CU`,
             }}
-          >
-            <span className="text-muted-foreground">{readout.label}</span>
-            <span className="font-medium">{formatCu(readout.cu)} CU</span>
-          </div>
-        ) : null}
-      </div>
+            stroke="var(--border)"
+            strokeDasharray="3 3"
+            y={max}
+          />
+          <ReferenceLine
+            label={{
+              className: "fill-muted-foreground/80 font-mono text-[10px]",
+              position: "right",
+              value: `min ${formatCu(min)} CU`,
+            }}
+            stroke="var(--border)"
+            strokeDasharray="3 3"
+            y={min}
+          />
+
+          <XAxis
+            axisLine={false}
+            dataKey="label"
+            interval="preserveStartEnd"
+            minTickGap={24}
+            tickLine={false}
+            tickMargin={8}
+          />
+          <YAxis
+            axisLine={false}
+            domain={[0, ceiling]}
+            tickFormatter={formatCu}
+            tickLine={false}
+            width={36}
+          />
+          <ChartTooltip
+            content={<ChartTooltipContent formatter={cuTooltipFormatter} />}
+            cursor={{ stroke: "var(--border)", strokeDasharray: "2 3" }}
+          />
+
+          <Area
+            dataKey="cu"
+            fill={`url(#${gradientId})`}
+            stroke="var(--primary)"
+            strokeWidth={1.75}
+            type="monotone"
+          />
+        </AreaChart>
+      </ChartContainer>
     </div>
   );
 };
