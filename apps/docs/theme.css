@@ -76,11 +76,16 @@
   --status-sleeping: #6b7280;
   --status-scaling: #d97706;
 
-  --chart-1: #00b37a;
-  --chart-2: #0ea5e9;
-  --chart-3: #a855f7;
-  --chart-4: #f59e0b;
-  --chart-5: #ec4899;
+  /* Chart ramp: one hue, five clear steps of lightness. Stacked bands are
+     told apart by value, not by hue, so the palette can stay the Neon
+     green family without becoming unreadable. Bands are separated by a
+     hairline in --card; see lib/consumption METRIC_COLORS.
+     Keep in sync with packages/registry/src/styles/tokens.css. */
+  --chart-1: #34c79a;
+  --chart-2: #00a870;
+  --chart-3: #008054;
+  --chart-4: #005c3e;
+  --chart-5: #0d3a2a;
 }
 
 .dark,
@@ -110,11 +115,11 @@
   --status-sleeping: #6b7280;
   --status-scaling: #f59e0b;
 
-  --chart-1: #00e599;
-  --chart-2: #38bdf8;
-  --chart-3: #c084fc;
-  --chart-4: #fbbf24;
-  --chart-5: #f472b6;
+  --chart-1: #7ff5cf;
+  --chart-2: #00e599;
+  --chart-3: #00a870;
+  --chart-4: #0a6647;
+  --chart-5: #14362b;
 }
 
 /* Tailwind v4 utilities used by shadcn components in the isolated frame. */

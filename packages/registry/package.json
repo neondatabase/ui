@@ -30,9 +30,6 @@
     "@neon/sdk": "^1.3.0",
     "@neondatabase/serverless": "^1.1.0",
     "@shadcn/react": "^0.2.1",
-    "@visx/curve": "^4.0.0",
-    "@visx/scale": "^4.0.0",
-    "@visx/shape": "^4.0.0",
     "ai": "^7.0.31",
     "anser": "^2.3.5",
     "class-variance-authority": "^0.7.1",
@@ -41,6 +38,7 @@
     "diff": "^9.0.0",
     "globe.gl": "^2.46.1",
     "motion": "^12.24.4",
+    "recharts": "^3.8.0",
     "streamdown": "^2.5.0",
     "tailwind-merge": "^3.4.1"
   },

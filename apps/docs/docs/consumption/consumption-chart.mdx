@@ -1,0 +1,200 @@
+---
+title: ConsumptionChart
+description: Interactive stacked time series over the v2 consumption metrics, with a scrubbable readout and a legend that filters.
+seo:
+  image: /og-cards/docs/consumption/consumption-chart.png
+---
+
+`ConsumptionChart` plots the buckets the [v2 consumption API](https://neon.com/docs/guides/consumption-metrics) returns: one series per metric, stacked into a total, oldest bucket first. Both axes are labelled, so the chart still answers questions in a screenshot. Pointer or arrow keys move a guide line and the readout names the bucket and every visible series at that moment. The legend doubles as the filter: click a series to drop it from the plot and the totals. It won't let you turn off the last one, because an empty chart answers nothing.
+
+<ConsumptionChartPreview />
+
+Built on [Recharts](https://recharts.github.io/) through the shadcn `chart` primitives, so it inherits the theme's tooltip, axis, and legend styling.
+
+## Install
+
+```bash
+npx shadcn@latest add https://ui.neon.com/r/consumption-chart.json
+```
+
+## Usage
+
+Values arrive in display units. Convert raw API units first with [`lib/consumption`](/consumption/cost-estimate-card#the-math) so the chart and the invoice agree.
+
+```tsx
+import { ConsumptionChart } from "@/components/neon-ui/consumption-chart";
+
+<ConsumptionChart
+  data={[
+    { label: "Feb 1", values: { compute: 3.1, storage: 2.2 } },
+    { label: "Feb 2", values: { compute: 2.8, storage: 2.3 } },
+  ]}
+  series={[
+    { id: "compute", label: "Compute", unit: "CU-hrs" },
+    { id: "storage", label: "Storage", unit: "GB-mo" },
+  ]}
+  granularities={["hourly", "daily", "monthly"]}
+  meteredThrough="metered through 21:40 UTC · ~15m behind"
+/>;
+```
+
+Series colors default to the `--chart-1` through `--chart-5` theme tokens in order: one hue in five steps of lightness, with a hairline of `--card` between stacked bands. Stacked series separate by value and by that gap. See [Chart colors](/theming#chart-colors). Pass `color` from the shared `METRIC_COLORS` map so a hue means the same thing here as in a [StorageBreakdown](/consumption/storage-breakdown) beside it — a positional palette makes green mean compute on one card and root storage on the next.
+
+## Units, totals, and stacking
+
+`unit` is not decoration. The header totals **per unit and never across units**, and stacking is disabled when the visible series don't share one:
+
+```tsx
+<ConsumptionChart
+  series={[
+    { id: "compute", label: "Compute", unit: "CU-hrs" },
+    { id: "root", label: "Root storage", unit: "GB-mo" },
+  ]}
+  data={data}
+/>
+// header reads: 102.8 CU-hrs · 36.1 GB-mo
+// series are overlaid, with a note saying why
+```
+
+CU-hours plus GB-months is not a quantity, and a stack whose height is that sum is a chart that lies. Give every series its unit and the component will not let you draw one.
+
+Recharts owns the axes and the tick maths; the x-axis thins its labels to about seven so they never collide.
+
+## Variants
+
+- **`variant="area"`** (default) — reads as a trend. Best for daily and monthly windows.
+- **`variant="bar"`** — reads as discrete buckets. Best for hourly windows, where each bar is one metered hour.
+- **`stacked={false}`** — lays series over each other from zero instead of on top of one another, for comparing two metrics rather than summing them.
+
+## Controlled and uncontrolled
+
+Everything works with no state of your own. Reach for the controlled props when the chart shares state with the rest of the page:
+
+```tsx
+const [granularity, setGranularity] = useState<"hourly" | "daily">("daily");
+
+<ConsumptionChart
+  data={granularity === "hourly" ? hourly : daily}
+  granularity={granularity}
+  granularities={["hourly", "daily"]}
+  onGranularityChange={setGranularity}
+  series={series}
+/>;
+```
+
+The same pairing exists for the legend filter: `activeSeriesIds` / `onActiveSeriesIdsChange`, with `defaultActiveSeriesIds` for the uncontrolled case.
+
+## Wiring to Neon
+
+The API key is server-only, so the browser calls your route handler, not `console.neon.tech`. [`useConsumptionHistory`](/consumption/branch-usage-table#the-hook) does the fetch and the shaping:
+
+```tsx
+const { buckets, error, isLoading } = useConsumptionHistory({
+  from,
+  to,
+  granularity: "daily",
+  projectIds: [projectId],
+  metrics: ["compute_unit_seconds", "root_branch_bytes_month"],
+});
+
+const data = buckets.map((bucket) => ({
+  label: format(new Date(bucket.start)),
+  values: {
+    compute_unit_seconds: toBillingUnit(
+      "compute_unit_seconds",
+      bucket.values.compute_unit_seconds ?? 0
+    ),
+  },
+}));
+```
+
+Granularity carries a lookback limit: hourly reaches back 168 hours, daily 60 days, monthly a year. Past it the API answers `406`, so keep the range switch and the granularity switch in step.
+
+## States
+
+- **Mixed units** — series carrying different units are overlaid instead of stacked, with a footer note naming the units that don't add up.
+- **Loading** — `isLoading` skeletons the header and plot at their real heights, so the panel never resizes on arrival.
+- **Empty** — the API omits metrics that were zero, so an empty window is a real answer. Pass `empty` to word it yourself.
+- **Error** — `error` renders the house error line above the plot.
+- **Metering lag** — `meteredThrough` renders the quiet footer notice.
+
+## Props
+
+<TypeTable
+  type={{
+    data: {
+      type: "ConsumptionPoint[]",
+      description:
+        "Buckets oldest first; each has a label and a series-id -> value map.",
+      required: true,
+    },
+    series: {
+      type: "ConsumptionSeries[]",
+      description:
+        "Series in stacking order; id, label, optional color and unit.",
+      required: true,
+    },
+    variant: {
+      type: '"area" | "bar"',
+      default: '"area"',
+    },
+    stacked: {
+      type: "boolean",
+      default: "true",
+      description:
+        "Ignored when the visible series carry more than one unit, where stacking would sum unlike quantities.",
+    },
+    activeSeriesIds: {
+      type: "string[]",
+      description: "Controlled visible series.",
+    },
+    defaultActiveSeriesIds: {
+      type: "string[]",
+      description: "Uncontrolled initial visible series; defaults to all.",
+    },
+    onActiveSeriesIdsChange: {
+      type: "(ids: string[]) => void",
+    },
+    granularity: {
+      type: '"hourly" | "daily" | "monthly"',
+      description: "Controlled granularity.",
+    },
+    granularities: {
+      type: '("hourly" | "daily" | "monthly")[]',
+      description: "Granularities to offer. Omit to hide the switch.",
+    },
+    onGranularityChange: {
+      type: "(granularity) => void",
+    },
+    title: {
+      type: "string",
+      default: '"consumption"',
+    },
+    action: {
+      type: "ReactNode",
+      description: "Right-side header slot, e.g. a DateRangePicker.",
+    },
+    formatValue: {
+      type: "(value: number) => string",
+      description: "Formats the readout, legend totals, and header total.",
+    },
+    meteredThrough: {
+      type: "string",
+      description: "Metering-lag notice rendered as a quiet footer.",
+    },
+    isLoading: { type: "boolean", default: "false" },
+    error: { type: "string | null" },
+    empty: {
+      type: "ReactNode",
+      description: "Shown when data is empty.",
+    },
+  }}
+/>
+
+## Accessibility
+
+- The plot uses Recharts' `accessibilityLayer`, so it takes focus and the arrow keys walk the buckets with the tooltip following.
+- Legend entries are real buttons carrying `aria-pressed`; the granularity switch is a labelled `fieldset` of pressed buttons.
+- Legend entries are real buttons carrying `aria-pressed`; the granularity switch is a `role="group"` of pressed buttons.
+- The SVG is `aria-hidden`, so screen readers get the readout text rather than a wall of paths.
+- The error line is `role="alert"`.

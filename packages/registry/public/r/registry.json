@@ -79,6 +79,20 @@
       ]
     },
     {
+      "name": "chart",
+      "type": "registry:ui",
+      "title": "Chart",
+      "description": "shadcn chart primitives (Recharts container, tooltip, legend) themed to the Neon tokens.",
+      "dependencies": ["recharts"],
+      "registryDependencies": ["utils"],
+      "files": [
+        {
+          "path": "src/components/ui/chart.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "skeleton",
       "type": "registry:ui",
       "title": "Skeleton",
@@ -464,20 +478,15 @@
       "type": "registry:component",
       "title": "MetricCard",
       "description": "Analytics card with a formatted value, signed delta, and interactive Visx sparkline.",
-      "dependencies": [
-        "@visx/curve",
-        "@visx/scale",
-        "@visx/shape",
-        "@hugeicons/react",
-        "@hugeicons/core-free-icons"
-      ],
+      "dependencies": ["recharts"],
       "registryDependencies": [
         "utils",
         "https://ui.neon.com/r/card.json",
         "https://ui.neon.com/r/badge.json",
         "https://ui.neon.com/r/skeleton.json",
         "https://ui.neon.com/r/neon-loader.json",
-        "https://ui.neon.com/r/neon-tokens.json"
+        "https://ui.neon.com/r/neon-tokens.json",
+        "https://ui.neon.com/r/chart.json"
       ],
       "files": [
         {
@@ -903,11 +912,12 @@
       "type": "registry:component",
       "title": "AutoscaleChart",
       "description": "Autoscaling compute units over time against the min/max bounds, with a scrubable readout.",
-      "dependencies": ["@visx/curve", "@visx/scale", "@visx/shape"],
+      "dependencies": ["recharts"],
       "registryDependencies": [
         "utils",
         "https://ui.neon.com/r/skeleton.json",
-        "https://ui.neon.com/r/neon-tokens.json"
+        "https://ui.neon.com/r/neon-tokens.json",
+        "https://ui.neon.com/r/chart.json"
       ],
       "files": [
         {
@@ -1288,6 +1298,109 @@
         {
           "path": "src/blocks/create-project/create-project.tsx",
           "type": "registry:block"
+        }
+      ]
+    },
+    {
+      "name": "consumption",
+      "type": "registry:lib",
+      "title": "Consumption metrics",
+      "description": "Types, unit conversion, allowances, and cost math for the Neon v2 consumption API.",
+      "files": [
+        {
+          "path": "src/lib/consumption.ts",
+          "type": "registry:lib"
+        }
+      ]
+    },
+    {
+      "name": "use-consumption-history",
+      "type": "registry:hook",
+      "title": "useConsumptionHistory",
+      "description": "Fetches consumption history through your own proxy route and shapes it into buckets and totals.",
+      "registryDependencies": ["https://ui.neon.com/r/consumption.json"],
+      "files": [
+        {
+          "path": "src/hooks/use-consumption-history.ts",
+          "type": "registry:hook"
+        }
+      ]
+    },
+    {
+      "name": "consumption-chart",
+      "type": "registry:component",
+      "title": "ConsumptionChart",
+      "description": "Interactive consumption time series with labelled axes, unit-aware totals, a scrubbable readout, and a legend that filters.",
+      "dependencies": ["recharts"],
+      "registryDependencies": [
+        "utils",
+        "https://ui.neon.com/r/neon-tokens.json",
+        "https://ui.neon.com/r/skeleton.json",
+        "https://ui.neon.com/r/chart.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/consumption-chart/consumption-chart.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/hooks/use-controllable-state.tsx",
+          "type": "registry:hook"
+        }
+      ]
+    },
+    {
+      "name": "storage-breakdown",
+      "type": "registry:component",
+      "title": "StorageBreakdown",
+      "description": "Storage composition by volume or by cost — root, child, instant restore, and snapshots as one bar with per-segment shares.",
+      "registryDependencies": [
+        "utils",
+        "https://ui.neon.com/r/neon-tokens.json",
+        "https://ui.neon.com/r/skeleton.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/storage-breakdown/storage-breakdown.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/hooks/use-controllable-state.tsx",
+          "type": "registry:hook"
+        }
+      ]
+    },
+    {
+      "name": "cost-estimate-card",
+      "type": "registry:component",
+      "title": "CostEstimateCard",
+      "description": "Invoice-shaped cost estimate: quantity by rate per metric, allowances shown, with an optional spending-limit meter.",
+      "registryDependencies": [
+        "utils",
+        "https://ui.neon.com/r/neon-tokens.json",
+        "https://ui.neon.com/r/skeleton.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/cost-estimate-card/cost-estimate-card.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "branch-usage-table",
+      "type": "registry:component",
+      "title": "BranchUsageTable",
+      "description": "Per-branch consumption attribution: sortable metric columns, magnitude rules, an expandable tail, and a list layout for a single metric.",
+      "registryDependencies": [
+        "utils",
+        "https://ui.neon.com/r/neon-tokens.json",
+        "https://ui.neon.com/r/skeleton.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/branch-usage-table/branch-usage-table.tsx",
+          "type": "registry:component"
         }
       ]
     }

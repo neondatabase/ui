@@ -33,6 +33,9 @@ jobs:
       - name: Component standard
         run: pnpm verify:components
 
+      - name: Docs theme mirrors the registry tokens
+        run: pnpm verify:tokens
+
       - name: Test
         run: pnpm test
 

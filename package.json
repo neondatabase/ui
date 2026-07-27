@@ -5,18 +5,20 @@
   "description": "The official Neon UI Registry — production-ready components and blocks for building modern applications on Neon.",
   "type": "module",
   "scripts": {
-    "dev": "pnpm --filter docs dev",
     "build": "pnpm build:registry && pnpm build:docs",
-    "build:registry": "pnpm --filter @neon-ui/registry build",
     "build:docs": "pnpm --filter docs build",
+    "build:registry": "pnpm --filter @neon-ui/registry build",
     "check": "ultracite check",
     "check:fix": "ultracite fix",
-    "typecheck": "pnpm -r typecheck",
-    "test": "pnpm -r test",
-    "verify:components": "node scripts/verify-components.mjs",
-    "prepare": "husky",
+    "dev": "pnpm --filter docs dev",
     "fix": "ultracite fix",
-    "lint:md": "markdownlint-cli2 \"**/*.{md,mdx}\" \"!**/node_modules/**\" \"!**/dist/**\""
+    "lint:md": "markdownlint-cli2 \"**/*.{md,mdx}\" \"!**/node_modules/**\" \"!**/dist/**\"",
+    "prepare": "husky",
+    "sync:tokens": "node scripts/sync-theme-tokens.mjs",
+    "test": "pnpm -r test",
+    "typecheck": "pnpm -r typecheck",
+    "verify:components": "node scripts/verify-components.mjs",
+    "verify:tokens": "node scripts/sync-theme-tokens.mjs --check"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",

@@ -53,5 +53,9 @@ plans/
 *.local.md
 TODO.md
 
+# local scratch components and pages (stage.local.tsx and friends)
+*.local.tsx
+*.local.astro
+
 # local time-tracking exports
 time-export.json

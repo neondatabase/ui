@@ -1,0 +1,165 @@
+---
+title: CostEstimateCard
+description: Raw metrics priced into an invoice-shaped estimate — quantity by rate per line, allowances shown, spending limit in view.
+seo:
+  image: /og-cards/docs/consumption/cost-estimate-card.png
+---
+
+A cost with no arithmetic behind it is a number to distrust. `CostEstimateCard` leads with the total, then shows how it was reached: quantity, unit, and rate per line, ranked biggest first with each line's share of the bill. Allowances are shown rather than silently netted, and alongside the gross usage that produced them, so "604 used, 500 included" explains why the line bills 104. Set a `spendingLimit` and the meter carries the figures inside the bar. The card names itself an estimate, because metering lags and the invoice is the source of truth.
+
+<CostEstimateCardPreview />
+
+## Install
+
+```bash
+npx shadcn@latest add https://ui.neon.com/r/cost-estimate-card.json
+```
+
+## Usage
+
+```tsx
+import { CostEstimateCard } from "@/components/neon-ui/cost-estimate-card";
+
+<CostEstimateCard
+  lines={[
+    {
+      id: "compute_unit_seconds",
+      label: "Compute",
+      quantity: 135,
+      unit: "CU-hr",
+      rate: 0.222,
+      cost: 29.97,
+    },
+    {
+      id: "public_network_transfer_bytes",
+      label: "Public transfer",
+      quantity: 104,
+      unit: "GB",
+      rate: 0.1,
+      cost: 10.4,
+      included: 500,
+    },
+  ]}
+  plan="scale"
+  period="Feb 1 – Feb 14"
+  spendingLimit={100}
+/>;
+```
+
+Lines are ranked by cost descending by default; pass `order="given"` to keep your own order, e.g. to match an invoice's line sequence. Lines costing nothing collapse into a single muted row rather than taking a row each — they still appear, because "we checked and it was zero" is worth saying. Pass `collapseZero={false}` to give them full rows.
+
+There is no total row: the figure is already the headline and the meter's left label, and three copies of one number is not emphasis.
+
+The total is the line sum unless you pass `total`, which is what you want when you're rendering a settled invoice rather than a projection. In that case pass `note={null}` too, so the card stops calling itself an estimate.
+
+## The math
+
+`lib/consumption` ships with the card and holds every conversion Neon documents, so a chart, a breakdown, and a cost estimate can't drift from each other:
+
+| From         | To            | Helper           |
+| ------------ | ------------- | ---------------- |
+| CU-seconds   | CU-hours      | `toCuHours`      |
+| byte-hours   | GB-months     | `toGbMonths`     |
+| byte-hours   | average GB    | `toAverageGb`    |
+| bytes        | GB            | `toGigabytes`    |
+| branch-hours | branch-months | `toBranchMonths` |
+| any metric   | billing unit  | `toBillingUnit`  |
+
+Neon bills a fixed 744-hour month (31 × 24) whatever the calendar says, and counts decimal gigabytes (10^9 bytes), not gibibytes. Both constants are exported as `BILLING_HOURS_PER_MONTH` and `BYTES_PER_GB`.
+
+`estimateCost` puts it together, applying allowances before rates:
+
+```tsx
+import { estimateCost, hoursBetween } from "@/lib/consumption";
+
+const { items, total } = estimateCost(totals, "scale", {
+  hoursInPeriod: hoursBetween(from, to),
+});
+```
+
+Two allowances matter. Public transfer is free to 500 GB per project. And `extra_branches_month` reports **every** child branch, not just the ones past your plan's included count, so the free allowance (`branches_per_project - 1`, per hour) has to come off before you charge. Neon evaluates that hourly, so `granularity: "hourly"` inside the 168-hour window tracks the invoice most closely; daily is the right call for a full month and will slightly underestimate branch hours.
+
+## Wiring to Neon
+
+```tsx
+const { data } = await neon.consumption
+  .perProjectV2({
+    org_id: orgId,
+    project_ids: [projectId],
+    from,
+    to,
+    granularity: "daily",
+    metrics: [...CONSUMPTION_METRICS],
+  })
+  .all();
+
+const totals = sumBuckets(flattenConsumption(data?.[0]?.periods ?? []));
+const { items, total } = estimateCost(totals, plan, {
+  hoursInPeriod: hoursBetween(from, to),
+});
+```
+
+Rates ship per plan in `PLAN_RATES` (Launch, Scale, Agent, Enterprise). Agent matches Scale except compute, which bills at the Launch rate. Enterprise plans can carry negotiated pricing, so override the rates rather than trusting the table for those accounts.
+
+## States
+
+- **Spending limit** — `spendingLimit` draws the meter with the spent figure inside the fill and the remainder inside the track; past the limit the fill turns destructive and reads "$X over". When the fill is too narrow to hold its label, the figure steps outside it.
+- **Zero lines** — `estimateCost` keeps zero-cost lines by default, so a metric you're not using still reads as $0.00 rather than disappearing. Pass `omitZero: true` to drop them.
+- **Loading** — `isLoading` skeletons the total and one row per line.
+- **Error** — `error` renders the house error line under the header.
+
+## Props
+
+<TypeTable
+  type={{
+    lines: {
+      type: "CostLine[]",
+      description:
+        "id, label, quantity (billable), unit, rate, cost, plus optional used (gross) and included.",
+      required: true,
+    },
+    total: {
+      type: "number",
+      description: "Overrides the summed total, e.g. for a settled invoice.",
+    },
+    order: {
+      type: '"cost" | "given"',
+      default: '"cost"',
+      description: "Rank lines by cost, or keep the order you passed.",
+    },
+    collapseZero: {
+      type: "boolean",
+      default: "true",
+      description: "Roll zero-cost lines into one muted summary row.",
+    },
+    plan: {
+      type: "string",
+      description: 'Plan name beside the total, e.g. "scale".',
+    },
+    period: {
+      type: "string",
+      description: 'Billing period, e.g. "Feb 1 – Feb 14".',
+    },
+    spendingLimit: {
+      type: "number",
+      description:
+        "USD limit; draws the progress meter and the over-limit warning.",
+    },
+    action: { type: "ReactNode", description: "Right-side header slot." },
+    footer: { type: "ReactNode", description: "e.g. a link to the invoice." },
+    note: {
+      type: "ReactNode",
+      description:
+        "Estimate disclaimer. Defaults to the metering-lag note; pass null to drop it.",
+    },
+    isLoading: { type: "boolean", default: "false" },
+    error: { type: "string | null" },
+  }}
+/>
+
+## Accessibility
+
+- Every figure is text, with tabular numerals so columns of digits line up.
+- The spend meter carries its figures as real text inside the bar; only the colored fill is `aria-hidden`. There is no `progressbar` role, because the text states spent, remaining, and limit outright.
+- Rates render to four decimals so a $0.106/CU-hr line doesn't round away to $0.11.
+- The error line is `role="alert"`.
