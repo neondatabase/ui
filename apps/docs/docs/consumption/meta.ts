@@ -2,6 +2,6 @@ import { defineMeta } from "blume";
 
 export default defineMeta({
   collapsed: false,
-  order: 6,
-  title: "Brand",
+  order: 5,
+  title: "Consumption Metrics",
 });

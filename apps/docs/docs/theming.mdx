@@ -28,3 +28,19 @@ Paste a variable block from your own project (or tap a preset) and the component
   --border: oklch(0.33 0.03 290);
 }
 ```
+
+## Chart colors
+
+`--chart-1` through `--chart-5` are one hue in five steps of lightness, not a rainbow:
+
+| Token       | Dark                  | Light     |
+| ----------- | --------------------- | --------- |
+| `--chart-1` | `#7ff5cf` pale mint   | `#34c79a` |
+| `--chart-2` | `#00e599` brand green | `#00a870` |
+| `--chart-3` | `#00a870` mid green   | `#008054` |
+| `--chart-4` | `#0a6647` deep green  | `#005c3e` |
+| `--chart-5` | `#14362b` forest      | `#0d3a2a` |
+
+Stacked series separate by **value**, not by hue, which is what makes a single-hue palette work. Every stacked fill also carries a hairline stroke in `--card`, so neighbouring bands read as bands rather than as one mass. Override the five tokens and the charts follow.
+
+The charts are built on [Recharts](https://recharts.github.io/) through the shadcn `chart` primitives in `components/ui/chart.tsx`, so a `ChartConfig` maps series ids to these tokens and tooltips and axes inherit the theme.

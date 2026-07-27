@@ -1,0 +1,174 @@
+---
+title: BranchUsageTable
+description: Per-branch consumption attribution — sortable metric columns, inline share bars, and a top-N rollup that still counts the tail.
+seo:
+  image: /og-cards/docs/consumption/branch-usage-table.png
+---
+
+The project total tells you the bill. `BranchUsageTable` tells you who ran it up. It renders the [branch metrics endpoint](https://neon.com/docs/guides/consumption-metrics#branch-metrics) as a real table: branch on the left, one right-aligned tabular column per metric, sortable by any of them. The sorted column carries a hairline rule along the bottom of each cell, scaled to the largest row, so the outlier is obvious without a second chart.
+
+A table earns its keep by comparing across metrics. With a single column there is nothing to compare across, so `layout="auto"` renders a ranked list instead — no header row, no alignment axis, a full-width rule under each branch. Below 40rem the columns stack into label and value pairs rather than scrolling sideways.
+
+<BranchUsageTablePreview />
+
+## Install
+
+```bash
+npx shadcn@latest add https://ui.neon.com/r/branch-usage-table.json
+```
+
+## Usage
+
+```tsx
+import { BranchUsageTable } from "@/components/neon-ui/branch-usage-table";
+
+<BranchUsageTable
+  columns={[
+    { id: "compute", label: "Compute", unit: "CU-hrs" },
+    { id: "storage", label: "Storage", unit: "GB-mo" },
+    { id: "transfer", label: "Transfer", unit: "GB" },
+  ]}
+  rows={[
+    {
+      id: "br-quiet-field-a1b2c3d4",
+      name: "main",
+      isDefault: true,
+      isProtected: true,
+      metrics: { compute: 84.2, storage: 18.4, transfer: 121.6 },
+    },
+    {
+      id: "br-bold-sun-c3d4e5f6",
+      name: "ci/pr-4821",
+      hint: "from main · 18 runs",
+      metrics: { compute: 38.4, storage: 1.1, transfer: 6.2 },
+    },
+  ]}
+  topN={10}
+  onSelectBranch={(row) => router.push(`/branches/${row.id}`)}
+/>;
+```
+
+Past `topN` the remaining branches collapse into one row that names how many and expands on click. It sits below a rule, outside the ranking, so its summed value can't read as a sort that went wrong. A muted totals row across every branch closes the table, because a row's share isn't readable if you have to do the addition yourself.
+
+Sort is uncontrolled by default (first column, descending). Pass `sort` and `onSortChange` when it belongs to the page, e.g. mirrored in the URL.
+
+## Wiring to Neon
+
+The endpoint takes `project_ids` (required here, unlike the project endpoint) and answers with branch ids, so pair it with a branch list to label the rows:
+
+```tsx
+const [{ data: consumption }, { data: branches }] = await Promise.all([
+  neon.consumption
+    .perBranchV2({
+      org_id: orgId,
+      project_ids: [projectId],
+      from,
+      to,
+      granularity: "daily",
+      metrics: [
+        "compute_unit_seconds",
+        "root_branch_bytes_month",
+        "child_branch_bytes_month",
+        "public_network_transfer_bytes",
+      ],
+    })
+    .all(),
+  neon.branches.list(projectId).all(),
+]);
+```
+
+Six of the eight project metrics are available per branch. `extra_branches_month` and `snapshot_storage_bytes_month` are not — those are project-level, so read them from the [project endpoint](/consumption/cost-estimate-card#wiring-to-neon).
+
+Storage per branch means root plus child, and the child figure is the branch's **delta from its parent**. A CI branch that barely diverges shows a small number, and that's not a bug: the delta is exactly what Neon charges for.
+
+## The hook
+
+`useConsumptionHistory` ships alongside these components and handles the fetch, the flattening, and the totals:
+
+```tsx
+const { buckets, totals, isLoading, error, updatedAt, refresh } =
+  useConsumptionHistory({
+    endpoint: "/api/consumption",
+    from,
+    to,
+    granularity: "daily",
+    projectIds: [projectId],
+    pollIntervalMs: 900_000,
+  });
+```
+
+It calls **your** route handler, not `console.neon.tech`. The Neon API key is server-only; a browser that can read it can read every project in the org. Polling is clamped to 15 minutes because that's how often Neon refreshes consumption, and the consumption endpoints share a ~50 request/minute bucket. Calling them never wakes a suspended compute, so polling costs nothing.
+
+## States
+
+- **Rollup** — `topN` collapses everything past N into one counted row labelled "N other branches", which expands on click.
+- **Narrow** — under 40rem the columns stack into label and value pairs. Sorting is a comparison affordance, so the header row hides at that width and the default sort stands.
+- **Clickable** — `onSelectBranch` turns each branch name into a button. The rollup row stays inert.
+- **Loading** — `isLoading` skeletons five rows at the real height.
+- **Empty** — pass `empty` to word the no-consumption case yourself.
+- **Error** — `error` renders the house error line above the table.
+
+## Props
+
+<TypeTable
+  type={{
+    rows: {
+      type: "BranchUsageRow[]",
+      description:
+        "id, name, metrics map, plus optional isDefault, isProtected, and hint.",
+      required: true,
+    },
+    columns: {
+      type: "BranchUsageColumn[]",
+      description:
+        "Display order; the first is the default sort. id, label, optional unit and format.",
+      required: true,
+    },
+    layout: {
+      type: '"auto" | "table" | "list"',
+      default: '"auto"',
+      description:
+        "auto renders a list for a single column and a table for more.",
+    },
+    showTotals: {
+      type: "boolean",
+      default: "true",
+      description: "Muted totals row across every branch, collapsed included.",
+    },
+    title: { type: "string", default: '"usage by branch"' },
+    sort: {
+      type: "BranchUsageSort",
+      description: "Controlled sort: { columnId, direction }.",
+    },
+    defaultSort: {
+      type: "BranchUsageSort",
+      description:
+        "Uncontrolled initial sort; defaults to first column, descending.",
+    },
+    onSortChange: { type: "(sort: BranchUsageSort) => void" },
+    topN: {
+      type: "number",
+      description: "Show N rows and roll the rest into one counted row.",
+    },
+    onSelectBranch: {
+      type: "(row: BranchUsageRow) => void",
+      description: "Makes branch names clickable.",
+    },
+    action: { type: "ReactNode", description: "Right-side header slot." },
+    isLoading: { type: "boolean", default: "false" },
+    error: { type: "string | null" },
+    empty: { type: "ReactNode" },
+    meteredThrough: {
+      type: "string",
+      description: "Quiet metering-lag footer.",
+    },
+  }}
+/>
+
+## Accessibility
+
+- A real `<table>` with a `<thead>`; headers carry `aria-sort` and their sort control is a button, so sorting works from the keyboard. Every sortable header shows its caret, muted until active — an affordance you only see after using it isn't one.
+- The narrow layout is the same DOM restyled, not a second copy, so screen readers never meet duplicated rows.
+- Selection lives on the branch name button, not a click handler on the row, so it's reachable by tab and announced as an action.
+- Share rules are `aria-hidden` decoration beneath values that are already text.
+- Values use tabular numerals, so digits line up column to column.

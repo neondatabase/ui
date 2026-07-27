@@ -1,0 +1,145 @@
+---
+title: StorageBreakdown
+description: What your storage bill is made of — root, child, instant restore, and snapshots — as one stacked bar with per-segment shares.
+seo:
+  image: /og-cards/docs/consumption/storage-breakdown.png
+---
+
+Storage is four line items on a Neon invoice, and they behave nothing alike: root branches hold the real bytes, child branches hold only their delta from the parent, instant restore holds your PITR window, and snapshots hold whatever your schedule kept. `StorageBreakdown` puts them in one bar so "what is eating my storage" is a glance, and lists them underneath with values and shares so "how much" doesn't need a tooltip. Hovering a row dims the other segments; the bar itself never moves, so comparison stays honest.
+
+They also bill at four different rates, so bytes and dollars rank differently. Give each segment its `rate` and the card offers a **volume / cost** switch: instant restore holds 15.3% of the volume in the demo above but only 9.7% of the cost, and snapshots drop from 4.0% to 1.1%. Ranking by bytes on a billing page points the reader at the wrong lever.
+
+<StorageBreakdownPreview />
+
+## Install
+
+```bash
+npx shadcn@latest add https://ui.neon.com/r/storage-breakdown.json
+```
+
+## Usage
+
+```tsx
+import { StorageBreakdown } from "@/components/neon-ui/storage-breakdown";
+
+<StorageBreakdown
+  segments={[
+    { id: "root", label: "Root branches", value: 18.42 },
+    {
+      id: "child",
+      label: "Child branches",
+      value: 7.13,
+      hint: "delta from parent",
+    },
+    { id: "restore", label: "Instant restore", value: 4.86 },
+    { id: "snapshots", label: "Snapshots", value: 1.27 },
+  ]}
+  totalLabel="GB-months · Feb 1 – Feb 14"
+/>;
+```
+
+Pass `total` to change the denominator behind the share percentages. Left unset it's the segment sum, which reads as composition. Set it to a plan allowance and the same bar reads as headroom.
+
+## Wiring to Neon
+
+The four metrics come back as byte-hours. Divide by 744 and 10^9 for GB-months, the unit the invoice charges in — `toGbMonths` does it:
+
+```tsx
+import {
+  flattenConsumption,
+  METRIC_LABELS,
+  STORAGE_METRICS,
+  sumBuckets,
+  toGbMonths,
+} from "@/lib/consumption";
+
+const { data } = await neon.consumption
+  .perProjectV2({
+    org_id: orgId,
+    project_ids: [projectId],
+    from,
+    to,
+    granularity: "daily",
+    metrics: [...STORAGE_METRICS],
+  })
+  .all();
+
+const totals = sumBuckets(flattenConsumption(data?.[0]?.periods ?? []));
+
+const segments = STORAGE_METRICS.map((metric) => ({
+  id: metric,
+  label: METRIC_LABELS[metric],
+  rate: PLAN_RATES[plan][metric],
+  value: toGbMonths(totals[metric] ?? 0),
+}));
+```
+
+Seed every segment at zero rather than mapping only what came back. The API omits metrics whose value was zero, and a quiet month should read as quiet, not as a broken request.
+
+For a point-in-time size instead of a billing figure, use `toAverageGb(byteHours, hoursBetween(from, to))`. That's the number the Neon Console shows, and it will not match the invoice.
+
+## States
+
+- **Hover and focus** — highlights a row and dims the rest. Use `activeSegmentId` / `onActiveSegmentIdChange` to drive it from elsewhere, e.g. a chart legend.
+- **Clickable** — pass `onSelectSegment` to make rows actionable, e.g. to filter a chart. Without it rows render as plain `div`s, because a row that does nothing shouldn't be a tab stop.
+- **Loading** — `isLoading` skeletons the total, bar, and one row per segment.
+- **Error** — `error` renders the house error line under the total.
+
+## Props
+
+<TypeTable
+  type={{
+    segments: {
+      type: "StorageSegment[]",
+      description:
+        "Stacking order; id, label, value, optional rate, color, and hint.",
+      required: true,
+    },
+    title: { type: "string", default: '"storage"' },
+    unit: {
+      type: "string",
+      default: '"GB-mo"',
+      description: "Unit for the headline figure; sits beside the number.",
+    },
+    period: {
+      type: "string",
+      description: 'Period readout in the header, e.g. "Feb 1 – Feb 14".',
+    },
+    total: {
+      type: "number",
+      description:
+        "Share denominator in volume view; defaults to the segment sum.",
+    },
+    view: {
+      type: '"volume" | "cost"',
+      description: "Controlled ranking. Needs a rate on every segment.",
+    },
+    defaultView: { type: '"volume" | "cost"', default: '"volume"' },
+    onViewChange: { type: "(view) => void" },
+    formatValue: {
+      type: "(value: number) => string",
+      description: "Formats every number shown. Defaults to two decimals.",
+    },
+    activeSegmentId: {
+      type: "string | null",
+      description: "Controlled highlight.",
+    },
+    onActiveSegmentIdChange: { type: "(id: string | null) => void" },
+    onSelectSegment: {
+      type: "(segment: StorageSegment) => void",
+      description: "Makes rows clickable.",
+    },
+    isLoading: { type: "boolean", default: "false" },
+    error: { type: "string | null" },
+    footer: { type: "ReactNode" },
+  }}
+/>
+
+## Accessibility
+
+- Rows are buttons **only** when `onSelectSegment` is set. Otherwise they're `div`s: four focusable buttons that do nothing is a worse experience than a hover-only highlight.
+- The view switch is a labelled `fieldset` of `aria-pressed` buttons.
+- The bar is `aria-hidden`; every value it encodes is stated in the rows beneath it.
+- Percentages always print one decimal, so the column aligns on the decimal point rather than ragging at `4%` next to `58.1%`.
+- Segments below 0.4% are dropped from the bar (they'd render as a sliver) but keep their row and percentage.
+- The error line is `role="alert"`.
