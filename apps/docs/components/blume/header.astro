@@ -133,6 +133,18 @@ const iconButton =
 // so the offset can't drift while open, and re-measure when a banner dismiss or
 // a resize/rotation moves the header. Crossing into the desktop breakpoint
 // (64rem, Tailwind `lg`) closes the drawer so the scroll lock can't outlive it.
+// The sidebar is its own scroll container (fixed, overflow-y:auto), and Blume
+// leaves it at scrollTop 0 on load. On a deep page that puts the current entry
+// hundreds of pixels below the fold, so the nav opens without showing where you
+// are. This reveals the active link, but only when it isn't already comfortably
+// in view: scrolling a nav that was already readable costs the reader the
+// spatial memory they navigated with. Out of view, it centers. Scroll position
+// is set directly rather than animated, so there's nothing to watch.
+// The header's active tab also carries aria-current="page", so the link is
+// matched on the current pathname and must sit inside a scroll container that
+// is actually rendered (the mobile drawer is a second, hidden copy).
+const revealActiveNavScript = `(()=>{const M=48;const trim=(v)=>v.replace(/\\/+$/,"");const reveal=()=>{const here=trim(location.pathname);const links=[].slice.call(document.querySelectorAll('a[aria-current="page"]')).filter((a)=>trim(a.getAttribute("href")||"")===here&&a.getClientRects().length>0);for(const link of links){let box=link.parentElement;while(box){const oy=getComputedStyle(box).overflowY;if(oy==="auto"||oy==="scroll"){break;}box=box.parentElement;}if(!box||box.scrollHeight<=box.clientHeight){continue;}const l=link.getBoundingClientRect();const b=box.getBoundingClientRect();if(l.top>=b.top+M&&l.bottom<=b.bottom-M){continue;}const delta=l.top-b.top-(box.clientHeight-l.height)/2;box.scrollTop=Math.max(0,box.scrollTop+delta);}};if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",reveal);}else{reveal();}document.addEventListener("astro:page-load",reveal);})();`;
+
 const clickScript = `(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();`;
 ---
 
@@ -238,3 +250,4 @@ const clickScript = `(()=>{const dr=()=>{const h=document.querySelector("[data-b
   </div>
 </header>
 <script is:inline set:html={clickScript} />
+<script is:inline set:html={revealActiveNavScript} />
