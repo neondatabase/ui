@@ -55,3 +55,4 @@ TODO.md
 
 # local time-tracking exports
 time-export.json
+.env*
