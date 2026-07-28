@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 
-import type { QueryHistoryEntry } from "./query-history";
+import type { QueryHistoryEntry } from "@/components/query-history/query-history";
 
 export interface UseQueryHistoryOptions {
   endpoint?: string;

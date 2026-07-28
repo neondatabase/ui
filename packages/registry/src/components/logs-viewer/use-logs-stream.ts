@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import type { LogLine } from "./logs-viewer";
+import type { LogLine } from "@/components/logs-viewer/logs-viewer";
 
 export interface UseLogsStreamOptions {
   endpoint?: string;

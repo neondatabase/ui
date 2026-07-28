@@ -8,7 +8,8 @@
     "@ai-sdk/react",
     "streamdown",
     "@hugeicons/react",
-    "@hugeicons/core-free-icons"
+    "@hugeicons/core-free-icons",
+    "motion"
   ],
   "registryDependencies": [
     "utils",
@@ -19,7 +20,8 @@
     "https://ui.neon.com/r/button.json",
     "https://ui.neon.com/r/tool-call-chip.json",
     "https://ui.neon.com/r/neon-tokens.json",
-    "https://ui.neon.com/r/empty-state.json"
+    "https://ui.neon.com/r/empty-state.json",
+    "https://ui.neon.com/r/neon-loader.json"
   ],
   "files": [
     {

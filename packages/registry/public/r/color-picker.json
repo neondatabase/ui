@@ -4,7 +4,9 @@
   "title": "ColorPicker",
   "description": "Swatch-and-hex trigger opening an HSV field, hue rail, hex input, and preset swatches.",
   "dependencies": [
-    "@base-ui/react"
+    "@base-ui/react",
+    "@hugeicons/core-free-icons",
+    "@hugeicons/react"
   ],
   "registryDependencies": [
     "utils",

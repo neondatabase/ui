@@ -3,6 +3,9 @@
   "name": "popover",
   "title": "Popover",
   "description": "Base UI popover in the house chrome.",
+  "dependencies": [
+    "@base-ui/react"
+  ],
   "registryDependencies": [
     "utils",
     "https://ui.neon.com/r/neon-tokens.json"

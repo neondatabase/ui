@@ -4,7 +4,9 @@
   "title": "MetricCard",
   "description": "Analytics card with a formatted value, signed delta, and interactive Visx sparkline.",
   "dependencies": [
-    "recharts"
+    "recharts",
+    "@hugeicons/core-free-icons",
+    "@hugeicons/react"
   ],
   "registryDependencies": [
     "utils",

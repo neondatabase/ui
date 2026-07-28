@@ -3,6 +3,10 @@
   "name": "bubble",
   "title": "Bubble",
   "description": "Chat bubble primitive with grouping and reactions.",
+  "dependencies": [
+    "@base-ui/react",
+    "class-variance-authority"
+  ],
   "registryDependencies": [
     "utils",
     "https://ui.neon.com/r/neon-tokens.json"

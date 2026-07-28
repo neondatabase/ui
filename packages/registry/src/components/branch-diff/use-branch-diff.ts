@@ -2,7 +2,10 @@
 
 import { useCallback, useEffect, useState } from "react";
 
-import type { SchemaChange, TableDataDiff } from "./branch-diff";
+import type {
+  SchemaChange,
+  TableDataDiff,
+} from "@/components/branch-diff/branch-diff";
 
 export interface BranchDiffPayload {
   schemaChanges: SchemaChange[];
