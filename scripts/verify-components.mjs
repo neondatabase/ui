@@ -3,6 +3,11 @@
  * and every block in packages/registry/src/blocks must ship the four artifacts
  * (source, fixtures, demo, example) plus be listed in registry.json. Hooks are
  * optional.
+ *
+ * Also guards shipped files against relative imports that only resolve inside
+ * this repo. `shadcn add` routes each file by its registry type — components to
+ * the consumer's components alias, hooks to their hooks alias — so a `./sibling`
+ * import between two different types resolves here and breaks there.
  */
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
@@ -44,6 +49,48 @@ for (const { dir, name } of components) {
 
   if (!manifestNames.has(name)) {
     failures.push(`${name}: not listed in registry.json`);
+  }
+}
+
+const RELATIVE_IMPORT = /(?:from|import)\s+"(?<specifier>\.\/[^"]+)"/gu;
+
+for (const item of manifest.items) {
+  const files = item.files ?? [];
+  // Only files shipped in the same item can be reached relatively, and only
+  // when shadcn writes them to the same directory — which it does per type.
+  const typeByPath = new Map(files.map((file) => [file.path, file.type]));
+
+  for (const file of files) {
+    const absolute = path.join(registryRoot, file.path);
+
+    if (!existsSync(absolute)) {
+      failures.push(`${item.name}: registry.json lists missing ${file.path}`);
+      continue;
+    }
+
+    const source = readFileSync(absolute, "utf-8");
+    const dir = path.posix.dirname(file.path);
+
+    for (const match of source.matchAll(RELATIVE_IMPORT)) {
+      const { specifier } = match.groups;
+      const resolved = path.posix.join(dir, specifier);
+      const sibling = [".ts", ".tsx", ""]
+        .map((extension) => `${resolved}${extension}`)
+        .find((candidate) => typeByPath.has(candidate));
+
+      if (!sibling) {
+        failures.push(
+          `${item.name}: ${file.path} imports "${specifier}", which is not shipped in the item`
+        );
+        continue;
+      }
+
+      if (typeByPath.get(sibling) !== file.type) {
+        failures.push(
+          `${item.name}: ${file.path} (${file.type}) imports "${specifier}" (${typeByPath.get(sibling)}) — different types land in different directories, use an "@/" alias`
+        );
+      }
+    }
   }
 }
 

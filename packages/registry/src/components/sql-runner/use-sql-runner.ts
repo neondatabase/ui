@@ -1,6 +1,9 @@
 "use client";
 
-import type { SQLExecutionContext, SQLResult } from "./sql-runner";
+import type {
+  SQLExecutionContext,
+  SQLResult,
+} from "@/components/sql-runner/sql-runner";
 
 export interface UseSQLRunnerOptions {
   /** Server endpoint that executes authorized SQL. */
