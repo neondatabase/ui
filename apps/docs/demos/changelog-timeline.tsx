@@ -39,7 +39,7 @@ const KIND_LABELS: Record<string, string> = {
   perf: "perf",
   refactor: "cleanup",
 };
-const REPO_URL = "https://github.com/neonpostgres/ui";
+const REPO_URL = "https://github.com/neondatabase/ui";
 
 const formatDate = (iso: string) =>
   new Date(`${iso}T00:00:00`).toLocaleDateString("en-US", {
