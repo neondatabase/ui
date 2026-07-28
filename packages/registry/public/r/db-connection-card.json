@@ -1,7 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "db-connection-card",
-  "title": "DB Connection Card",
+  "title": "DBConnectionCard",
   "description": "Neon database connection card: pooled/direct toggle, role and database selectors, URI / psql / parameters views, one shared secret reveal, and copy that always carries the real string.",
   "dependencies": [
     "@hugeicons/react",
