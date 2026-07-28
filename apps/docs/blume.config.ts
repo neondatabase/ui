@@ -14,7 +14,7 @@ export default defineConfig({
   feedback: false,
   // Header repository link, edit-on-GitHub, and feedback actions.
   github: {
-    owner: "neonpostgres",
+    owner: "neondatabase",
     repo: "ui",
   },
   logo: {
