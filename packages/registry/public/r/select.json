@@ -4,7 +4,9 @@
   "title": "Select",
   "description": "Accessible select primitive (Base UI).",
   "dependencies": [
-    "@base-ui/react"
+    "@base-ui/react",
+    "@hugeicons/core-free-icons",
+    "@hugeicons/react"
   ],
   "registryDependencies": [
     "utils",

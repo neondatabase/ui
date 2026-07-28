@@ -3,6 +3,9 @@
   "name": "dialog",
   "title": "Dialog",
   "description": "Base UI dialog in the house chrome: card panel, hairline border, quiet rise.",
+  "dependencies": [
+    "@base-ui/react"
+  ],
   "registryDependencies": [
     "utils",
     "https://ui.neon.com/r/neon-tokens.json"

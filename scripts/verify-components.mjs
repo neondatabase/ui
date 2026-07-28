@@ -53,12 +53,51 @@ for (const { dir, name } of components) {
 }
 
 const RELATIVE_IMPORT = /(?:from|import)\s+"(?<specifier>\.\/[^"]+)"/gu;
+const ALIAS_IMPORT = /(?:from|import)\s+"(?<specifier>@\/[^"]+)"/gu;
+const PACKAGE_IMPORT =
+  /(?:from|import)\s+"(?<specifier>[^".@][^"]*|@[^/"]+\/[^"]+)"/gu;
+
+// Consumers bring these themselves; every other package an item imports has to
+// be listed in `dependencies` so `shadcn add` installs it.
+const PEER_PACKAGES = new Set(["react", "react-dom"]);
+
+const packageName = (specifier) => {
+  const segments = specifier.split("/");
+  return specifier.startsWith("@")
+    ? segments.slice(0, 2).join("/")
+    : segments[0];
+};
+
+// `utils` is shadcn's own item, not one of ours, and every item already
+// depends on it for `@/lib/utils`.
+const SHADCN_PROVIDED = new Map([["src/lib/utils", "utils"]]);
+
+// registryDependencies are written as absolute URLs into this registry, or as
+// a bare name for shadcn's built-ins.
+const dependencyNames = (item) =>
+  new Set(
+    (item.registryDependencies ?? []).map(
+      (dependency) =>
+        /\/r\/(?<name>[a-z0-9-]+)\.json$/u.exec(dependency)?.groups.name ??
+        dependency
+    )
+  );
+
+const withExtensions = (base) => [base, `${base}.ts`, `${base}.tsx`];
+
+const providerByPath = new Map();
+for (const item of manifest.items) {
+  for (const file of item.files ?? []) {
+    providerByPath.set(file.path, item.name);
+  }
+}
 
 for (const item of manifest.items) {
   const files = item.files ?? [];
   // Only files shipped in the same item can be reached relatively, and only
   // when shadcn writes them to the same directory — which it does per type.
   const typeByPath = new Map(files.map((file) => [file.path, file.type]));
+  const declared = dependencyNames(item);
 
   for (const file of files) {
     const absolute = path.join(registryRoot, file.path);
@@ -74,9 +113,9 @@ for (const item of manifest.items) {
     for (const match of source.matchAll(RELATIVE_IMPORT)) {
       const { specifier } = match.groups;
       const resolved = path.posix.join(dir, specifier);
-      const sibling = [".ts", ".tsx", ""]
-        .map((extension) => `${resolved}${extension}`)
-        .find((candidate) => typeByPath.has(candidate));
+      const sibling = withExtensions(resolved).find((candidate) =>
+        typeByPath.has(candidate)
+      );
 
       if (!sibling) {
         failures.push(
@@ -90,6 +129,69 @@ for (const item of manifest.items) {
           `${item.name}: ${file.path} (${file.type}) imports "${specifier}" (${typeByPath.get(sibling)}) — different types land in different directories, use an "@/" alias`
         );
       }
+    }
+
+    for (const match of source.matchAll(ALIAS_IMPORT)) {
+      const { specifier } = match.groups;
+      const resolved = specifier.replace("@/", "src/");
+      const candidates = withExtensions(resolved);
+
+      if (candidates.some((candidate) => typeByPath.has(candidate))) {
+        continue;
+      }
+
+      const builtin = SHADCN_PROVIDED.get(resolved);
+      if (builtin) {
+        if (!declared.has(builtin)) {
+          failures.push(
+            `${item.name}: ${file.path} imports "${specifier}" but does not depend on "${builtin}"`
+          );
+        }
+        continue;
+      }
+
+      const provider = candidates
+        .map((candidate) => providerByPath.get(candidate))
+        .find(Boolean);
+
+      if (!provider) {
+        failures.push(
+          `${item.name}: ${file.path} imports "${specifier}", which no registry item provides`
+        );
+        continue;
+      }
+
+      if (!declared.has(provider)) {
+        failures.push(
+          `${item.name}: ${file.path} imports "${specifier}" but "${provider}" is missing from registryDependencies`
+        );
+      }
+    }
+
+    const packages = new Set(item.dependencies);
+
+    // CSS resolves through the consumer's bundler, and the only package a
+    // stylesheet reaches for is `shadcn`, which `shadcn init` guarantees.
+    if (!/\.tsx?$/u.test(file.path)) {
+      continue;
+    }
+
+    for (const match of source.matchAll(PACKAGE_IMPORT)) {
+      const { specifier } = match.groups;
+
+      if (specifier.startsWith("node:")) {
+        continue;
+      }
+
+      const name = packageName(specifier);
+
+      if (PEER_PACKAGES.has(name) || packages.has(name)) {
+        continue;
+      }
+
+      failures.push(
+        `${item.name}: ${file.path} imports "${specifier}" but "${name}" is missing from dependencies`
+      );
     }
   }
 }

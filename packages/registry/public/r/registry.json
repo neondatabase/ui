@@ -139,7 +139,8 @@
           "path": "src/components/ui/tooltip.tsx",
           "type": "registry:ui"
         }
-      ]
+      ],
+      "dependencies": ["@base-ui/react"]
     },
     {
       "name": "neon-loader",
@@ -195,7 +196,11 @@
       "type": "registry:ui",
       "title": "Select",
       "description": "Accessible select primitive (Base UI).",
-      "dependencies": ["@base-ui/react"],
+      "dependencies": [
+        "@base-ui/react",
+        "@hugeicons/core-free-icons",
+        "@hugeicons/react"
+      ],
       "registryDependencies": [
         "utils",
         "https://ui.neon.com/r/neon-tokens.json"
@@ -261,7 +266,12 @@
           "type": "registry:component"
         }
       ],
-      "dependencies": ["motion"]
+      "dependencies": [
+        "motion",
+        "@base-ui/react",
+        "@hugeicons/core-free-icons",
+        "@hugeicons/react"
+      ]
     },
     {
       "name": "thinking-select",
@@ -329,7 +339,8 @@
           "path": "src/components/ui/bubble.tsx",
           "type": "registry:ui"
         }
-      ]
+      ],
+      "dependencies": ["@base-ui/react", "class-variance-authority"]
     },
     {
       "name": "marker",
@@ -345,7 +356,8 @@
           "path": "src/components/ui/marker.tsx",
           "type": "registry:ui"
         }
-      ]
+      ],
+      "dependencies": ["@base-ui/react", "class-variance-authority"]
     },
     {
       "name": "message-scroller",
@@ -363,7 +375,11 @@
           "type": "registry:ui"
         }
       ],
-      "dependencies": ["@shadcn/react"]
+      "dependencies": [
+        "@shadcn/react",
+        "@hugeicons/core-free-icons",
+        "@hugeicons/react"
+      ]
     },
     {
       "name": "tool-call-chip",
@@ -392,7 +408,8 @@
         "@ai-sdk/react",
         "streamdown",
         "@hugeicons/react",
-        "@hugeicons/core-free-icons"
+        "@hugeicons/core-free-icons",
+        "motion"
       ],
       "registryDependencies": [
         "utils",
@@ -403,7 +420,8 @@
         "https://ui.neon.com/r/button.json",
         "https://ui.neon.com/r/tool-call-chip.json",
         "https://ui.neon.com/r/neon-tokens.json",
-        "https://ui.neon.com/r/empty-state.json"
+        "https://ui.neon.com/r/empty-state.json",
+        "https://ui.neon.com/r/neon-loader.json"
       ],
       "files": [
         {
@@ -478,7 +496,11 @@
       "type": "registry:component",
       "title": "MetricCard",
       "description": "Analytics card with a formatted value, signed delta, and interactive Visx sparkline.",
-      "dependencies": ["recharts"],
+      "dependencies": [
+        "recharts",
+        "@hugeicons/core-free-icons",
+        "@hugeicons/react"
+      ],
       "registryDependencies": [
         "utils",
         "https://ui.neon.com/r/card.json",
@@ -599,7 +621,11 @@
       "type": "registry:component",
       "title": "ColorPicker",
       "description": "Swatch-and-hex trigger opening an HSV field, hue rail, hex input, and preset swatches.",
-      "dependencies": ["@base-ui/react"],
+      "dependencies": [
+        "@base-ui/react",
+        "@hugeicons/core-free-icons",
+        "@hugeicons/react"
+      ],
       "registryDependencies": [
         "utils",
         "https://ui.neon.com/r/neon-tokens.json"
@@ -634,7 +660,7 @@
       "name": "auth-form",
       "type": "registry:component",
       "title": "AuthForm",
-      "description": "The email/password card: mode switching, providers, structured errors, and a working state — Better Auth-shaped.",
+      "description": "The email/password card: mode switching, providers, structured errors, and a working state \u2014 Better Auth-shaped.",
       "registryDependencies": [
         "utils",
         "https://ui.neon.com/r/neon-tokens.json",
@@ -938,7 +964,8 @@
       ],
       "registryDependencies": [
         "utils",
-        "https://ui.neon.com/r/neon-tokens.json"
+        "https://ui.neon.com/r/neon-tokens.json",
+        "https://ui.neon.com/r/select.json"
       ],
       "files": [
         {
@@ -1170,7 +1197,8 @@
           "path": "src/components/ui/dialog.tsx",
           "type": "registry:ui"
         }
-      ]
+      ],
+      "dependencies": ["@base-ui/react"]
     },
     {
       "name": "confirm-dialog",
@@ -1239,7 +1267,8 @@
           "path": "src/components/ui/popover.tsx",
           "type": "registry:ui"
         }
-      ]
+      ],
+      "dependencies": ["@base-ui/react"]
     },
     {
       "name": "date-range-picker",
@@ -1353,7 +1382,7 @@
       "name": "storage-breakdown",
       "type": "registry:component",
       "title": "StorageBreakdown",
-      "description": "Storage composition by volume or by cost — root, child, instant restore, and snapshots as one bar with per-segment shares.",
+      "description": "Storage composition by volume or by cost \u2014 root, child, instant restore, and snapshots as one bar with per-segment shares.",
       "registryDependencies": [
         "utils",
         "https://ui.neon.com/r/neon-tokens.json",

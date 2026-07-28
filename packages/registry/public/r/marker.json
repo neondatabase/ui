@@ -3,6 +3,10 @@
   "name": "marker",
   "title": "Marker",
   "description": "Inline conversation status marker.",
+  "dependencies": [
+    "@base-ui/react",
+    "class-variance-authority"
+  ],
   "registryDependencies": [
     "utils",
     "https://ui.neon.com/r/neon-tokens.json"

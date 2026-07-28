@@ -4,7 +4,9 @@
   "title": "MessageScroller",
   "description": "Chat scroll container with turn anchoring, auto-follow, and jump-to-latest.",
   "dependencies": [
-    "@shadcn/react"
+    "@shadcn/react",
+    "@hugeicons/core-free-icons",
+    "@hugeicons/react"
   ],
   "registryDependencies": [
     "utils",

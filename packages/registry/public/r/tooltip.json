@@ -3,6 +3,9 @@
   "name": "tooltip",
   "title": "Tooltip",
   "description": "Base UI tooltip in the house chrome.",
+  "dependencies": [
+    "@base-ui/react"
+  ],
   "registryDependencies": [
     "utils",
     "https://ui.neon.com/r/neon-tokens.json"

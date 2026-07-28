@@ -4,7 +4,10 @@
   "title": "ModelSelect",
   "description": "Model picker for agent chat input bars, grouped by provider.",
   "dependencies": [
-    "motion"
+    "motion",
+    "@base-ui/react",
+    "@hugeicons/core-free-icons",
+    "@hugeicons/react"
   ],
   "registryDependencies": [
     "utils",
