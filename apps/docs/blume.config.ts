@@ -55,7 +55,11 @@ export default defineConfig({
       },
     },
     robots: true,
-    rss: { enabled: false },
+    rss: {
+      enabled: true,
+      limit: 50,
+      types: ["changelog"],
+    },
     sitemap: true,
     structuredData: true,
     x: { handle: "@neondatabase" },
