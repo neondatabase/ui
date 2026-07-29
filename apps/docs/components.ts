@@ -1,5 +1,6 @@
 import { defineComponents } from "blume";
 
+import CodeBlock from "./components/blume/code-block.astro";
 import Footer from "./components/blume/footer.astro";
 import Header from "./components/blume/header.astro";
 
@@ -42,6 +43,7 @@ export default defineComponents({
     HealthCardPreview: "./demos/health-card-preview.tsx",
     HealthCardStatusVariants: "./demos/health-card-status-variants.tsx",
     InlineCitationPreview: "./demos/inline-citation-preview.tsx",
+    InstallationCommand: "./demos/installation-command.tsx",
     LogsViewerPreview: "./demos/logs-viewer-preview.tsx",
     MeshGradientPlayground: "./demos/mesh-gradient-playground.tsx",
     MetricCardDeltaVariants: "./demos/metric-card-delta-variants.tsx",
@@ -73,4 +75,6 @@ export default defineComponents({
     WorkspaceTabsPreview: "./demos/workspace-tabs-preview.tsx",
   },
   layout: { Footer, Header },
+  // Fenced code blocks render through the installed CodeBlock component.
+  mdx: { pre: CodeBlock },
 });
