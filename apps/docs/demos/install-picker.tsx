@@ -1,0 +1,95 @@
+"use client";
+
+import { ArrowDown01Icon, Tick02Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@neon-ui/registry/components/ui/popover";
+import { useState } from "react";
+
+const NAMES = [
+  "auth-form",
+  "agent-chat",
+  "model-select",
+  "thinking-model-select",
+  "app-creator",
+  "preview-frame",
+  "checkpoint-timeline",
+  "provisioning-status",
+  "usage-panel",
+  "upgrade-dialog",
+  "metric-card",
+  "date-range-picker",
+  "neon-aurora",
+] as const;
+
+const COPIED_MS = 1400;
+
+export default function InstallPicker() {
+  const [name, setName] = useState<string>(NAMES[0]);
+  const [open, setOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const pick = async (next: string) => {
+    setName(next);
+    setOpen(false);
+    await navigator.clipboard.writeText(
+      `npx shadcn@latest add https://ui.neon.com/r/${next}.json`
+    );
+    setCopied(true);
+    window.setTimeout(() => setCopied(false), COPIED_MS);
+  };
+
+  return (
+    <code className="inline-flex h-10 items-center rounded-lg border border-white/20 bg-black/50 px-4 font-mono text-white/75 text-xs backdrop-blur">
+      npx shadcn@latest add https://ui.neon.com/r/
+      <Popover onOpenChange={setOpen} open={open}>
+        <PopoverTrigger className="inline-flex items-center gap-1 text-white underline decoration-dotted decoration-white/40 underline-offset-4 transition-colors hover:decoration-primary">
+          {name}
+          {copied ? (
+            <HugeiconsIcon
+              aria-label="Copied"
+              className="size-3 text-primary"
+              icon={Tick02Icon}
+              strokeWidth={2}
+            />
+          ) : (
+            <HugeiconsIcon
+              className={`size-3 text-white/50 transition-transform duration-200 motion-reduce:transition-none ${open ? "rotate-180" : ""}`}
+              icon={ArrowDown01Icon}
+              strokeWidth={2}
+            />
+          )}
+        </PopoverTrigger>
+        <PopoverContent
+          align="start"
+          className="max-h-72 overflow-y-auto p-1.5 preview-scroll"
+          side="top"
+          sideOffset={10}
+        >
+          {NAMES.map((option) => (
+            <button
+              className={`flex w-full items-center gap-2 rounded-sm px-2.5 py-1.5 text-left font-mono text-xs transition-colors ${
+                option === name
+                  ? "text-foreground"
+                  : "text-muted-foreground hover:bg-accent hover:text-foreground"
+              }`}
+              key={option}
+              onClick={() => pick(option)}
+              type="button"
+            >
+              <span
+                aria-hidden="true"
+                className={`size-1.5 shrink-0 ${option === name ? "bg-primary" : "bg-transparent"}`}
+              />
+              {option}
+            </button>
+          ))}
+        </PopoverContent>
+      </Popover>
+      .json
+    </code>
+  );
+}

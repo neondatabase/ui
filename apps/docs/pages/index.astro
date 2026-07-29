@@ -2,7 +2,7 @@
 import data from "blume:data";
 import PageLayout from "blume/components/layout/PageLayout.astro";
 import { NeonAurora } from "@neon-ui/registry/components/neon-aurora/neon-aurora";
-import InstallationCommand from "../demos/installation-command";
+import InstallPicker from "../demos/install-picker";
 
 const { config, navigation: nav } = data;
 
@@ -50,11 +50,7 @@ const navigation = {
       <div class="actions">
         <a class="btn-primary" href="/agent/agent-chat">Browse components</a>
         <div class="install">
-          <InstallationCommand
-            className="hero-command"
-            client:media="(min-width: 40rem)"
-            command="npx shadcn@latest add https://ui.neon.com/r/auth-form.json"
-          />
+          <InstallPicker client:media="(min-width: 40rem)" />
         </div>
       </div>
     </div>
