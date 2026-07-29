@@ -6,7 +6,8 @@ interface PackageManagerCommands {
   shadcn?: string;
 }
 
-const SHADCN_COMMAND_PATTERN = /^npx\s+shadcn(?:@\S+)?\s+(?<subcommand>.+)$/u;
+const SHADCN_COMMAND_PATTERN =
+  /^npx\s+shadcn(?:@(?<version>\S+))?\s+(?<subcommand>.+)$/u;
 const CREATE_COMMAND_PATTERN = /^npx\s+create-(?<initializer>.+)$/u;
 
 const replaceNpmPrefix = (command: string, prefix: string): string => {
@@ -22,18 +23,23 @@ export const convertNpmCommand = (
 ): PackageManagerCommands => {
   const trimmed = npmCommand.trim();
 
-  // npx shadcn[@version] <subcommand> [args...] → shadcn <subcommand> [args...]
   const shadcnMatch = trimmed.match(SHADCN_COMMAND_PATTERN);
   const subcommand = shadcnMatch?.groups?.subcommand;
   if (subcommand) {
     const npxArgs = trimmed.slice("npx ".length);
-    return {
+    const runners: PackageManagerCommands = {
       bun: `bunx --bun ${npxArgs}`,
       npm: trimmed,
       pnpm: `pnpm dlx ${npxArgs}`,
-      shadcn: `shadcn ${subcommand}`,
       yarn: `yarn dlx ${npxArgs}`,
     };
+
+    const version = shadcnMatch?.groups?.version;
+    if (version !== undefined && version !== "latest") {
+      return runners;
+    }
+
+    return { ...runners, shadcn: `shadcn ${subcommand}` };
   }
 
   // npx create-<name> → pnpm create <name> / yarn create <name> / bunx --bun create-<name>
