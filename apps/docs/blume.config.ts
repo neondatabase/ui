@@ -28,6 +28,8 @@ export default defineConfig({
     },
     text: "",
   },
+  // Fences render through <CodeBlock>, which draws its own language icon.
+  markdown: { code: { icons: false } },
   navigation: {
     // Render every sidebar section as a collapsible `<details>` disclosure so
     // folder meta `collapsed: true` takes effect (e.g. Base Components starts

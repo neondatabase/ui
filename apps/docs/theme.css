@@ -159,27 +159,13 @@ details[class*="group/tt"] code.text-accent {
   color: var(--primary);
 }
 
-/* Align fenced code blocks with the Preview/Code component shell. */
-.prose pre.astro-code {
-  border-color: color-mix(in srgb, var(--border) 60%, transparent);
-  border-radius: var(--radius-lg);
-  background:
-    linear-gradient(
-      to bottom,
-      transparent 43px,
-      color-mix(in srgb, var(--border) 60%, transparent) 43px,
-      color-mix(in srgb, var(--border) 60%, transparent) 44px,
-      transparent 44px
-    ),
-    linear-gradient(
-      to bottom,
-      color-mix(in srgb, var(--muted) 15%, transparent) 0 44px,
-      color-mix(in srgb, var(--muted) 30%, transparent) 44px 100%
-    ) !important;
-}
-
-.prose pre.astro-code > button {
-  border-radius: var(--radius-md);
+/* Fenced code blocks render inside <CodeBlock>, which owns the frame. Blume's
+   prose rules are unlayered, so they beat the component's Tailwind utilities on
+   the <pre> and have to be undone here. */
+.prose [data-slot="code-block"] pre {
+  border: 0;
+  border-radius: 0;
+  margin: 0;
 }
 
 /* Scroll-aware edge fade + thin scrollbar for scrolling panels.

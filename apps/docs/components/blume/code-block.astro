@@ -1,0 +1,57 @@
+---
+// Blume's MDX `pre` override: every fence in docs/ renders as <CodeBlock>.
+// Blume's Shiki output passes through untouched, so its transformers, themes
+// and `astro-code` colour rules keep working. `CodeBlockView` rather than
+// `CodeBlock` because Astro can only hydrate a sync component, and the copy
+// button needs client JS.
+import { CodeBlockView } from "@neon-ui/registry/components/code-block-view";
+
+interface Props {
+  "data-language"?: string;
+  "data-title"?: string;
+}
+
+const TAG = /<[^>]*>/gu;
+const ESCAPE = /&(?:amp|lt|gt|quot|#39);/gu;
+const UNESCAPED: Record<string, string> = {
+  "&#39;": "'",
+  "&amp;": "&",
+  "&gt;": ">",
+  "&lt;": "<",
+  "&quot;": '"',
+};
+
+/**
+ * Shiki only ever wraps tokens in `<span>`, so dropping the tags and undoing
+ * Astro's five escapes recovers the fence source verbatim — what the copy
+ * button needs.
+ */
+const sourceFromSlot = (html: string): string =>
+  html
+    .replace(TAG, "")
+    .replace(ESCAPE, (escaped) => UNESCAPED[escaped] ?? escaped);
+
+const pre = Astro.props;
+const language = pre["data-language"] ?? "text";
+const title = pre["data-title"];
+
+const highlighted = await Astro.slots.render("default");
+const code = sourceFromSlot(highlighted);
+
+// Blume's layout script appends a copy button to every `.prose pre` that
+// doesn't already hold one. The component brings its own, so claim the slot.
+const claimed = `<span data-blume-copy hidden></span>${highlighted}`;
+
+// `not-prose` drops the language bar Blume draws on `pre[data-language]`, which
+// the component's header replaces.
+---
+
+<CodeBlockView
+  className="not-prose"
+  client:visible
+  code={code}
+  language={language}
+  title={title}
+>
+  <pre {...pre} set:html={claimed} />
+</CodeBlockView>
