@@ -62,15 +62,18 @@ interface CodeBlockCommandProps extends Omit<
 const DefaultIcon = ({
   svg,
   muted,
+  className,
 }: {
   svg: string;
   muted: boolean;
+  className?: string;
 }): React.JSX.Element => (
   <span
     aria-hidden="true"
     className={cn(
       "inline-flex size-3.5 shrink-0 bg-contain bg-center bg-no-repeat",
-      muted && "grayscale opacity-50"
+      muted && "grayscale opacity-50",
+      className
     )}
     style={{
       backgroundImage: `url("data:image/svg+xml,${encodeURIComponent(svg)}")`,
@@ -177,7 +180,13 @@ export const CodeBlockCommand = ({
     if (!svg) {
       return null;
     }
-    return <DefaultIcon svg={svg} muted={isMuted} />;
+    return (
+      <DefaultIcon
+        className={manager === "shadcn" ? "dark:invert" : undefined}
+        muted={isMuted}
+        svg={svg}
+      />
+    );
   };
 
   return (
