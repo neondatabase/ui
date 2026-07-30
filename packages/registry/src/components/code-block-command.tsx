@@ -198,10 +198,10 @@ export const CodeBlockCommand = ({
       data-slot="code-block-command"
       {...props}
     >
-      <div className="flex items-center justify-between border-b border-border/60 bg-muted/40">
+      <div className="flex min-w-0 items-center border-b border-border/60 bg-muted/40">
         <div
           aria-label="Package manager"
-          className="relative flex"
+          className="relative flex min-w-0 flex-1 touch-pan-x overflow-x-scroll overscroll-x-contain pb-1 [scrollbar-color:var(--border)_transparent] [scrollbar-width:thin] [&::-webkit-scrollbar]:h-1 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-border [&::-webkit-scrollbar-track]:bg-transparent"
           ref={tabListRef}
           role="tablist"
         >
@@ -210,7 +210,7 @@ export const CodeBlockCommand = ({
               aria-controls={panelId}
               aria-selected={active === manager}
               className={cn(
-                "flex h-10 items-center gap-1.5 px-3 text-sm font-medium transition-colors",
+                "flex h-10 shrink-0 items-center gap-1.5 px-3 text-sm font-medium transition-colors",
                 active === manager
                   ? "text-foreground"
                   : "text-muted-foreground hover:text-foreground"
@@ -231,11 +231,11 @@ export const CodeBlockCommand = ({
           ))}
           <span
             aria-hidden="true"
-            className="pointer-events-none absolute bottom-0 left-0 h-0.5 bg-foreground transition-[width,transform] duration-200 ease-out motion-reduce:transition-none"
+            className="pointer-events-none absolute bottom-1 left-0 h-0.5 bg-foreground transition-[width,transform] duration-200 ease-out motion-reduce:transition-none"
             ref={indicatorRef}
           />
         </div>
-        <CodeBlockCopyButton className="mr-2" value={currentCommand} />
+        <CodeBlockCopyButton className="mx-2 shrink-0" value={currentCommand} />
       </div>
       <div
         aria-labelledby={`${panelId}-${active}`}
