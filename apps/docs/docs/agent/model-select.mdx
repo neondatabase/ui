@@ -107,7 +107,7 @@ Never hardcode a default id without one of these guards — a given gateway bran
     logos: {
       type: "Record<string, ReactNode>",
       description:
-        "Provider logos keyed by provider name. Without a logo, no mark is rendered.",
+        "Provider logos keyed by provider name. A provider missing from the map keeps its space so rows stay aligned; passing no map renders no marks and no space.",
     },
     excludeModels: {
       type: "string[]",
