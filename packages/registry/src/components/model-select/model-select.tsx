@@ -18,7 +18,7 @@ import {
 import { cn } from "@/lib/utils";
 
 export interface AiModel {
-  /** Gateway model id in short form, e.g. "gpt-5-2" or "gemini-3-pro". */
+  /** Gateway model id in short form, e.g. "gpt-5-2" or "gemini-3-6-flash". */
   id: string;
   /** Human-readable name, e.g. "GPT-5.2". */
   name: string;
@@ -48,7 +48,7 @@ export type ModelSelectProps = Omit<
   placeholder?: ReactNode;
   /** Trigger size: compact, default, or roomy. */
   size?: ModelSelectSize;
-  /** Provider logos keyed by provider name; without a logo no mark is shown. */
+  /** Provider logos keyed by provider name. A provider missing from the map keeps its space so rows stay aligned; passing no map renders no marks and no space. */
   logos?: Record<string, ReactNode>;
   /** Model ids to hide from the list. */
   excludeModels?: string[];
@@ -255,9 +255,26 @@ const matchesQuery = (model: AiModel, query: string) => {
     .every((part) => haystack.includes(part));
 };
 
-const ProviderLogo = ({ logo }: { logo: ReactNode | undefined }) => {
+const ProviderLogo = ({
+  logo,
+  reserve,
+}: {
+  logo: ReactNode | undefined;
+  reserve: boolean;
+}) => {
+  // Reserve the slot only when a logo map was supplied. A partial map is normal
+  // — the catalog gains providers faster than anyone adds marks — and the rows
+  // it does not cover would otherwise sit unindented against the rows it does.
+  // With no map at all there is nothing to align to, so reserving would just be
+  // dead space in front of the name.
   if (!logo) {
-    return null;
+    return reserve ? (
+      <span
+        aria-hidden="true"
+        className="size-4 shrink-0"
+        data-slot="model-select-logo"
+      />
+    ) : null;
   }
 
   return (
@@ -345,7 +362,10 @@ export const ModelSelect = ({
         <SelectValue>
           {selected ? (
             <>
-              <ProviderLogo logo={logos?.[selected.provider]} />
+              <ProviderLogo
+                logo={logos?.[selected.provider]}
+                reserve={Boolean(logos)}
+              />
               <span className="truncate" title={selected.name}>
                 {selected.name}
               </span>
@@ -422,7 +442,10 @@ export const ModelSelect = ({
                           value={model.id}
                         >
                           <div className="flex w-full min-w-0 items-center gap-2">
-                            <ProviderLogo logo={logos?.[model.provider]} />
+                            <ProviderLogo
+                              logo={logos?.[model.provider]}
+                              reserve={Boolean(logos)}
+                            />
                             <span className="shrink-0">{model.name}</span>
                             {model.tag ? (
                               <span className="shrink-0 border border-border/60 px-1 py-px font-mono text-[9px] text-muted-foreground uppercase leading-none tracking-wide">
