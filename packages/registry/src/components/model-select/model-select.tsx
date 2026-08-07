@@ -18,7 +18,7 @@ import {
 import { cn } from "@/lib/utils";
 
 export interface AiModel {
-  /** Gateway model id in short form, e.g. "gpt-5-2" or "gemini-3-pro". */
+  /** Gateway model id in short form, e.g. "gpt-5-2" or "gemini-3-6-flash". */
   id: string;
   /** Human-readable name, e.g. "GPT-5.2". */
   name: string;

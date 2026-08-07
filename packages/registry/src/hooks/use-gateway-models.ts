@@ -46,8 +46,10 @@ const PROVIDER_NAMES: Record<string, string> = {
   meta: "Meta",
   "meta-llama": "Meta",
   mistral: "Mistral",
+  moonshot: "Moonshot AI",
   openai: "OpenAI",
   qwen: "Qwen",
+  zhipu: "Zhipu AI",
 };
 
 const shapeModels = (payload: unknown): GatewayModel[] => {
