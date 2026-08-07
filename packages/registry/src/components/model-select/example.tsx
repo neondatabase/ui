@@ -26,7 +26,10 @@ const FAMILY_PROVIDERS: [prefix: string, label: string][] = [
   ["gemini", "Google"],
   ["gemma", "Google"],
   ["gpt", "OpenAI"],
+  ["kimi", "Moonshot AI"],
+  ["ling", "Thinking Machines"],
   ["llama", "Meta"],
+  ["glm", "Zhipu AI"],
   ["qwen", "Alibaba"],
 ];
 

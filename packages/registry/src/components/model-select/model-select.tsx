@@ -256,8 +256,17 @@ const matchesQuery = (model: AiModel, query: string) => {
 };
 
 const ProviderLogo = ({ logo }: { logo: ReactNode | undefined }) => {
+  // Reserve the slot even with no logo. A partial `logos` record is normal —
+  // the catalog gains providers faster than anyone adds marks — and returning
+  // nothing here left those rows unindented against every row around them.
   if (!logo) {
-    return null;
+    return (
+      <span
+        aria-hidden="true"
+        className="size-4 shrink-0"
+        data-slot="model-select-logo"
+      />
+    );
   }
 
   return (

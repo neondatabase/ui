@@ -30,7 +30,7 @@ await fetch(`${gatewayUrl}/v1/chat/completions`, {
   method: "POST",
   headers: { Authorization: `Bearer ${token}` },
   body: JSON.stringify({
-    model: "neon/claude-sonnet-4-6",
+    model: "claude-sonnet-4-6",
     messages,
     ...(effort === "off" ? {} : { reasoning_effort: effort }),
   }),
