@@ -10,6 +10,52 @@ export type PackageManager = "pnpm" | "yarn" | "npm" | "bun" | "shadcn";
 const STORAGE_KEY = "neon-ui-package-manager";
 
 const managers: PackageManager[] = ["pnpm", "yarn", "npm", "bun", "shadcn"];
+
+/**
+ * Computes the next active package manager tab and index given the current list,
+ * index, and keyboard event key, following WAI-ARIA APG roving tabindex tabs pattern.
+ *
+ * Supports ArrowRight (next, wrapping), ArrowLeft (previous, wrapping),
+ * Home (first), and End (last). Returns null if key is unrecognized or if available <= 1.
+ */
+export function getNextPackageManager(
+  available: readonly PackageManager[],
+  currentIndex: number,
+  key: string
+): { index: number; manager: PackageManager } | null {
+  if (available.length <= 1) {
+    return null;
+  }
+
+  let nextIndex: number;
+  switch (key) {
+    case "ArrowRight":
+      nextIndex = currentIndex >= 0 ? (currentIndex + 1) % available.length : 0;
+      break;
+    case "ArrowLeft":
+      nextIndex =
+        currentIndex >= 0
+          ? (currentIndex - 1 + available.length) % available.length
+          : available.length - 1;
+      break;
+    case "Home":
+      nextIndex = 0;
+      break;
+    case "End":
+      nextIndex = available.length - 1;
+      break;
+    default:
+      return null;
+  }
+
+  const manager = available[nextIndex];
+  if (manager === undefined) {
+    return null;
+  }
+
+  return { index: nextIndex, manager };
+}
+
 const EMPTY_ICONS: Partial<Record<PackageManager, React.ReactNode>> = {};
 
 const defaultIcons: Record<PackageManager, string> = {
@@ -143,6 +189,30 @@ export const CodeBlockCommand = ({
   const tabButtonRefs = React.useRef<(HTMLButtonElement | null)[]>([]);
   const tabListRef = React.useRef<HTMLDivElement>(null);
 
+  const handleKeyDown = (
+    event: React.KeyboardEvent<HTMLDivElement>
+  ): void => {
+    if (event.altKey || event.ctrlKey || event.metaKey) {
+      return;
+    }
+
+    const targetElement = (
+      event.target as HTMLElement | null
+    )?.closest<HTMLButtonElement>("button");
+    const targetIndex = targetElement
+      ? tabButtonRefs.current.indexOf(targetElement)
+      : -1;
+    const currentIndex = targetIndex !== -1 ? targetIndex : activeIndex;
+    const next = getNextPackageManager(available, currentIndex, event.key);
+    if (!next) {
+      return;
+    }
+
+    event.preventDefault();
+    handleSelect(next.manager);
+    tabButtonRefs.current[next.index]?.focus();
+  };
+
   React.useLayoutEffect(() => {
     const activeTab = tabButtonRefs.current[activeIndex];
     const indicator = indicatorRef.current;
@@ -202,6 +272,7 @@ export const CodeBlockCommand = ({
         <div
           aria-label="Package manager"
           className="relative flex min-w-0 flex-1 touch-pan-x overflow-x-scroll overscroll-x-contain pb-1 [scrollbar-color:var(--border)_transparent] [scrollbar-width:thin] [&::-webkit-scrollbar]:h-1 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-border [&::-webkit-scrollbar-track]:bg-transparent"
+          onKeyDown={handleKeyDown}
           ref={tabListRef}
           role="tablist"
         >
