@@ -258,13 +258,6 @@ export const gatewayModels: AiModel[] = [
     tag: "open",
   },
   {
-    id: "inkling",
-    name: "Inkling",
-    provider: "Thinking Machines",
-    reasoning: true,
-    tag: "open",
-  },
-  {
     id: "kimi-k3",
     name: "Kimi K3",
     provider: "Moonshot AI",
